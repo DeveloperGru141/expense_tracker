@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}Analytics | Expense Tracker{% endblock %}
+
+{% block content %}
+    <section class="page-header">
+        <div>
+            <p class="eyebrow">Analytics</p>
+            <h2 class="page-title">Understand where your money is going.</h2>
+        </div>
+        <article class="card summary-pill">
+            <span>Tracked categories</span>
+            <strong>{{ analytics|length }}</strong>
+        </article>
+    </section>
+
+    <section class="analytics-grid">
+        {% if analytics %}
+            {% for item in analytics %}
+                <article class="card analytics-card">
+                    <img
+                        src="{{ url_for('static', path='images/analytics-card.svg') }}"
+                        alt="Analytics illustration"
+                        class="card-illustration"
+                    >
+                    <div class="analytics-top">
+                        <h3>{{ item.category }}</h3>
+                        <strong>{{ settings.currency_symbol }}{{ '%.2f'|format(item.amount) }}</strong>
+                    </div>
+                    <p class="muted-text">{{ '%.1f'|format(item.percentage) }}% of your total recorded expenses.</p>
+                    <div class="progress-track">
+                        <div
+                            class="progress-fill"
+                            data-fill-width="{{ '%.1f'|format(item.percentage) }}"
+                            aria-hidden="true"
+                        ></div>
+                    </div>
+                </article>
+            {% endfor %}
+        {% else %}
+            <section class="card placeholder-card illustrated-card">
+                <img
+                    src="{{ url_for('static', path='images/empty-analytics.svg') }}"
+                    alt="No analytics data illustration"
+                    class="card-illustration"
+                >
+                <h3>No analytics yet</h3>
+                <p class="empty-state">Add expenses first and this page will break down your spending by category.</p>
+            </section>
+        {% endif %}
+    </section>
+{% endblock %}

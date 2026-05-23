@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block title %}AI Insights | Expense Tracker{% endblock %}
+
+{% block content %}
+    <section class="page-header">
+        <div>
+            <p class="eyebrow">AI Insights</p>
+            <h2 class="page-title">See the most important spending signals faster.</h2>
+        </div>
+        <article class="card summary-pill">
+            <span>Categories analyzed</span>
+            <strong>{{ analytics|length }}</strong>
+        </article>
+    </section>
+
+    <section class="content-grid">
+        <article class="card placeholder-card illustrated-card">
+            <img
+                src="{{ url_for('static', path='images/focus-card.svg') }}"
+                alt="Focus insight illustration"
+                class="card-illustration"
+            >
+            <h3>Top focus area</h3>
+            <p class="empty-state">
+                {% if summary.top_category != "None yet" %}
+                    {{ summary.top_category }} is currently your strongest spending category, which makes it the first place to review for optimization.
+                {% else %}
+                    Add expenses to generate insight suggestions from your spending data.
+                {% endif %}
+            </p>
+        </article>
+        <article class="card placeholder-card illustrated-card">
+            <img
+                src="{{ url_for('static', path='images/reporting-card.svg') }}"
+                alt="Reporting suggestion illustration"
+                class="card-illustration"
+            >
+            <h3>Reporting suggestion</h3>
+            <p class="empty-state">Use Reports to filter monthly activity and compare category totals before exporting a summary for your team.</p>
+        </article>
+    </section>
+
+    <section class="analytics-grid">
+        {% if top_analytics %}
+            {% for item in top_analytics %}
+                <article class="card analytics-card">
+                    <img
+                        src="{{ url_for('static', path='images/ai-insight-card.svg') }}"
+                        alt="AI insight illustration"
+                        class="card-illustration"
+                    >
+                    <div class="analytics-top">
+                        <h3>{{ item.category }}</h3>
+                        <strong>{{ settings.currency_symbol }}{{ '%.2f'|format(item.amount) }}</strong>
+                    </div>
+                    <p class="muted-text">{{ '%.1f'|format(item.percentage) }}% of current tracked spend.</p>
+                    <div class="progress-track">
+                        <div
+                            class="progress-fill"
+                            data-fill-width="{{ '%.1f'|format(item.percentage) }}"
+                            aria-hidden="true"
+                        ></div>
+                    </div>
+                </article>
+            {% endfor %}
+        {% else %}
+            <article class="card placeholder-card illustrated-card">
+                <img
+                    src="{{ url_for('static', path='images/empty-analytics.svg') }}"
+                    alt="No insight data illustration"
+                    class="card-illustration"
+                >
+                <h3>No insight data yet</h3>
+                <p class="empty-state">Once expenses are recorded, this page can surface patterns, exceptions, and budget warnings.</p>
+            </article>
+        {% endif %}
+    </section>
+{% endblock %}

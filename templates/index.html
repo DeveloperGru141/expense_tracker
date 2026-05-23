@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Tracker | Smart Spending, Clearer Decisions</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='landing-build/landing-galaxy.css') }}">
+    <script type="module" src="{{ url_for('static', path='landing-build/landing-galaxy.js') }}"></script>
+</head>
+<body class="landing-page">
+    <div id="landing-galaxy-root" aria-hidden="true"></div>
+    <div class="landing-shell">
+        <header class="landing-topbar">
+            <a href="/" class="landing-brand">ExpenseFlow</a>
+            <nav class="landing-nav" aria-label="Landing">
+                <a href="#features">Features</a>
+                <a href="#benefits">Benefits</a>
+                <a href="#proof">Proof</a>
+                <a href="#testimonials">Reviews</a>
+            </nav>
+            <a href="/dashboard" class="button button-dark topbar-cta">Open Dashboard</a>
+        </header>
+
+        <main>
+            <section class="landing-hero">
+                <div class="hero-copy">
+                    <p class="landing-kicker">Professional expense intelligence</p>
+                    <h1 class="landing-title">Turn company spending into something beautifully organized.</h1>
+                    <p class="landing-subtext">
+                        Track expenses, review trends, export reports, and keep every payment story clear with a cleaner finance workspace built for modern teams.
+                    </p>
+                    <div class="hero-actions">
+                        <a href="/dashboard" class="button button-dark">Get Started</a>
+                        <a href="/expenses" class="button button-light">View Expenses</a>
+                    </div>
+                    <div class="hero-metrics">
+                        <article>
+                            <strong>&#8358;12.4M</strong>
+                            <span>Tracked spend</span>
+                        </article>
+                        <article>
+                            <strong>98%</strong>
+                            <span>Clearer reporting</span>
+                        </article>
+                        <article>
+                            <strong>24/7</strong>
+                            <span>Finance visibility</span>
+                        </article>
+                    </div>
+                </div>
+
+                <div class="hero-stage" aria-hidden="true">
+                    <div class="glow-orb orb-one"></div>
+                    <div class="glow-orb orb-two"></div>
+                    <div class="hero-collage">
+                        <div class="hero-panel hero-panel-main">
+                            <img
+                                src="{{ url_for('static', path='images/landing-reporting-card.png') }}"
+                                alt="Reporting chart illustration"
+                                class="hero-collage-image"
+                            >
+                        </div>
+                        <div class="hero-panel hero-panel-left">
+                            <img
+                                src="{{ url_for('static', path='images/landing-money-card.png') }}"
+                                alt="Money bag illustration"
+                                class="hero-collage-image"
+                            >
+                        </div>
+                        <div class="hero-panel hero-panel-right">
+                            <img
+                                src="{{ url_for('static', path='images/landing-briefcase-card.png') }}"
+                                alt="Briefcase illustration"
+                                class="hero-collage-image"
+                            >
+                        </div>
+                        <div class="hero-panel hero-panel-bottom">
+                            <img
+                                src="{{ url_for('static', path='images/landing-settings-card.png') }}"
+                                alt="Settings illustration"
+                                class="hero-collage-image"
+                            >
+                        </div>
+                    </div>
+                    <div class="hero-float-card">
+                        <p>Auto-sorted categories</p>
+                        <strong>Food, Transport, Bills</strong>
+                    </div>
+                </div>
+            </section>
+
+            <section class="logo-strip" id="proof">
+                <p>Trusted by fast-moving teams who need cleaner expense visibility.</p>
+                <div class="logo-grid">
+                    <span>Aster Labs</span>
+                    <span>North Axis</span>
+                    <span>Millsy</span>
+                    <span>Pilot Cloud</span>
+                    <span>Jasper Foundry</span>
+                </div>
+            </section>
+
+            <section class="feature-section" id="features">
+                <div class="feature-visual amber">
+                    <img
+                        src="{{ url_for('static', path='images/landing-clarity-card.png') }}"
+                        alt="Receipt and expense capture illustration"
+                        class="feature-section-image"
+                    >
+                </div>
+                <div class="feature-copy">
+                    <p class="landing-kicker">Less admin, more clarity</p>
+                    <h2>Move from scattered receipts to one polished financial timeline.</h2>
+                    <p>
+                        Capture daily spending, keep categories consistent, and make your expense history easier to scan without fighting messy spreadsheets.
+                    </p>
+                    <a href="/dashboard" class="button button-dark">Open Workspace</a>
+                </div>
+            </section>
+
+            <section class="feature-section reverse">
+                <div class="feature-copy">
+                    <p class="landing-kicker">Reporting without friction</p>
+                    <h2>Export cleaner monthly views and spot patterns before they become surprises.</h2>
+                    <p>
+                        Review trends by date and category, download summaries, and keep your reporting workflow fast enough for real operating decisions.
+                    </p>
+                    <a href="/reports" class="button button-dark">Explore Reports</a>
+                </div>
+                <div class="feature-visual blue">
+                    <img
+                        src="{{ url_for('static', path='images/landing-reporting-card.png') }}"
+                        alt="Expense reporting and trend illustration"
+                        class="feature-section-image"
+                    >
+                </div>
+            </section>
+
+            <section class="feature-section">
+                <div class="feature-visual mint">
+                    <img
+                        src="{{ url_for('static', path='images/landing-settings-card.png') }}"
+                        alt="Settings and workflow configuration illustration"
+                        class="feature-section-image"
+                    >
+                </div>
+                <div class="feature-copy">
+                    <p class="landing-kicker">Settings that support the workflow</p>
+                    <h2>Keep budgets, preferences, and operational cues in one consistent system.</h2>
+                    <p>
+                        Tune currency, budget thresholds, and profile details so the app feels ready for daily use, not just occasional check-ins.
+                    </p>
+                    <a href="/settings" class="button button-dark">Adjust Settings</a>
+                </div>
+            </section>
+
+            <section class="benefits-section" id="benefits">
+                <div class="section-intro">
+                    <p class="landing-kicker">Built for modern finance teams</p>
+                    <h2>Everything you need to make the tracker feel dependable and executive-ready.</h2>
+                </div>
+                <div class="benefit-grid">
+                    <article class="benefit-card">
+                        <img
+                            src="{{ url_for('static', path='images/landing-capture-card.png') }}"
+                            alt="Expense capture illustration"
+                            class="landing-card-image"
+                        >
+                        <h3>Fast capture</h3>
+                        <p>Add expenses quickly with structured categories and a workflow that stays readable as volume grows.</p>
+                    </article>
+                    <article class="benefit-card featured">
+                        <img
+                            src="{{ url_for('static', path='images/landing-analytics-card.png') }}"
+                            alt="Expense analytics illustration"
+                            class="landing-card-image"
+                        >
+                        <h3>Sharper analytics</h3>
+                        <p>See category percentages, identify top spend areas, and turn routine data into better decisions.</p>
+                    </article>
+                    <article class="benefit-card">
+                        <img
+                            src="{{ url_for('static', path='images/landing-report-card.png') }}"
+                            alt="Expense reporting illustration"
+                            class="landing-card-image"
+                        >
+                        <h3>Export-ready reports</h3>
+                        <p>Download filtered summaries for stakeholders without rebuilding the same report by hand every week.</p>
+                    </article>
+                </div>
+            </section>
+
+            <section class="testimonial-section" id="testimonials">
+                <div class="testimonial-portrait">
+                    <img
+                        src="{{ url_for('static', path='images/landing-testimonial-card.png') }}"
+                        alt="Office worker portrait illustration"
+                        class="testimonial-image"
+                    >
+                </div>
+                <div class="testimonial-copy">
+                    <p class="landing-kicker">Customer feedback</p>
+                    <blockquote>
+                        "The interface feels calm, premium, and genuinely useful. We moved from chasing down expense details to actually understanding our spending."
+                    </blockquote>
+                    <p class="testimonial-meta">Lebo M., Finance Operations Lead</p>
+                </div>
+            </section>
+
+            <section class="closing-banner">
+                <div>
+                    <p class="landing-kicker">Ready to bring order to spending?</p>
+                    <h2>Launch the dashboard and start tracking with a cleaner, more confident workflow.</h2>
+                </div>
+                <div class="closing-actions">
+                    <a href="/dashboard" class="button button-dark">Open Dashboard</a>
+                    <a href="/analytics" class="button button-light">See Analytics</a>
+                </div>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

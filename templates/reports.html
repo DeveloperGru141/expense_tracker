@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}Reports | Expense Tracker{% endblock %}
+
+{% block content %}
+    <section class="page-header">
+        <div>
+            <p class="eyebrow">Reports</p>
+            <h2 class="page-title">Review monthly spending snapshots.</h2>
+        </div>
+        <article class="card summary-pill">
+            <span>Months tracked</span>
+            <strong>{{ reports|length }}</strong>
+        </article>
+    </section>
+
+    <section class="content-grid reports-layout">
+        <section class="card form-card">
+            <h3>Filter Reports</h3>
+            <form action="/reports" method="get" class="expense-form">
+                <label>
+                    <span>From date</span>
+                    <input type="date" name="date_from" value="{{ filters.date_from }}">
+                </label>
+                <label>
+                    <span>To date</span>
+                    <input type="date" name="date_to" value="{{ filters.date_to }}">
+                </label>
+                <label>
+                    <span>Category</span>
+                    <select name="category">
+                        <option value="">All categories</option>
+                        <option value="Food"{% if filters.category == "Food" %} selected{% endif %}>Food</option>
+                        <option value="Transport"{% if filters.category == "Transport" %} selected{% endif %}>Transport</option>
+                        <option value="Bills"{% if filters.category == "Bills" %} selected{% endif %}>Bills</option>
+                    </select>
+                </label>
+                <button type="submit">Apply Filters</button>
+            </form>
+        </section>
+
+        <section class="card placeholder-card">
+            <h3>Download Summary</h3>
+            <p class="empty-state">Export the current filtered monthly report as a CSV file you can open in Excel or Google Sheets.</p>
+            <a
+                href="/reports/export?date_from={{ filters.date_from }}&date_to={{ filters.date_to }}&category={{ filters.category }}"
+                class="action-link"
+            >
+                Download CSV Report
+            </a>
+        </section>
+    </section>
+
+    <section class="card table-card">
+        <div class="section-heading">
+            <h3>Monthly Totals</h3>
+            <span class="muted-text">Grouped from your filtered expense dates</span>
+        </div>
+        {% if reports %}
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Month</th>
+                            <th>Total Spent</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for report in reports %}
+                            <tr>
+                                <td>{{ report.month }}</td>
+                                <td>{{ settings.currency_symbol }}{{ '%.2f'|format(report.total) }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="empty-state">No reports yet. Once you add expenses, monthly totals will appear here.</p>
+        {% endif %}
+    </section>
+{% endblock %}

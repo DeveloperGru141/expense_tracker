@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Expense Tracker{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='style.css') }}">
+    <script src="{{ url_for('static', path='app.js') }}" defer></script>
+</head>
+<body>
+    <div class="app-shell">
+        <aside class="sidebar">
+            <div class="brand-block">
+                <p class="sidebar-kicker">Expense Tracker</p>
+                <h1 class="sidebar-title">Control Center</h1>
+                <p class="sidebar-copy">Track every naira, review your habits, and keep each section of your money flow organized.</p>
+            </div>
+
+            <nav class="sidebar-nav" aria-label="Sidebar">
+                {% for item in nav_items %}
+                    <a
+                        href="{{ item.path }}"
+                        class="nav-link{% if active_page == item.name %} active{% endif %}"
+                    >
+                        {{ item.name }}
+                    </a>
+                {% endfor %}
+            </nav>
+        </aside>
+
+        <main class="page">
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+</body>
+</html>
