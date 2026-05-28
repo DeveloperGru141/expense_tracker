@@ -1,21 +1,26 @@
 from __future__ import annotations
 
 import csv
+import os
+import secrets
 import sqlite3
 from collections import defaultdict
 from contextlib import asynccontextmanager
+from datetime import date
 from io import StringIO
 from pathlib import Path
 from typing import Any
 
-from fastapi import FastAPI, Form, Request
+from fastapi import FastAPI, Form, HTTPException, Request
 from fastapi.responses import RedirectResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from starlette.middleware.sessions import SessionMiddleware
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 DB_PATH = BASE_DIR / "expenses.db"
+SESSION_SECRET = os.getenv("SESSION_SECRET", "local-dev-secret-change-me")
 NAV_ITEMS = [
     {"name": "Dashboard", "path": "/dashboard"},
     {"name": "Expenses", "path": "/expenses"},
@@ -65,6 +70,7 @@ async def lifespan(_: FastAPI):
 
 
 app = FastAPI(title="Expense Tracker", lifespan=lifespan)
+app.add_middleware(SessionMiddleware, secret_key=SESSION_SECRET)
 app.mount("/static", StaticFiles(directory=BASE_DIR / "static"), name="static")
 templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
 
@@ -184,6 +190,20 @@ def safe_next_url(next_url: str) -> str:
     return next_url if next_url.startswith("/") else "/expenses"
 
 
+def get_csrf_token(request: Request) -> str:
+    token = request.session.get("csrf_token")
+    if not token:
+        token = secrets.token_urlsafe(32)
+        request.session["csrf_token"] = token
+    return token
+
+
+def require_csrf(request: Request, csrf_token: str) -> None:
+    expected_token = request.session.get("csrf_token")
+    if not expected_token or csrf_token != expected_token:
+        raise HTTPException(status_code=403, detail="Invalid CSRF token.")
+
+
 def get_budget_status(total_spent: float, settings: dict[str, str]) -> dict[str, Any]:
     budget_str = settings.get("monthly_budget", "")
     if not budget_str:
@@ -214,22 +234,24 @@ def render_page(
     active_page: str,
     **context: Any,
 ):
-    settings = get_settings()
-    currency_code = settings.get("currency_code", "NGN")
+    resolved_settings = context.get("settings") or get_settings()
+    currency_code = resolved_settings.get("currency_code", "NGN")
     currency_symbol = "$" if currency_code == "USD" else "₦"
-    settings["currency_symbol"] = currency_symbol
+    resolved_settings["currency_symbol"] = currency_symbol
 
     shared_context = {
         "request": request,
         "active_page": active_page,
         "nav_items": NAV_ITEMS,
-        "settings": settings,
+        "settings": resolved_settings,
+        "csrf_token": get_csrf_token(request),
     }
     shared_context.update(context)
+    shared_context["settings"] = resolved_settings
 
     if "summary" in shared_context:
         summary = shared_context["summary"]
-        shared_context["budget_status"] = get_budget_status(summary.get("total", 0.0), settings)
+        shared_context["budget_status"] = get_budget_status(summary.get("total", 0.0), resolved_settings)
 
     return templates.TemplateResponse(
         request=request,
@@ -243,7 +265,7 @@ def landing_page(request: Request):
     return templates.TemplateResponse(
         request=request,
         name="index.html",
-        context={"request": request},
+        context={"request": request, "csrf_token": get_csrf_token(request)},
     )
 
 
@@ -330,13 +352,11 @@ def reports_page(
 @app.get("/settings")
 def settings_page(request: Request, saved: int = 0):
     summary = build_summary(fetch_expenses())
-    settings = get_settings()
     return render_page(
         request,
         "settings.html",
         "Settings",
         summary=summary,
-        settings=settings,
         saved=bool(saved),
     )
 
@@ -367,13 +387,24 @@ def export_reports(
 
 @app.post("/expenses")
 def create_expense(
+    request: Request,
     title: str = Form(...),
     amount: float = Form(...),
     category: str = Form(...),
     expense_date: str = Form(...),
     notes: str = Form(""),
     next_url: str = Form("/expenses"),
+    csrf_token: str = Form(...),
 ):
+    require_csrf(request, csrf_token)
+    try:
+        date.fromisoformat(expense_date)
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail="Invalid expense date format.") from exc
+
+    if amount < 0:
+        raise HTTPException(status_code=422, detail="Amount must be non-negative.")
+
     with get_connection() as connection:
         connection.execute(
             """
@@ -389,9 +420,12 @@ def create_expense(
 
 @app.post("/expenses/{expense_id}/delete")
 def delete_expense(
+    request: Request,
     expense_id: int,
     next_url: str = Form("/expenses"),
+    csrf_token: str = Form(...),
 ):
+    require_csrf(request, csrf_token)
     with get_connection() as connection:
         connection.execute("DELETE FROM expenses WHERE id = ?", (expense_id,))
         connection.commit()
@@ -401,11 +435,14 @@ def delete_expense(
 
 @app.post("/settings")
 def update_settings(
+    request: Request,
     currency_code: str = Form("NGN"),
     monthly_budget: str = Form(""),
     budget_alert: str = Form("80"),
     display_name: str = Form(""),
+    csrf_token: str = Form(...),
 ):
+    require_csrf(request, csrf_token)
     save_settings(
         {
             "currency_code": currency_code.strip().upper() or "NGN",

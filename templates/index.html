@@ -3,9 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#06101a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Expense Tracker | Smart Spending, Clearer Decisions</title>
+    <link rel="manifest" href="{{ url_for('static', path='manifest.webmanifest') }}">
     <link rel="stylesheet" href="{{ url_for('static', path='style.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', path='landing-build/landing-galaxy.css') }}">
+    <script src="{{ url_for('static', path='app.js') }}" defer></script>
     <script type="module" src="{{ url_for('static', path='landing-build/landing-galaxy.js') }}"></script>
 </head>
 <body class="landing-page">

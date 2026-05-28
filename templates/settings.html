@@ -24,6 +24,7 @@
         <section class="card form-card settings-form-card">
             <h3>Preferences</h3>
             <form action="/settings" method="post" class="expense-form">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
                 <label>
                     <span>Display name</span>
                     <input type="text" name="display_name" value="{{ settings.display_name }}" placeholder="Your name">

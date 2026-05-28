@@ -29,7 +29,7 @@
 
     {% if budget_status and budget_status.configured and budget_status.is_alert %}
         <div class="budget-alert-banner">
-            <div class="alert-icon">⚠️</div>
+            <div class="alert-icon">Warning</div>
             <div class="alert-content">
                 <h3>Monthly Budget Threshold Exceeded</h3>
                 <p>You have spent <strong>{{ settings.currency_symbol }}{{ '%.2f'|format(summary.total) }}</strong>, which is <strong>{{ '%.1f'|format(budget_status.percentage) }}%</strong> of your monthly limit ({{ settings.currency_symbol }}{{ '%.2f'|format(budget_status.budget) }}).</p>
@@ -88,6 +88,7 @@
                                 <td>{{ expense.notes or '-' }}</td>
                                 <td>
                                     <form action="/expenses/{{ expense.id }}/delete" method="post">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
                                         <input type="hidden" name="next_url" value="/dashboard">
                                         <button type="submit" class="delete-button">Delete</button>
                                     </form>
