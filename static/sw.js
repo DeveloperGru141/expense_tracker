@@ -1,11 +1,7 @@
 const CACHE_NAME = "expense-tracker-v1";
 const CORE_ASSETS = [
   "/",
-  "/dashboard",
-  "/expenses",
-  "/analytics",
-  "/reports",
-  "/settings",
+  "/login",
   "/static/style.css",
   "/static/app.js",
   "/static/manifest.webmanifest"
@@ -40,7 +36,12 @@ self.addEventListener("fetch", event => {
   event.respondWith(
     fetch(request)
       .then(response => {
-        if (request.url.startsWith(self.location.origin) && response.status === 200) {
+        const url = new URL(request.url);
+        if (
+          url.origin === self.location.origin &&
+          url.pathname.startsWith("/static/") &&
+          response.status === 200
+        ) {
           const responseClone = response.clone();
           caches.open(CACHE_NAME).then(cache => cache.put(request, responseClone));
         }

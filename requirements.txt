@@ -3,4 +3,3 @@ uvicorn>=0.47.0
 Jinja2>=3.1.6
 pillow>=12.2.0
 python-multipart>=0.0.29
-itsdangerous>=2.2.0

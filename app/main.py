@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import csv
+import hashlib
+import hmac
 import os
 import secrets
 import sqlite3
@@ -15,12 +17,16 @@ from fastapi import FastAPI, Form, HTTPException, Request
 from fastapi.responses import RedirectResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from starlette.middleware.sessions import SessionMiddleware
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 DB_PATH = BASE_DIR / "expenses.db"
 SESSION_SECRET = os.getenv("SESSION_SECRET", "local-dev-secret-change-me")
+AUTH_COOKIE = "expense_tracker_auth"
+CSRF_COOKIE = "expense_tracker_csrf"
+LOGIN_USERNAME = os.getenv("EXPENSE_TRACKER_USERNAME", "admin")
+LOGIN_PASSWORD = os.getenv("EXPENSE_TRACKER_PASSWORD", "expense123")
+
 NAV_ITEMS = [
     {"name": "Dashboard", "path": "/dashboard"},
     {"name": "Expenses", "path": "/expenses"},
@@ -62,7 +68,6 @@ def init_db() -> None:
         connection.commit()
 
 
-
 @asynccontextmanager
 async def lifespan(_: FastAPI):
     init_db()
@@ -70,7 +75,6 @@ async def lifespan(_: FastAPI):
 
 
 app = FastAPI(title="Expense Tracker", lifespan=lifespan)
-app.add_middleware(SessionMiddleware, secret_key=SESSION_SECRET)
 app.mount("/static", StaticFiles(directory=BASE_DIR / "static"), name="static")
 templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
 
@@ -117,13 +121,11 @@ def build_summary(expenses: list[dict[str, Any]]) -> dict[str, Any]:
         reverse=True,
     )
 
-    top_category = top_categories[0][0] if top_categories else "None yet"
-
     return {
         "count": len(expenses),
         "total": total,
         "categories": top_categories,
-        "top_category": top_category,
+        "top_category": top_categories[0][0] if top_categories else "None yet",
     }
 
 
@@ -151,11 +153,10 @@ def build_reports(expenses: list[dict[str, Any]]) -> list[dict[str, Any]]:
         month_key = item["expense_date"][:7]
         monthly_totals[month_key] += item["amount"]
 
-    report_rows = [
+    return [
         {"month": month, "total": total}
         for month, total in sorted(monthly_totals.items(), reverse=True)
     ]
-    return report_rows
 
 
 def get_settings() -> dict[str, str]:
@@ -187,21 +188,56 @@ def save_settings(values: dict[str, str]) -> None:
 
 
 def safe_next_url(next_url: str) -> str:
-    return next_url if next_url.startswith("/") else "/expenses"
+    if not next_url.startswith("/") or next_url.startswith("//"):
+        return "/dashboard"
+    return next_url
+
+
+def sign_value(value: str) -> str:
+    signature = hmac.new(
+        SESSION_SECRET.encode("utf-8"),
+        value.encode("utf-8"),
+        hashlib.sha256,
+    ).hexdigest()
+    return f"{value}.{signature}"
+
+
+def verify_signed_value(signed_value: str | None) -> str | None:
+    if not signed_value or "." not in signed_value:
+        return None
+
+    value, signature = signed_value.rsplit(".", 1)
+    expected = sign_value(value).rsplit(".", 1)[1]
+    if hmac.compare_digest(signature, expected):
+        return value
+    return None
+
+
+def is_authenticated(request: Request) -> bool:
+    return verify_signed_value(request.cookies.get(AUTH_COOKIE)) == LOGIN_USERNAME
+
+
+def login_redirect(request: Request):
+    return RedirectResponse(url=f"/login?next={request.url.path}", status_code=303)
 
 
 def get_csrf_token(request: Request) -> str:
-    token = request.session.get("csrf_token")
-    if not token:
-        token = secrets.token_urlsafe(32)
-        request.session["csrf_token"] = token
-    return token
+    return request.cookies.get(CSRF_COOKIE) or secrets.token_urlsafe(32)
 
 
 def require_csrf(request: Request, csrf_token: str) -> None:
-    expected_token = request.session.get("csrf_token")
+    expected_token = request.cookies.get(CSRF_COOKIE)
     if not expected_token or csrf_token != expected_token:
         raise HTTPException(status_code=403, detail="Invalid CSRF token.")
+
+
+def set_csrf_cookie(response, csrf_token: str) -> None:
+    response.set_cookie(
+        CSRF_COOKIE,
+        csrf_token,
+        httponly=True,
+        samesite="lax",
+    )
 
 
 def get_budget_status(total_spent: float, settings: dict[str, str]) -> dict[str, Any]:
@@ -215,17 +251,22 @@ def get_budget_status(total_spent: float, settings: dict[str, str]) -> dict[str,
 
         threshold = float(settings.get("budget_alert", "80"))
         percentage = (total_spent / budget) * 100
-        is_alert = percentage >= threshold
         return {
             "configured": True,
             "budget": budget,
             "percentage": percentage,
-            "is_alert": is_alert,
+            "is_alert": percentage >= threshold,
             "threshold": threshold,
             "remaining": max(0.0, budget - total_spent),
         }
     except ValueError:
         return {"configured": False}
+
+
+def enrich_settings(settings: dict[str, str]) -> dict[str, str]:
+    currency_code = settings.get("currency_code", "NGN")
+    settings["currency_symbol"] = "$" if currency_code == "USD" else "\u20A6"
+    return settings
 
 
 def render_page(
@@ -234,17 +275,18 @@ def render_page(
     active_page: str,
     **context: Any,
 ):
-    resolved_settings = context.get("settings") or get_settings()
-    currency_code = resolved_settings.get("currency_code", "NGN")
-    currency_symbol = "$" if currency_code == "USD" else "₦"
-    resolved_settings["currency_symbol"] = currency_symbol
+    if not is_authenticated(request):
+        return login_redirect(request)
+
+    resolved_settings = enrich_settings(context.get("settings") or get_settings())
+    csrf_token = get_csrf_token(request)
 
     shared_context = {
         "request": request,
         "active_page": active_page,
         "nav_items": NAV_ITEMS,
         "settings": resolved_settings,
-        "csrf_token": get_csrf_token(request),
+        "csrf_token": csrf_token,
     }
     shared_context.update(context)
     shared_context["settings"] = resolved_settings
@@ -253,20 +295,91 @@ def render_page(
         summary = shared_context["summary"]
         shared_context["budget_status"] = get_budget_status(summary.get("total", 0.0), resolved_settings)
 
-    return templates.TemplateResponse(
+    response = templates.TemplateResponse(
         request=request,
         name=template_name,
         context=shared_context,
     )
+    set_csrf_cookie(response, csrf_token)
+    return response
 
 
 @app.get("/")
 def landing_page(request: Request):
-    return templates.TemplateResponse(
+    csrf_token = get_csrf_token(request)
+    response = templates.TemplateResponse(
         request=request,
         name="index.html",
-        context={"request": request, "csrf_token": get_csrf_token(request)},
+        context={"request": request, "csrf_token": csrf_token},
     )
+    set_csrf_cookie(response, csrf_token)
+    return response
+
+
+@app.get("/login")
+def login_page(request: Request, next: str = "/dashboard"):
+    if is_authenticated(request):
+        return RedirectResponse(url=safe_next_url(next), status_code=303)
+
+    csrf_token = get_csrf_token(request)
+    response = templates.TemplateResponse(
+        request=request,
+        name="login.html",
+        context={
+            "request": request,
+            "csrf_token": csrf_token,
+            "next_url": safe_next_url(next),
+            "error": "",
+        },
+    )
+    set_csrf_cookie(response, csrf_token)
+    return response
+
+
+@app.post("/login")
+def login(
+    request: Request,
+    username: str = Form(...),
+    password: str = Form(...),
+    next_url: str = Form("/dashboard"),
+    csrf_token: str = Form(...),
+):
+    require_csrf(request, csrf_token)
+    if username == LOGIN_USERNAME and password == LOGIN_PASSWORD:
+        response = RedirectResponse(url=safe_next_url(next_url), status_code=303)
+        response.set_cookie(
+            AUTH_COOKIE,
+            sign_value(username),
+            httponly=True,
+            samesite="lax",
+        )
+        set_csrf_cookie(response, csrf_token)
+        return response
+
+    response = templates.TemplateResponse(
+        request=request,
+        name="login.html",
+        context={
+            "request": request,
+            "csrf_token": csrf_token,
+            "next_url": safe_next_url(next_url),
+            "error": "Invalid username or password.",
+        },
+        status_code=401,
+    )
+    set_csrf_cookie(response, csrf_token)
+    return response
+
+
+@app.post("/logout")
+def logout(
+    request: Request,
+    csrf_token: str = Form(...),
+):
+    require_csrf(request, csrf_token)
+    response = RedirectResponse(url="/login", status_code=303)
+    response.delete_cookie(AUTH_COOKIE)
+    return response
 
 
 @app.get("/dashboard")
@@ -363,10 +476,14 @@ def settings_page(request: Request, saved: int = 0):
 
 @app.get("/reports/export")
 def export_reports(
+    request: Request,
     date_from: str = "",
     date_to: str = "",
     category: str = "",
 ):
+    if not is_authenticated(request):
+        return login_redirect(request)
+
     all_expenses = fetch_expenses()
     expenses = filter_expenses(all_expenses, date_from=date_from, date_to=date_to, category=category)
     reports = build_reports(expenses)
@@ -396,7 +513,10 @@ def create_expense(
     next_url: str = Form("/expenses"),
     csrf_token: str = Form(...),
 ):
+    if not is_authenticated(request):
+        return login_redirect(request)
     require_csrf(request, csrf_token)
+
     try:
         date.fromisoformat(expense_date)
     except ValueError as exc:
@@ -425,7 +545,10 @@ def delete_expense(
     next_url: str = Form("/expenses"),
     csrf_token: str = Form(...),
 ):
+    if not is_authenticated(request):
+        return login_redirect(request)
     require_csrf(request, csrf_token)
+
     with get_connection() as connection:
         connection.execute("DELETE FROM expenses WHERE id = ?", (expense_id,))
         connection.commit()
@@ -442,7 +565,10 @@ def update_settings(
     display_name: str = Form(""),
     csrf_token: str = Form(...),
 ):
+    if not is_authenticated(request):
+        return login_redirect(request)
     require_csrf(request, csrf_token)
+
     save_settings(
         {
             "currency_code": currency_code.strip().upper() or "NGN",
