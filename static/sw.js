@@ -1,15 +1,26 @@
-const CACHE_NAME = "expense-tracker-v1";
+const CACHE_NAME = "expense-tracker-v3";
 const CORE_ASSETS = [
   "/",
   "/login",
-  "/static/style.css",
-  "/static/app.js",
+  "/static/style.css?v=2.0.1",
+  "/static/app.js?v=2.0.1",
   "/static/manifest.webmanifest"
 ];
 
 self.addEventListener("install", event => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => cache.addAll(CORE_ASSETS))
+    caches.open(CACHE_NAME).then(cache => {
+      const promises = CORE_ASSETS.map(asset => {
+        return fetch(new Request(asset, { cache: "reload" }))
+          .then(res => {
+            if (res.ok) {
+              return cache.put(asset, res);
+            }
+            throw new Error(`Failed to fetch: ${asset}`);
+          });
+      });
+      return Promise.all(promises);
+    })
   );
   self.skipWaiting();
 });

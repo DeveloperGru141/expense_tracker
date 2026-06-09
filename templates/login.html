@@ -6,8 +6,8 @@
     <meta name="theme-color" content="#06101a">
     <title>Login | Expense Tracker</title>
     <link rel="manifest" href="{{ url_for('static', path='manifest.webmanifest') }}">
-    <link rel="stylesheet" href="{{ url_for('static', path='style.css') }}">
-    <script src="{{ url_for('static', path='app.js') }}" defer></script>
+    <link rel="stylesheet" href="{{ url_for('static', path='style.css') }}?v=2.0.1">
+    <script src="{{ url_for('static', path='app.js') }}?v=2.0.1" defer></script>
 </head>
 <body class="login-page">
     <main class="login-shell">
@@ -36,7 +36,6 @@
                 </label>
                 <button type="submit">Sign In</button>
             </form>
-            <p class="login-hint">Default local login: admin / expense123</p>
         </section>
     </main>
 </body>

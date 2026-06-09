@@ -14,7 +14,7 @@ from pathlib import Path
 from typing import Any
 
 from fastapi import FastAPI, Form, HTTPException, Request
-from fastapi.responses import RedirectResponse, StreamingResponse
+from fastapi.responses import FileResponse, RedirectResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
@@ -76,6 +76,13 @@ async def lifespan(_: FastAPI):
 
 app = FastAPI(title="Expense Tracker", lifespan=lifespan)
 app.mount("/static", StaticFiles(directory=BASE_DIR / "static"), name="static")
+
+
+@app.get("/sw.js")
+def service_worker(request: Request):
+    return FileResponse(BASE_DIR / "static" / "sw.js", media_type="application/javascript")
+
+
 templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
 
 

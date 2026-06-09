@@ -1,15 +1,15 @@
 :root {
-    --bg: #f6f1e7;
-    --panel: rgba(255, 252, 247, 0.94);
-    --panel-strong: #fffdf9;
-    --text: #1f1b17;
-    --muted: #685b4f;
+    --bg: #04080f;
+    --panel: rgba(8, 15, 24, 0.78);
+    --panel-strong: rgba(15, 23, 42, 0.94);
+    --text: #f8fafc;
+    --muted: rgba(203, 213, 225, 0.72);
     --accent: #0f766e;
     --accent-dark: #115e59;
     --accent-warm: #b45309;
     --danger: #b91c1c;
-    --border: rgba(109, 83, 57, 0.16);
-    --shadow: 0 18px 40px rgba(53, 35, 18, 0.10);
+    --border: rgba(148, 163, 184, 0.14);
+    --shadow: 0 18px 40px rgba(2, 6, 23, 0.28);
     --sidebar-width: 320px;
 }
 
@@ -26,9 +26,9 @@ body {
     font-family: Georgia, "Times New Roman", serif;
     color: var(--text);
     background:
-        radial-gradient(circle at top left, rgba(15, 118, 110, 0.14), transparent 30%),
-        radial-gradient(circle at top right, rgba(180, 83, 9, 0.12), transparent 24%),
-        linear-gradient(180deg, #fcf8f1 0%, var(--bg) 100%);
+        radial-gradient(circle at 18% 12%, rgba(16, 185, 129, 0.10), transparent 18%),
+        radial-gradient(circle at 82% 10%, rgba(37, 99, 235, 0.12), transparent 20%),
+        linear-gradient(180deg, #04080f 0%, #06101a 46%, #08111b 100%);
 }
 
 .landing-page {
@@ -684,13 +684,13 @@ body {
     width: var(--sidebar-width);
     padding: 2rem 1.5rem;
     background:
-        linear-gradient(180deg, rgba(5, 44, 30, 0.98), rgba(13, 76, 67, 0.94)),
-        linear-gradient(180deg, rgba(180, 83, 9, 0.10), transparent 40%);
+        linear-gradient(180deg, rgba(3, 10, 18, 0.98), rgba(5, 21, 28, 0.96)),
+        linear-gradient(180deg, rgba(15, 118, 110, 0.12), transparent 44%);
     color: #f9f5ee;
     display: flex;
     flex-direction: column;
     gap: 2rem;
-    border-right: 1px solid rgba(255, 255, 255, 0.08);
+    border-right: 1px solid rgba(148, 163, 184, 0.14);
 }
 
 .sidebar-kicker {
@@ -764,7 +764,7 @@ body {
     text-transform: uppercase;
     letter-spacing: 0.12em;
     font-size: 0.78rem;
-    color: var(--accent-dark);
+    color: #67e8f9;
 }
 
 .subtext,
@@ -840,7 +840,7 @@ body {
     display: block;
     margin-bottom: 1rem;
     border-radius: 18px;
-    background: rgba(255, 255, 255, 0.55);
+    background: rgba(148, 163, 184, 0.10);
 }
 
 .stat-card span,
@@ -897,8 +897,14 @@ textarea {
     width: 100%;
     padding: 0.82rem 0.9rem;
     border-radius: 14px;
-    border: 1px solid rgba(81, 67, 54, 0.14);
-    background: var(--panel-strong);
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    background: rgba(2, 6, 23, 0.52);
+    color: var(--text);
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: rgba(203, 213, 225, 0.48);
 }
 
 button {
@@ -922,7 +928,7 @@ button:hover {
 }
 
 .text-link {
-    color: var(--accent-dark);
+    color: #67e8f9;
     text-decoration: none;
     font-weight: 600;
 }
@@ -974,7 +980,8 @@ button:hover {
 .category-list li {
     padding: 0.85rem 1rem;
     border-radius: 16px;
-    background: rgba(255, 255, 255, 0.72);
+    background: rgba(148, 163, 184, 0.08);
+    border: 1px solid rgba(148, 163, 184, 0.10);
 }
 
 .progress-track {
@@ -982,7 +989,7 @@ button:hover {
     height: 12px;
     margin-top: 1rem;
     border-radius: 999px;
-    background: rgba(15, 118, 110, 0.12);
+    background: rgba(103, 232, 249, 0.12);
     overflow: hidden;
 }
 
@@ -1008,7 +1015,7 @@ th,
 td {
     text-align: left;
     padding: 0.9rem 0.7rem;
-    border-bottom: 1px solid rgba(81, 67, 54, 0.12);
+    border-bottom: 1px solid rgba(148, 163, 184, 0.12);
 }
 
 th {
@@ -1124,8 +1131,8 @@ th {
     gap: 1.25rem;
     padding: 1.25rem;
     border-radius: 20px;
-    background: linear-gradient(135deg, rgba(185, 28, 28, 0.08), rgba(185, 28, 28, 0.04));
-    border: 1px solid rgba(185, 28, 28, 0.22);
+    background: linear-gradient(135deg, rgba(185, 28, 28, 0.18), rgba(127, 29, 29, 0.10));
+    border: 1px solid rgba(248, 113, 113, 0.22);
     margin-bottom: 1.5rem;
     box-shadow: 0 10px 24px rgba(185, 28, 28, 0.04);
 }
@@ -1137,14 +1144,14 @@ th {
 
 .budget-alert-banner h3 {
     margin: 0 0 0.25rem 0;
-    color: var(--danger);
+    color: #fecaca;
     font-size: 1.15rem;
     font-weight: 700;
 }
 
 .budget-alert-banner p {
     margin: 0;
-    color: var(--muted);
+    color: rgba(226, 232, 240, 0.76);
     font-size: 0.95rem;
     line-height: 1.5;
 }

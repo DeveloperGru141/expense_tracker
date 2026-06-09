@@ -36,7 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // 3. Register service worker for PWA behavior
     if ("serviceWorker" in navigator) {
         window.addEventListener("load", () => {
-            navigator.serviceWorker.register("/static/sw.js").catch(() => {
+            navigator.serviceWorker.register("/sw.js").catch(() => {
                 // Keep silent in UI; the app should work even when registration fails.
             });
         });
