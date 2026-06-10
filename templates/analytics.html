@@ -14,6 +14,42 @@
         </article>
     </section>
 
+    <section class="card chart-card" style="margin-bottom: 2rem;">
+        <h3>Category Comparison</h3>
+        <canvas id="analyticsBarChart" height="100"></canvas>
+    </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const chartData = {{ summary.chart_data | tojson }};
+            if (chartData.category_labels && chartData.category_labels.length > 0) {
+                const ctx = document.getElementById('analyticsBarChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: chartData.category_labels,
+                        datasets: [{
+                            label: 'Total Spent',
+                            data: chartData.category_values,
+                            backgroundColor: [
+                                '#ef4444', '#3b82f6', '#f59e0b', '#ec4899', '#8b5cf6', '#10b981', '#64748b'
+                            ],
+                            borderRadius: 8
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' } },
+                            x: { grid: { display: false } }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+
     <section class="analytics-grid">
         {% if analytics %}
             {% for item in analytics %}

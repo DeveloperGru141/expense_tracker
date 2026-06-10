@@ -27,7 +27,7 @@
     <section class="content-grid">
         <section class="card form-card">
             <h3>Add Expense</h3>
-            <form action="/expenses" method="post" class="expense-form">
+            <form action="/expenses" method="post" class="expense-form" enctype="multipart/form-data">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
                 <input type="hidden" name="next_url" value="/expenses">
                 <label>
@@ -41,14 +41,18 @@
                 <label>
                     <span>Category</span>
                     <select name="category" required>
-                        <option value="Food">Food</option>
-                        <option value="Transport">Transport</option>
-                        <option value="Bills">Bills</option>
+                        {% for cat in categories %}
+                            <option value="{{ cat.name }}">{{ cat.name }}</option>
+                        {% endfor %}
                     </select>
                 </label>
                 <label>
                     <span>Date</span>
                     <input type="date" name="expense_date" required>
+                </label>
+                <label>
+                    <span>Receipt (Optional)</span>
+                    <input type="file" name="receipt" accept="image/*">
                 </label>
                 <label>
                     <span>Notes</span>
@@ -76,8 +80,11 @@
     </section>
 
     <section class="card table-card">
-        <div class="section-heading">
+        <div class="section-heading" style="flex-wrap: wrap; gap: 1rem;">
             <h3>All Expenses</h3>
+            <form action="/expenses" method="get" class="search-form" style="flex: 1; min-width: 250px;">
+                <input type="text" name="q" placeholder="Search by title, category, or notes..." value="{{ search_query }}">
+            </form>
             <span class="muted-text">{{ summary.count }} total entries</span>
         </div>
         {% if expenses %}
@@ -89,6 +96,7 @@
                             <th>Category</th>
                             <th>Date</th>
                             <th>Amount</th>
+                            <th>Receipt</th>
                             <th>Notes</th>
                             <th></th>
                         </tr>
@@ -100,6 +108,13 @@
                                 <td>{{ expense.category }}</td>
                                 <td>{{ expense.expense_date }}</td>
                                 <td>{{ settings.currency_symbol }}{{ '%.2f'|format(expense.amount) }}</td>
+                                <td>
+                                    {% if expense.receipt_image %}
+                                        <a href="{{ url_for('static', path='uploads/' + expense.receipt_image) }}" target="_blank" class="text-link">View</a>
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </td>
                                 <td>{{ expense.notes or '-' }}</td>
                                 <td>
                                     <form action="/expenses/{{ expense.id }}/delete" method="post">

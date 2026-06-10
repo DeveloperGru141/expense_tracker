@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block title %}Recurring | Expense Tracker{% endblock %}
+
+{% block content %}
+    <section class="page-header">
+        <div>
+            <p class="eyebrow">Recurring Expenses</p>
+            <h2 class="page-title">Automate your fixed costs.</h2>
+            <p class="subtext">Subscriptions, rent, and utility bills that repeat on a regular schedule.</p>
+        </div>
+    </section>
+
+    <section class="content-grid">
+        <section class="card form-card">
+            <h3>Add Recurring Expense</h3>
+            <form action="/recurring" method="post" class="expense-form">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                <label>
+                    <span>Title</span>
+                    <input type="text" name="title" placeholder="Netflix Subscription" required>
+                </label>
+                <label>
+                    <span>Amount</span>
+                    <input type="number" name="amount" min="0" step="0.01" placeholder="4500.00" required>
+                </label>
+                <label>
+                    <span>Category</span>
+                    <select name="category" required>
+                        {% for cat in categories %}
+                            <option value="{{ cat.name }}">{{ cat.name }}</option>
+                        {% endfor %}
+                    </select>
+                </label>
+                <label>
+                    <span>Frequency</span>
+                    <select name="frequency" required>
+                        <option value="daily">Daily</option>
+                        <option value="weekly">Weekly</option>
+                        <option value="monthly" selected>Monthly</option>
+                        <option value="yearly">Yearly</option>
+                    </select>
+                </label>
+                <label>
+                    <span>Next Payment Date</span>
+                    <input type="date" name="start_date" required>
+                </label>
+                <label>
+                    <span>Notes</span>
+                    <textarea name="notes" rows="2" placeholder="Optional details"></textarea>
+                </label>
+                <button type="submit">Save Recurring</button>
+            </form>
+        </section>
+
+        <section class="card table-card">
+            <h3>Active Subscriptions</h3>
+            {% if recurrings %}
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Category</th>
+                                <th>Frequency</th>
+                                <th>Next Date</th>
+                                <th>Amount</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for rec in recurrings %}
+                                <tr>
+                                    <td>{{ rec.title }}</td>
+                                    <td>{{ rec.category }}</td>
+                                    <td><span class="badge">{{ rec.frequency }}</span></td>
+                                    <td>{{ rec.next_occurrence }}</td>
+                                    <td>{{ settings.currency_symbol }}{{ '%.2f'|format(rec.amount) }}</td>
+                                    <td>
+                                        <form action="/recurring/{{ rec.id }}/delete" method="post">
+                                            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                                            <button type="submit" class="delete-button">Remove</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p class="empty-state">No recurring expenses set up yet.</p>
+            {% endif %}
+        </section>
+    </section>
+
+    <style>
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 999px;
+            background: rgba(148, 163, 184, 0.1);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+    </style>
+{% endblock %}

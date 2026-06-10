@@ -30,9 +30,9 @@
                     <span>Category</span>
                     <select name="category">
                         <option value="">All categories</option>
-                        <option value="Food"{% if filters.category == "Food" %} selected{% endif %}>Food</option>
-                        <option value="Transport"{% if filters.category == "Transport" %} selected{% endif %}>Transport</option>
-                        <option value="Bills"{% if filters.category == "Bills" %} selected{% endif %}>Bills</option>
+                        {% for cat in categories %}
+                            <option value="{{ cat.name }}"{% if filters.category == cat.name %} selected{% endif %}>{{ cat.name }}</option>
+                        {% endfor %}
                     </select>
                 </label>
                 <button type="submit">Apply Filters</button>
@@ -40,14 +40,13 @@
         </section>
 
         <section class="card placeholder-card">
-            <h3>Download Summary</h3>
-            <p class="empty-state">Export the current filtered monthly report as a CSV file you can open in Excel or Google Sheets.</p>
-            <a
-                href="/reports/export?date_from={{ filters.date_from }}&date_to={{ filters.date_to }}&category={{ filters.category }}"
-                class="action-link"
-            >
-                Download CSV Report
-            </a>
+            <h3>Export Report</h3>
+            <p class="empty-state">Download your current filtered view in your preferred format.</p>
+            <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1rem;">
+                <a href="/reports/export?date_from={{ filters.date_from }}&date_to={{ filters.date_to }}&category={{ filters.category }}&format=csv" class="button button-dark">Download CSV</a>
+                <a href="/reports/export?date_from={{ filters.date_from }}&date_to={{ filters.date_to }}&category={{ filters.category }}&format=excel" class="button button-dark">Download Excel</a>
+                <a href="/reports/export?date_from={{ filters.date_from }}&date_to={{ filters.date_to }}&category={{ filters.category }}&format=pdf" class="button button-dark">Download PDF</a>
+            </div>
         </section>
     </section>
 

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#06101a">
-    <title>Login | Expense Tracker</title>
+    <title>Register | Expense Tracker</title>
     <link rel="manifest" href="{{ url_for('static', path='manifest.webmanifest') }}">
     <link rel="stylesheet" href="{{ url_for('static', path='style.css') }}?v=2.0.1">
     <link rel="stylesheet" href="{{ url_for('static', path='landing-build/landing-galaxy.css') }}">
@@ -16,31 +16,34 @@
     <main class="login-shell" style="position: relative; z-index: 1;">
         <section class="login-copy">
             <a href="/" class="landing-brand">ExpenseFlow</a>
-            <p class="landing-kicker">Secure workspace</p>
-            <h1 class="login-title">Sign in to your expense command center.</h1>
-            <p class="landing-subtext">Review spending, add entries, export reports, and keep your finance workspace behind a simple access gate.</p>
+            <p class="landing-kicker">Start your journey</p>
+            <h1 class="login-title">Create your professional expense account.</h1>
+            <p class="landing-subtext">Join modern teams who track, analyze, and master their financial operations with ease.</p>
         </section>
 
         <section class="login-panel">
-            <h2>Welcome back</h2>
+            <h2>Get Started</h2>
             {% if error %}
                 <p class="form-error" style="color: var(--danger); margin-bottom: 1rem;">{{ error }}</p>
             {% endif %}
-            <form action="/login" method="post" class="expense-form">
+            <form action="/register" method="post" class="expense-form">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-                <input type="hidden" name="next_url" value="{{ next_url }}">
                 <label>
                     <span>Username</span>
-                    <input type="text" name="username" placeholder="Your username" autocomplete="username" required>
+                    <input type="text" name="username" placeholder="Choose a username" autocomplete="username" required>
                 </label>
                 <label>
                     <span>Password</span>
-                    <input type="password" name="password" placeholder="Your password" autocomplete="current-password" required>
+                    <input type="password" name="password" placeholder="Create a password" autocomplete="new-password" required>
                 </label>
-                <button type="submit">Sign In</button>
+                <label>
+                    <span>Confirm Password</span>
+                    <input type="password" name="confirm_password" placeholder="Repeat your password" autocomplete="new-password" required>
+                </label>
+                <button type="submit">Create Account</button>
             </form>
             <p style="margin-top: 1.5rem; text-align: center; color: var(--muted);">
-                Don't have an account? <a href="/register" class="text-link">Register now</a>
+                Already have an account? <a href="/login" class="text-link">Sign In</a>
             </p>
         </section>
     </main>
