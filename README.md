@@ -6,14 +6,16 @@ A modern and professional FastAPI expense tracker utilizing SQLite storage, dyna
 
 - **Personalized Control Center**: Dynamic welcome greetings and settings-based currency switching (NGN/USD).
 - **Budget Threshold Alerts**: Real-time spending threshold analysis and visual alerts.
+- **Income Tracking**: Comprehensive management of income streams, recurring income automation, and net balance calculation.
 - **AI Insights & Category Snapshots**: Category-based percentage tracking, top focus area analysis, and reports.
 - **Reporting & Data Export**: Export reports in **CSV**, **Excel**, and **PDF** formats with dynamic filtering.
-- **Automated Recurring Expenses**: Daily, weekly, monthly, and yearly recurring expense automation with optimized processing.
+- **Automated Recurring Transactions**: Daily, weekly, monthly, and yearly recurring expense/income automation with optimized processing.
 - **Advanced Security**: 
     - **Advanced Image Validation**: Uses Pillow to verify the integrity and format of uploaded receipt images.
     - **Global Rate Limiting**: Built-in protection against brute-force and spam via SlowAPI.
     - **Stateless Authentication**: HMAC-signed session cookies for secure, tamper-proof user sessions.
     - **CSRF Protection**: Comprehensive protection for all form-based state changes.
+    - **Password Security**: Direct `bcrypt` hashing with enforced 72-byte truncation to prevent algorithmic vulnerabilities.
 - **WebGL Landing Page**: Interactive particle galaxy background effect using customized fragment shaders.
 
 ## Stack & Libraries Used
@@ -25,10 +27,10 @@ A modern and professional FastAPI expense tracker utilizing SQLite storage, dyna
 - **Jinja2**: Templating engine for dynamic HTML rendering.
 - **SlowAPI**: Rate limiting middleware for FastAPI.
 - **Pillow**: Advanced image processing for receipt validation.
-- **Passlib (bcrypt)**: Secure password hashing.
+- **bcrypt**: Secure password hashing used directly for optimal performance and compatibility.
 - **ReportLab**: PDF generation for financial reports.
 - **Pandas & Openpyxl**: Data manipulation and Excel export functionality.
-- **python-dateutil**: Advanced date calculations for recurring expenses.
+- **python-dateutil**: Advanced date calculations for recurring transactions.
 
 ### Frontend (JavaScript / CSS / React)
 - **React**: Declarative component-based UI library.
@@ -38,9 +40,9 @@ A modern and professional FastAPI expense tracker utilizing SQLite storage, dyna
 
 ## Recent Updates
 
-- **Security Hardening**: Implemented advanced image verification in `app/api/endpoints/expenses.py` and centralized rate limiting in `app/core/limiter.py`.
-- **Database Optimization**: Optimized recurring expense logic in `app/crud/recurring.py` to run once per day per user, reducing database overhead.
-- **Architectural Refactoring**: Resolved circular dependencies in `app/api/utils.py` and improved modularity of core configurations.
+- **Income Feature Integration**: Added `income` and `recurring_income` management, integrated into dashboard summary and financial reporting.
+- **Security Patch**: Replaced `passlib` dependency with direct `bcrypt` implementation, incorporating strict 72-byte password truncation and frontend length limits to resolve hashing vulnerabilities.
+- **Database Optimization**: Optimized recurring transaction logic in `app/crud/recurring.py` to run once per day per user, reducing database overhead.
 
 ## Run Locally
 
