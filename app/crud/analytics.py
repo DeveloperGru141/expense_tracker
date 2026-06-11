@@ -1,8 +1,11 @@
 from typing import Any
 from collections import defaultdict
 
-def build_summary(expenses: list[dict[str, Any]], categories: list[dict[str, Any]] = None) -> dict[str, Any]:
-    total = sum(item["amount"] for item in expenses)
+def build_summary(expenses: list[dict[str, Any]], categories: list[dict[str, Any]] = None, income: list[dict[str, Any]] = None) -> dict[str, Any]:
+    total_spent = sum(item["amount"] for item in expenses)
+    total_income = sum(item["amount"] for item in income) if income else 0.0
+    balance = total_income - total_spent
+
     by_category: dict[str, float] = {}
     for item in expenses:
         by_category[item["category"]] = by_category.get(item["category"], 0.0) + item["amount"]
@@ -37,9 +40,20 @@ def build_summary(expenses: list[dict[str, Any]], categories: list[dict[str, Any
     trend_labels = sorted_dates[-30:]
     trend_values = [daily_totals[d] for d in trend_labels]
 
+    # Map colors to top categories for the chart
+    category_colors = []
+    if categories:
+        cat_color_map = {cat["name"]: cat.get("color", "#64748b") for cat in categories}
+        for name, _ in top_categories:
+            category_colors.append(cat_color_map.get(name, "#64748b"))
+    else:
+        category_colors = ['#ef4444', '#3b82f6', '#f59e0b', '#ec4899', '#8b5cf6', '#10b981', '#64748b']
+
     return {
         "count": len(expenses),
-        "total": total,
+        "total": total_spent,
+        "total_income": total_income,
+        "balance": balance,
         "categories": top_categories,
         "category_progress": category_progress,
         "top_category": top_categories[0][0] if top_categories else "None yet",
@@ -48,6 +62,7 @@ def build_summary(expenses: list[dict[str, Any]], categories: list[dict[str, Any
             "values": trend_values,
             "category_labels": [c for c, v in top_categories],
             "category_values": [v for c, v in top_categories],
+            "category_colors": category_colors,
         }
     }
 
@@ -81,12 +96,18 @@ def build_analytics(expenses: list[dict[str, Any]], summary: dict[str, Any]) -> 
         "insights": insights
     }
 
-def build_reports(expenses: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    monthly_totals: dict[str, float] = defaultdict(float)
+def build_reports(expenses: list[dict[str, Any]], income: list[dict[str, Any]] = None) -> list[dict[str, Any]]:
+    monthly_data: dict[str, dict[str, float]] = defaultdict(lambda: {"spent": 0.0, "income": 0.0})
     for item in expenses:
         month_key = item["expense_date"][:7]
-        monthly_totals[month_key] += item["amount"]
+        monthly_data[month_key]["spent"] += item["amount"]
+    
+    if income:
+        for item in income:
+            month_key = item["income_date"][:7]
+            monthly_data[month_key]["income"] += item["amount"]
+            
     return [
-        {"month": month, "total": total}
-        for month, total in sorted(monthly_totals.items(), reverse=True)
+        {"month": month, "spent": data["spent"], "income": data["income"], "balance": data["income"] - data["spent"]}
+        for month, data in sorted(monthly_data.items(), reverse=True)
     ]

@@ -1,17 +1,21 @@
 import hashlib
 import hmac
 import secrets
-from passlib.context import CryptContext
+import bcrypt
 from fastapi import Request, HTTPException
 from app.core.config import SESSION_SECRET, AUTH_COOKIE, CSRF_COOKIE
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
 def get_password_hash(password: str) -> str:
-    return pwd_context.hash(password)
+    # Truncate to 72 bytes as per bcrypt limits
+    password_bytes = password.encode("utf-8")[:72]
+    # Generate salt and hash
+    hashed = bcrypt.hashpw(password_bytes, bcrypt.gensalt())
+    return hashed.decode("utf-8")
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
-    return pwd_context.verify(plain_password, hashed_password)
+    password_bytes = plain_password.encode("utf-8")[:72]
+    hashed_bytes = hashed_password.encode("utf-8")
+    return bcrypt.checkpw(password_bytes, hashed_bytes)
 
 def sign_value(value: str) -> str:
     signature = hmac.new(

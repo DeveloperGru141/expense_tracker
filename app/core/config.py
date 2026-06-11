@@ -17,6 +17,7 @@ CSRF_COOKIE = "expense_tracker_csrf"
 NAV_ITEMS = [
     {"name": "Dashboard", "path": "/dashboard"},
     {"name": "Expenses", "path": "/expenses"},
+    {"name": "Income", "path": "/income"},
     {"name": "Recurring", "path": "/recurring"},
     {"name": "Analytics", "path": "/analytics"},
     {"name": "Reports", "path": "/reports"},

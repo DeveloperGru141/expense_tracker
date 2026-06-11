@@ -5,20 +5,27 @@
 {% block content %}
     <section class="page-header">
         <div>
-            <p class="eyebrow">Recurring Expenses</p>
-            <h2 class="page-title">Automate your fixed costs.</h2>
-            <p class="subtext">Subscriptions, rent, and utility bills that repeat on a regular schedule.</p>
+            <p class="eyebrow">Recurring Transactions</p>
+            <h2 class="page-title">Automate your regular money flow.</h2>
+            <p class="subtext">Subscriptions, rent, salary, and bills that repeat on a regular schedule.</p>
         </div>
     </section>
 
     <section class="content-grid">
         <section class="card form-card">
-            <h3>Add Recurring Expense</h3>
+            <h3>Add Recurring Transaction</h3>
             <form action="/recurring" method="post" class="expense-form">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
                 <label>
+                    <span>Type</span>
+                    <select name="type" required onchange="updateCategories(this.value)">
+                        <option value="expense">Expense</option>
+                        <option value="income">Income</option>
+                    </select>
+                </label>
+                <label>
                     <span>Title</span>
-                    <input type="text" name="title" placeholder="Netflix Subscription" required>
+                    <input type="text" name="title" placeholder="e.g. Netflix or Monthly Salary" required>
                 </label>
                 <label>
                     <span>Amount</span>
@@ -26,11 +33,14 @@
                 </label>
                 <label>
                     <span>Category</span>
-                    <select name="category" required>
-                        {% for cat in categories %}
-                            <option value="{{ cat.name }}">{{ cat.name }}</option>
-                        {% endfor %}
-                    </select>
+                    <div id="category-container">
+                        <select name="category" required id="expense-cats">
+                            {% for cat in categories %}
+                                <option value="{{ cat.name }}">{{ cat.name }}</option>
+                            {% endfor %}
+                        </select>
+                        <input type="text" name="category" placeholder="Salary, Freelance..." id="income-cats" style="display: none;" disabled list="income-categories">
+                    </div>
                 </label>
                 <label>
                     <span>Frequency</span>
@@ -42,7 +52,7 @@
                     </select>
                 </label>
                 <label>
-                    <span>Next Payment Date</span>
+                    <span>Next Date</span>
                     <input type="date" name="start_date" required>
                 </label>
                 <label>
@@ -54,7 +64,9 @@
         </section>
 
         <section class="card table-card">
-            <h3>Active Subscriptions</h3>
+            <h3>Active Recurring Transactions</h3>
+            
+            <h4 style="margin-top: 1rem;">Expenses</h4>
             {% if recurrings %}
                 <div class="table-wrap">
                     <table>
@@ -79,6 +91,7 @@
                                     <td>
                                         <form action="/recurring/{{ rec.id }}/delete" method="post">
                                             <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                                            <input type="hidden" name="type" value="expense">
                                             <button type="submit" class="delete-button">Remove</button>
                                         </form>
                                     </td>
@@ -90,8 +103,72 @@
             {% else %}
                 <p class="empty-state">No recurring expenses set up yet.</p>
             {% endif %}
+
+            <h4 style="margin-top: 2rem;">Income</h4>
+            {% if recurring_incomes %}
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Category</th>
+                                <th>Frequency</th>
+                                <th>Next Date</th>
+                                <th>Amount</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for rec in recurring_incomes %}
+                                <tr>
+                                    <td>{{ rec.title }}</td>
+                                    <td>{{ rec.category }}</td>
+                                    <td><span class="badge income">{{ rec.frequency }}</span></td>
+                                    <td>{{ rec.next_occurrence }}</td>
+                                    <td>{{ settings.currency_symbol }}{{ '%.2f'|format(rec.amount) }}</td>
+                                    <td>
+                                        <form action="/recurring/{{ rec.id }}/delete" method="post">
+                                            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                                            <input type="hidden" name="type" value="income">
+                                            <button type="submit" class="delete-button">Remove</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p class="empty-state">No recurring income set up yet.</p>
+            {% endif %}
         </section>
     </section>
+
+    <datalist id="income-categories">
+        <option value="Salary">
+        <option value="Freelance">
+        <option value="Investment">
+        <option value="Gift">
+        <option value="Other">
+    </datalist>
+
+    <script>
+        function updateCategories(type) {
+            const expSelect = document.getElementById('expense-cats');
+            const incInput = document.getElementById('income-cats');
+            if (type === 'income') {
+                expSelect.style.display = 'none';
+                expSelect.disabled = true;
+                incInput.style.display = 'block';
+                incInput.disabled = false;
+            } else {
+                expSelect.style.display = 'block';
+                expSelect.disabled = false;
+                incInput.style.display = 'none';
+                incInput.disabled = true;
+            }
+        }
+    </script>
 
     <style>
         .badge {
@@ -102,6 +179,10 @@
             font-size: 0.75rem;
             text-transform: uppercase;
             letter-spacing: 0.05em;
+        }
+        .badge.income {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
         }
     </style>
 {% endblock %}

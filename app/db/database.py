@@ -73,4 +73,34 @@ def init_db() -> None:
             )
             """
         )
+        connection.execute(
+            """
+            CREATE TABLE IF NOT EXISTS income (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id INTEGER NOT NULL,
+                title TEXT NOT NULL,
+                amount REAL NOT NULL,
+                category TEXT NOT NULL,
+                income_date TEXT NOT NULL,
+                notes TEXT DEFAULT '',
+                FOREIGN KEY (user_id) REFERENCES users (id)
+            )
+            """
+        )
+        connection.execute(
+            """
+            CREATE TABLE IF NOT EXISTS recurring_income (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id INTEGER NOT NULL,
+                title TEXT NOT NULL,
+                amount REAL NOT NULL,
+                category TEXT NOT NULL,
+                frequency TEXT NOT NULL,
+                start_date TEXT NOT NULL,
+                next_occurrence TEXT NOT NULL,
+                notes TEXT DEFAULT '',
+                FOREIGN KEY (user_id) REFERENCES users (id)
+            )
+            """
+        )
         connection.commit()

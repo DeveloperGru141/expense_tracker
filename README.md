@@ -7,24 +7,40 @@ A modern and professional FastAPI expense tracker utilizing SQLite storage, dyna
 - **Personalized Control Center**: Dynamic welcome greetings and settings-based currency switching (NGN/USD).
 - **Budget Threshold Alerts**: Real-time spending threshold analysis and visual alerts.
 - **AI Insights & Category Snapshots**: Category-based percentage tracking, top focus area analysis, and reports.
-- **Reporting & Data Export**: Dynamic CSV report downloads based on current filters.
+- **Reporting & Data Export**: Export reports in **CSV**, **Excel**, and **PDF** formats with dynamic filtering.
+- **Automated Recurring Expenses**: Daily, weekly, monthly, and yearly recurring expense automation with optimized processing.
+- **Advanced Security**: 
+    - **Advanced Image Validation**: Uses Pillow to verify the integrity and format of uploaded receipt images.
+    - **Global Rate Limiting**: Built-in protection against brute-force and spam via SlowAPI.
+    - **Stateless Authentication**: HMAC-signed session cookies for secure, tamper-proof user sessions.
+    - **CSRF Protection**: Comprehensive protection for all form-based state changes.
 - **WebGL Landing Page**: Interactive particle galaxy background effect using customized fragment shaders.
 
 ## Stack & Libraries Used
 
 ### Backend (Python)
-- **FastAPI**: Modern, fast ASGI web framework for building APIs.
+- **FastAPI**: Modern, fast (high-performance) web framework.
 - **Uvicorn**: Lightning-fast ASGI server implementation.
-- **Jinja2**: Modern and designer-friendly templating language for Python.
-- **SQLite3** (Standard Library): Serverless, local SQL database engine.
-- **Pillow**: Python Imaging Library for visual image manipulations.
-- **python-multipart**: Streaming multipart parser for handling form submissions.
+- **SQLite3**: Robust, local SQL database engine.
+- **Jinja2**: Templating engine for dynamic HTML rendering.
+- **SlowAPI**: Rate limiting middleware for FastAPI.
+- **Pillow**: Advanced image processing for receipt validation.
+- **Passlib (bcrypt)**: Secure password hashing.
+- **ReportLab**: PDF generation for financial reports.
+- **Pandas & Openpyxl**: Data manipulation and Excel export functionality.
+- **python-dateutil**: Advanced date calculations for recurring expenses.
 
 ### Frontend (JavaScript / CSS / React)
 - **React**: Declarative component-based UI library.
 - **OGL**: Minimal WebGL library used to render the interactive particle galaxy canvas.
 - **Vite**: High-performance frontend toolchain/bundler.
-- **Vanilla CSS**: Curated color tokens, transition effects, and responsive layouts.
+- **Vanilla CSS**: Custom styling with CSS variables, transitions, and responsive grid layouts.
+
+## Recent Updates
+
+- **Security Hardening**: Implemented advanced image verification in `app/api/endpoints/expenses.py` and centralized rate limiting in `app/core/limiter.py`.
+- **Database Optimization**: Optimized recurring expense logic in `app/crud/recurring.py` to run once per day per user, reducing database overhead.
+- **Architectural Refactoring**: Resolved circular dependencies in `app/api/utils.py` and improved modularity of core configurations.
 
 ## Run Locally
 

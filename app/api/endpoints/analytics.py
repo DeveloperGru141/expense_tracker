@@ -12,8 +12,12 @@ def dashboard(request: Request):
     from app.crud.recurring import process_recurring_expenses
     process_recurring_expenses(user_id)
     
+    from app.crud.categories import fetch_categories
+    from app.crud.income import fetch_income
+    categories = fetch_categories(user_id)
     expenses = fetch_expenses(user_id)
-    summary = build_summary(expenses)
+    income = fetch_income(user_id)
+    summary = build_summary(expenses, categories, income)
     return render_page(
         request,
         "dashboard.html",
@@ -27,7 +31,9 @@ def dashboard(request: Request):
 def analytics_page(request: Request):
     user_id = require_user(request)
     expenses = fetch_expenses(user_id)
-    summary = build_summary(expenses)
+    from app.crud.income import fetch_income
+    income = fetch_income(user_id)
+    summary = build_summary(expenses, income=income)
     analytics_data = build_analytics(expenses, summary)
     return render_page(
         request,
@@ -42,7 +48,9 @@ def analytics_page(request: Request):
 def ai_insights_page(request: Request):
     user_id = require_user(request)
     expenses = fetch_expenses(user_id)
-    summary = build_summary(expenses)
+    from app.crud.income import fetch_income
+    income = fetch_income(user_id)
+    summary = build_summary(expenses, income=income)
     analytics_data = build_analytics(expenses, summary)
     return render_page(
         request,
@@ -63,11 +71,16 @@ def reports_page(
 ):
     user_id = require_user(request)
     from app.crud.expenses import fetch_expenses, filter_expenses
+    from app.crud.income import fetch_income, filter_income
+    
     all_expenses = fetch_expenses(user_id)
-    filtered = filter_expenses(all_expenses, date_from, date_to, category)
+    filtered_expenses = filter_expenses(all_expenses, date_from, date_to, category)
+    
+    all_income = fetch_income(user_id)
+    filtered_income = filter_income(all_income, date_from, date_to, category)
         
-    summary = build_summary(filtered)
-    reports = build_reports(filtered)
+    summary = build_summary(filtered_expenses, income=filtered_income)
+    reports = build_reports(filtered_expenses, filtered_income)
     return render_page(
         request,
         "reports.html",
@@ -99,11 +112,16 @@ def export_reports(
 ):
     user_id = require_user(request)
     from app.crud.expenses import fetch_expenses, filter_expenses
+    from app.crud.income import fetch_income, filter_income
     from app.api.utils import get_settings
     
     all_expenses = fetch_expenses(user_id)
-    filtered = filter_expenses(all_expenses, date_from, date_to, category)
-    reports = build_reports(filtered)
+    filtered_expenses = filter_expenses(all_expenses, date_from, date_to, category)
+    
+    all_income = fetch_income(user_id)
+    filtered_income = filter_income(all_income, date_from, date_to, category)
+    
+    reports = build_reports(filtered_expenses, filtered_income)
     
     settings = get_settings(user_id)
     currency_code = settings.get("currency_code", "NGN").lower()
@@ -111,40 +129,44 @@ def export_reports(
     if format == "csv":
         stream = StringIO()
         writer = csv.writer(stream)
-        writer.writerow(["month", f"total_spent_{currency_code}"])
+        writer.writerow(["month", f"spent_{currency_code}", f"income_{currency_code}", f"balance_{currency_code}"])
         for row in reports:
-            writer.writerow([row["month"], f'{row["total"]:.2f}'])
+            writer.writerow([row["month"], f'{row["spent"]:.2f}', f'{row["income"]:.2f}', f'{row["balance"]:.2f}'])
         stream.seek(0)
-        headers = {"Content-Disposition": "attachment; filename=expense_report.csv"}
+        headers = {"Content-Disposition": "attachment; filename=financial_report.csv"}
         return StreamingResponse(iter([stream.getvalue()]), media_type="text/csv", headers=headers)
         
     elif format == "excel":
         df = pd.DataFrame(reports)
-        df.columns = ["Month", f"Total Spent ({currency_code.upper()})"]
+        df.columns = ["Month", f"Spent ({currency_code.upper()})", f"Income ({currency_code.upper()})", f"Balance ({currency_code.upper()})"]
         output = BytesIO()
         with pd.ExcelWriter(output, engine='openpyxl') as writer:
             df.to_excel(writer, index=False, sheet_name='Report')
         output.seek(0)
-        headers = {"Content-Disposition": "attachment; filename=expense_report.xlsx"}
+        headers = {"Content-Disposition": "attachment; filename=financial_report.xlsx"}
         return StreamingResponse(iter([output.getvalue()]), media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", headers=headers)
         
     elif format == "pdf":
         output = BytesIO()
         p = canvas.Canvas(output, pagesize=letter)
-        p.drawString(100, 750, f"Expense Report - {settings.get('display_name')}")
+        p.drawString(100, 750, f"Financial Report - {settings.get('display_name')}")
         p.drawString(100, 730, f"Currency: {currency_code.upper()}")
         y = 700
-        p.drawString(100, y, "Month")
-        p.drawString(300, y, "Total Spent")
+        p.drawString(50, y, "Month")
+        p.drawString(150, y, "Spent")
+        p.drawString(250, y, "Income")
+        p.drawString(350, y, "Balance")
         y -= 20
         for row in reports:
-            p.drawString(100, y, str(row["month"]))
-            p.drawString(300, y, f'{row["total"]:.2f}')
+            p.drawString(50, y, str(row["month"]))
+            p.drawString(150, y, f'{row["spent"]:.2f}')
+            p.drawString(250, y, f'{row["income"]:.2f}')
+            p.drawString(350, y, f'{row["balance"]:.2f}')
             y -= 20
             if y < 50:
                 p.showPage()
                 y = 750
         p.save()
         output.seek(0)
-        headers = {"Content-Disposition": "attachment; filename=expense_report.pdf"}
+        headers = {"Content-Disposition": "attachment; filename=financial_report.pdf"}
         return StreamingResponse(iter([output.getvalue()]), media_type="application/pdf", headers=headers)

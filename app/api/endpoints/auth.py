@@ -38,7 +38,15 @@ def register_page(request: Request):
     set_csrf_cookie(response, csrf_token)
     return response
 
+from app.core.limiter import limiter
+
+import logging
+logger = logging.getLogger(__name__)
+
+# ... (router definition)
+
 @router.post("/register")
+@limiter.limit("5/minute")
 def register(
     request: Request,
     username: str = Form(...),
@@ -62,15 +70,22 @@ def register(
             )
             user_id = cursor.lastrowid
             connection.commit()
+            
+        logger.info(f"User registered successfully: {username}, ID: {user_id}")
+        seed_default_categories(user_id)
+        
     except sqlite3.IntegrityError:
+        logger.warning(f"Registration failed: Username already exists: {username}")
         return templates.TemplateResponse(
             request=request,
             name="register.html",
             context={"request": request, "csrf_token": csrf_token, "error": "Username already exists."},
             status_code=400,
         )
+    except Exception as e:
+        logger.exception(f"Unexpected error during registration for user {username}: {e}")
+        raise HTTPException(status_code=500, detail="Internal Server Error")
         
-    seed_default_categories(user_id)
     response = RedirectResponse(url="/dashboard", status_code=303)
     response.set_cookie(AUTH_COOKIE, sign_value(str(user_id)), httponly=True, samesite="lax")
     set_csrf_cookie(response, csrf_token)
@@ -90,6 +105,7 @@ def login_page(request: Request, next: str = "/dashboard"):
     return response
 
 @router.post("/login")
+@limiter.limit("5/minute")
 def login(
     request: Request,
     username: str = Form(...),

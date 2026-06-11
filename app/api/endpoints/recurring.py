@@ -5,7 +5,7 @@ from app.api.utils import render_page
 from app.core.security import require_csrf
 from app.crud.expenses import fetch_expenses
 from app.crud.analytics import build_summary
-from app.crud.recurring import process_recurring_expenses, fetch_recurring_expenses
+from app.crud.recurring import process_recurring_expenses, fetch_recurring_expenses, fetch_recurring_income
 from app.db.database import get_connection
 
 router = APIRouter()
@@ -15,6 +15,7 @@ def recurring_page(request: Request):
     user_id = require_user(request)
     process_recurring_expenses(user_id)
     recurrings = fetch_recurring_expenses(user_id)
+    recurring_incomes = fetch_recurring_income(user_id)
     summary = build_summary(fetch_expenses(user_id))
     return render_page(
         request,
@@ -22,6 +23,7 @@ def recurring_page(request: Request):
         "Recurring",
         user_id,
         recurrings=recurrings,
+        recurring_incomes=recurring_incomes,
         summary=summary,
     )
 
@@ -34,14 +36,16 @@ def create_recurring(
     frequency: str = Form(...),
     start_date: str = Form(...),
     notes: str = Form(""),
+    type: str = Form("expense"),
     csrf_token: str = Form(...),
 ):
     user_id = require_user(request)
     require_csrf(request, csrf_token)
+    table = "recurring_expenses" if type == "expense" else "recurring_income"
     with get_connection() as connection:
         connection.execute(
-            """
-            INSERT INTO recurring_expenses (user_id, title, amount, category, frequency, start_date, next_occurrence, notes)
+            f"""
+            INSERT INTO {table} (user_id, title, amount, category, frequency, start_date, next_occurrence, notes)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (user_id, title.strip(), amount, category.strip(), frequency, start_date, start_date, notes.strip()),
@@ -50,10 +54,11 @@ def create_recurring(
     return RedirectResponse(url="/recurring", status_code=303)
 
 @router.post("/recurring/{recurring_id}/delete")
-def delete_recurring(request: Request, recurring_id: int, csrf_token: str = Form(...)):
+def delete_recurring(request: Request, recurring_id: int, type: str = Form("expense"), csrf_token: str = Form(...)):
     user_id = require_user(request)
     require_csrf(request, csrf_token)
+    table = "recurring_expenses" if type == "expense" else "recurring_income"
     with get_connection() as connection:
-        connection.execute("DELETE FROM recurring_expenses WHERE id = ? AND user_id = ?", (recurring_id, user_id))
+        connection.execute(f"DELETE FROM {table} WHERE id = ? AND user_id = ?", (recurring_id, user_id))
         connection.commit()
     return RedirectResponse(url="/recurring", status_code=303)

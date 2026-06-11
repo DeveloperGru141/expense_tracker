@@ -29,7 +29,10 @@ def expenses_page(request: Request, q: str = ""):
         search_query=q,
     )
 
+from app.core.limiter import limiter
+
 @router.post("/expenses")
+@limiter.limit("10/minute")
 async def add_expense(
     request: Request,
     title: str = Form(...),
@@ -51,13 +54,25 @@ async def add_expense(
 
     receipt_filename = ""
     if receipt and receipt.filename:
-        # Step 4: Security - Basic File Validation
-        if not receipt.content_type.startswith("image/"):
-            raise HTTPException(status_code=400, detail="Only image files are allowed")
-            
-        ext = receipt.filename.split(".")[-1]
-        receipt_filename = f"{secrets.token_hex(8)}.{ext}"
+        # Step 4: Security - Advanced File Validation
+        from PIL import Image
+        import io
+        
         content = await receipt.read()
+        try:
+            img = Image.open(io.BytesIO(content))
+            img.verify() # Verify it's an image
+            # Re-read for saving since verify() can close the file or move pointer
+            img = Image.open(io.BytesIO(content))
+            img.format.lower() # Check format
+        except Exception:
+            raise HTTPException(status_code=400, detail="Invalid image file")
+
+        ext = receipt.filename.split(".")[-1].lower()
+        if ext not in ["jpg", "jpeg", "png", "gif", "webp"]:
+             ext = img.format.lower() if img.format else "png"
+
+        receipt_filename = f"{secrets.token_hex(8)}.{ext}"
         with open(UPLOAD_DIR / receipt_filename, "wb") as f:
             f.write(content)
 

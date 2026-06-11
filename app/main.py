@@ -2,17 +2,14 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
-from slowapi import Limiter, _rate_limit_exceeded_handler
-from slowapi.util import get_remote_address
+from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 
 from app.core.config import BASE_DIR, templates
 from app.core.security import get_csrf_token, set_csrf_cookie
 from app.db.database import init_db
-from app.api.endpoints import auth, expenses, analytics, settings, recurring
-
-# Step 4: Security - Rate Limiting
-limiter = Limiter(key_func=get_remote_address)
+from app.api.endpoints import auth, expenses, income, analytics, settings, recurring
+from app.core.limiter import limiter
 
 @asynccontextmanager
 async def lifespan(_: FastAPI):
@@ -44,6 +41,7 @@ def landing_page(request: Request):
 # Include Routers
 app.include_router(auth.router)
 app.include_router(expenses.router)
+app.include_router(income.router)
 app.include_router(analytics.router)
 app.include_router(settings.router)
 app.include_router(recurring.router)
