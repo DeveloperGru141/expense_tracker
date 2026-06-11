@@ -1,41 +1,28 @@
 from typing import Any
-from app.db.database import get_connection
+from app.db.database import supabase
 
 def fetch_income(user_id: int, search: str = "") -> list[dict[str, Any]]:
-    with get_connection() as connection:
-        query = """
-            SELECT id, title, amount, category, income_date, notes
-            FROM income
-            WHERE user_id = ?
-        """
-        params = [user_id]
+    query = supabase.table("income").select("*").eq("user_id", user_id)
+    
+    if search:
+        query = query.ilike("title", f"%{search}%")
         
-        if search:
-            query += " AND (title LIKE ? OR notes LIKE ? OR category LIKE ?)"
-            search_param = f"%{search}%"
-            params.extend([search_param, search_param, search_param])
-            
-        query += " ORDER BY income_date DESC, id DESC"
-        
-        rows = connection.execute(query, params).fetchall()
-    return [dict(row) for row in rows]
+    response = query.order("income_date", desc=True).execute()
+    return response.data
 
 def create_income(user_id: int, data: dict[str, Any]) -> int:
-    with get_connection() as connection:
-        cursor = connection.execute(
-            """
-            INSERT INTO income (user_id, title, amount, category, income_date, notes)
-            VALUES (?, ?, ?, ?, ?, ?)
-            """,
-            (user_id, data["title"], data["amount"], data["category"], data["income_date"], data["notes"]),
-        )
-        connection.commit()
-        return cursor.lastrowid
+    response = supabase.table("income").insert({
+        "user_id": user_id,
+        "title": data["title"],
+        "amount": data["amount"],
+        "category": data["category"],
+        "income_date": data["income_date"],
+        "notes": data["notes"]
+    }).execute()
+    return response.data[0]["id"]
 
 def delete_income(user_id: int, income_id: int) -> None:
-    with get_connection() as connection:
-        connection.execute("DELETE FROM income WHERE id = ? AND user_id = ?", (income_id, user_id))
-        connection.commit()
+    supabase.table("income").delete().eq("id", income_id).eq("user_id", user_id).execute()
 
 def filter_income(
     income_list: list[dict[str, Any]],

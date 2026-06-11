@@ -1,116 +1,66 @@
 from datetime import date, timedelta
 from dateutil.relativedelta import relativedelta
-from app.db.database import get_connection
+from app.db.database import supabase
 from typing import Any
 
 def process_recurring_expenses(user_id: int) -> None:
     today = date.today()
     
-    with get_connection() as connection:
-        # Optimization: Check if already processed today
-        row = connection.execute(
-            "SELECT value FROM settings WHERE user_id = ? AND key = 'last_processed_recurring'",
-            (user_id,)
-        ).fetchone()
-        
-        if row and row["value"] == today.isoformat():
-            return
+    # Optimization: Check if already processed today
+    setting = supabase.table("settings").select("value").eq("user_id", user_id).eq("key", "last_processed_recurring").execute()
+    if setting.data and setting.data[0]["value"] == today.isoformat():
+        return
 
-        recurrings = connection.execute(
-            "SELECT * FROM recurring_expenses WHERE user_id = ? AND next_occurrence <= ?",
-            (user_id, today.isoformat()),
-        ).fetchall()
+    recurrings = supabase.table("recurring_expenses").select("*").eq("user_id", user_id).lte("next_occurrence", today.isoformat()).execute().data
 
-        if not recurrings:
-            # Still update the last processed date even if nothing was processed
-            connection.execute(
-                """
-                INSERT INTO settings (user_id, key, value)
-                VALUES (?, 'last_processed_recurring', ?)
-                ON CONFLICT(user_id, key) DO UPDATE SET value = excluded.value
-                """,
-                (user_id, today.isoformat()),
-            )
-            connection.commit()
-            return
-
-        for rec in recurrings:
-            next_date = date.fromisoformat(rec["next_occurrence"])
-            while next_date <= today:
-                connection.execute(
-                    """
-                    INSERT INTO expenses (user_id, title, amount, category, expense_date, notes)
-                    VALUES (?, ?, ?, ?, ?, ?)
-                    """,
-                    (user_id, rec["title"], rec["amount"], rec["category"], next_date.isoformat(), rec["notes"]),
-                )
-                
-                if rec["frequency"] == "daily":
-                    next_date += timedelta(days=1)
-                elif rec["frequency"] == "weekly":
-                    next_date += timedelta(weeks=1)
-                elif rec["frequency"] == "monthly":
-                    next_date += relativedelta(months=1)
-                elif rec["frequency"] == "yearly":
-                    next_date += relativedelta(years=1)
-                else:
-                    break
-
-            connection.execute(
-                "UPDATE recurring_expenses SET next_occurrence = ? WHERE id = ?",
-                (next_date.isoformat(), rec["id"]),
-            )
+    for rec in recurrings:
+        next_date = date.fromisoformat(rec["next_occurrence"])
+        while next_date <= today:
+            supabase.table("expenses").insert({
+                "user_id": user_id, 
+                "title": rec["title"], 
+                "amount": rec["amount"], 
+                "category": rec["category"], 
+                "expense_date": next_date.isoformat(), 
+                "notes": rec["notes"]
+            }).execute()
             
-        # Process recurring income
-        recurring_income = connection.execute(
-            "SELECT * FROM recurring_income WHERE user_id = ? AND next_occurrence <= ?",
-            (user_id, today.isoformat()),
-        ).fetchall()
+            if rec["frequency"] == "daily": next_date += timedelta(days=1)
+            elif rec["frequency"] == "weekly": next_date += timedelta(weeks=1)
+            elif rec["frequency"] == "monthly": next_date += relativedelta(months=1)
+            elif rec["frequency"] == "yearly": next_date += relativedelta(years=1)
+            else: break
 
-        for rec in recurring_income:
-            next_date = date.fromisoformat(rec["next_occurrence"])
-            while next_date <= today:
-                connection.execute(
-                    """
-                    INSERT INTO income (user_id, title, amount, category, income_date, notes)
-                    VALUES (?, ?, ?, ?, ?, ?)
-                    """,
-                    (user_id, rec["title"], rec["amount"], rec["category"], next_date.isoformat(), rec["notes"]),
-                )
-                
-                if rec["frequency"] == "daily":
-                    next_date += timedelta(days=1)
-                elif rec["frequency"] == "weekly":
-                    next_date += timedelta(weeks=1)
-                elif rec["frequency"] == "monthly":
-                    next_date += relativedelta(months=1)
-                elif rec["frequency"] == "yearly":
-                    next_date += relativedelta(years=1)
-                else:
-                    break
+        supabase.table("recurring_expenses").update({"next_occurrence": next_date.isoformat()}).eq("id", rec["id"]).execute()
+        
+    # Process recurring income
+    recurring_income = supabase.table("recurring_income").select("*").eq("user_id", user_id).lte("next_occurrence", today.isoformat()).execute().data
 
-            connection.execute(
-                "UPDATE recurring_income SET next_occurrence = ? WHERE id = ?",
-                (next_date.isoformat(), rec["id"]),
-            )
+    for rec in recurring_income:
+        next_date = date.fromisoformat(rec["next_occurrence"])
+        while next_date <= today:
+            supabase.table("income").insert({
+                "user_id": user_id, 
+                "title": rec["title"], 
+                "amount": rec["amount"], 
+                "category": rec["category"], 
+                "income_date": next_date.isoformat(), 
+                "notes": rec["notes"]
+            }).execute()
+            
+            if rec["frequency"] == "daily": next_date += timedelta(days=1)
+            elif rec["frequency"] == "weekly": next_date += timedelta(weeks=1)
+            elif rec["frequency"] == "monthly": next_date += relativedelta(months=1)
+            elif rec["frequency"] == "yearly": next_date += relativedelta(years=1)
+            else: break
 
-        # Update last processed date
-        connection.execute(
-            """
-            INSERT INTO settings (user_id, key, value)
-            VALUES (?, 'last_processed_recurring', ?)
-            ON CONFLICT(user_id, key) DO UPDATE SET value = excluded.value
-            """,
-            (user_id, today.isoformat()),
-        )
-        connection.commit()
+        supabase.table("recurring_income").update({"next_occurrence": next_date.isoformat()}).eq("id", rec["id"]).execute()
+
+    # Update last processed date using upsert
+    supabase.table("settings").upsert({"user_id": user_id, "key": "last_processed_recurring", "value": today.isoformat()}).execute()
 
 def fetch_recurring_expenses(user_id: int) -> list[dict[str, Any]]:
-    with get_connection() as connection:
-        rows = connection.execute("SELECT * FROM recurring_expenses WHERE user_id = ? ORDER BY next_occurrence", (user_id,)).fetchall()
-    return [dict(row) for row in rows]
+    return supabase.table("recurring_expenses").select("*").eq("user_id", user_id).order("next_occurrence").execute().data
 
 def fetch_recurring_income(user_id: int) -> list[dict[str, Any]]:
-    with get_connection() as connection:
-        rows = connection.execute("SELECT * FROM recurring_income WHERE user_id = ? ORDER BY next_occurrence", (user_id,)).fetchall()
-    return [dict(row) for row in rows]
+    return supabase.table("recurring_income").select("*").eq("user_id", user_id).order("next_occurrence").execute().data

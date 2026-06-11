@@ -1,44 +1,36 @@
 from typing import Any
-from app.db.database import get_connection
+from app.db.database import supabase
 
 def fetch_expenses(user_id: int, search: str = "") -> list[dict[str, Any]]:
-    with get_connection() as connection:
-        query = """
-            SELECT id, title, amount, category, expense_date, notes, receipt_image
-            FROM expenses
-            WHERE user_id = ?
-        """
-        params = [user_id]
+    query = supabase.table("expenses").select("*").eq("user_id", user_id)
+    
+    if search:
+        # Supabase's OR filter is a bit different, using a simple ILIKE search on title for now
+        query = query.ilike("title", f"%{search}%")
         
-        if search:
-            query += " AND (title LIKE ? OR notes LIKE ? OR category LIKE ?)"
-            search_param = f"%{search}%"
-            params.extend([search_param, search_param, search_param])
-            
-        query += " ORDER BY expense_date DESC, id DESC"
-        
-        rows = connection.execute(query, params).fetchall()
-    return [dict(row) for row in rows]
+    response = query.order("expense_date", desc=True).execute()
+    return response.data
 
 def create_expense(user_id: int, data: dict[str, Any]) -> int:
-    with get_connection() as connection:
-        cursor = connection.execute(
-            """
-            INSERT INTO expenses (user_id, title, amount, category, expense_date, notes, receipt_image)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
-            """,
-            (user_id, data["title"], data["amount"], data["category"], data["expense_date"], data["notes"], data.get("receipt_image", "")),
-        )
-        connection.commit()
-        return cursor.lastrowid
+    response = supabase.table("expenses").insert({
+        "user_id": user_id,
+        "title": data["title"],
+        "amount": data["amount"],
+        "category": data["category"],
+        "expense_date": data["expense_date"],
+        "notes": data["notes"],
+        "receipt_image": data.get("receipt_image", "")
+    }).execute()
+    return response.data[0]["id"]
 
 def delete_expense(user_id: int, expense_id: int) -> str | None:
-    with get_connection() as connection:
-        row = connection.execute("SELECT receipt_image FROM expenses WHERE id = ? AND user_id = ?", (expense_id, user_id)).fetchone()
-        receipt_image = row["receipt_image"] if row else None
-        connection.execute("DELETE FROM expenses WHERE id = ? AND user_id = ?", (expense_id, user_id))
-        connection.commit()
-        return receipt_image
+    # First get the receipt_image
+    response = supabase.table("expenses").select("receipt_image").eq("id", expense_id).eq("user_id", user_id).execute()
+    receipt_image = response.data[0]["receipt_image"] if response.data else None
+    
+    # Then delete
+    supabase.table("expenses").delete().eq("id", expense_id).eq("user_id", user_id).execute()
+    return receipt_image
 
 def filter_expenses(
     expenses: list[dict[str, Any]],

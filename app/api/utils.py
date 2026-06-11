@@ -1,24 +1,20 @@
 from typing import Any
 from fastapi import Request
 from app.core.config import templates, NAV_ITEMS
-from app.core.security import get_csrf_token, set_csrf_cookie
-from app.db.database import get_connection
+from app.db.database import supabase
 from app.crud.categories import fetch_categories
 from app.crud.expenses import fetch_expenses
 from app.crud.analytics import build_summary
 
-def get_settings(user_id: int) -> dict[str, str]:
+def get_settings(user_id: str) -> dict[str, str]:
     defaults = {
         "currency_code": "NGN",
         "monthly_budget": "",
         "budget_alert": "80",
         "display_name": "New User",
     }
-    with get_connection() as connection:
-        rows = connection.execute(
-            "SELECT key, value FROM settings WHERE user_id = ?", (user_id,)
-        ).fetchall()
-    saved = {row["key"]: row["value"] for row in rows}
+    response = supabase.table("settings").select("key, value").eq("user_id", user_id).execute()
+    saved = {row["key"]: row["value"] for row in response.data}
     return {**defaults, **saved}
 
 def enrich_settings(settings: dict[str, str]) -> dict[str, str]:
@@ -51,11 +47,10 @@ def render_page(
     request: Request,
     template_name: str,
     active_page: str,
-    user_id: int,
+    user_id: str,
     **context: Any,
 ):
     resolved_settings = enrich_settings(context.get("settings") or get_settings(user_id))
-    csrf_token = get_csrf_token(request)
     categories = fetch_categories(user_id)
     
     shared_context = {
@@ -63,15 +58,12 @@ def render_page(
         "active_page": active_page,
         "nav_items": NAV_ITEMS,
         "settings": resolved_settings,
-        "csrf_token": csrf_token,
         "categories": categories,
     }
     shared_context.update(context)
     shared_context["settings"] = resolved_settings
     
     # Global budget status based on ALL expenses for the user
-    # We only compute this if we really need it (e.g. it's displayed in the sidebar/nav)
-    # To optimize, we could pass 'include_budget=False' if not needed.
     if context.get("include_budget", True):
         from app.crud.income import fetch_income
         all_expenses = fetch_expenses(user_id)
@@ -81,10 +73,8 @@ def render_page(
         if "summary" not in shared_context:
             shared_context["summary"] = total_summary
         
-    response = templates.TemplateResponse(
+    return templates.TemplateResponse(
         request=request,
         name=template_name,
         context=shared_context,
     )
-    set_csrf_cookie(response, csrf_token)
-    return response
