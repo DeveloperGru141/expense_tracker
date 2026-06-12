@@ -1,6 +1,6 @@
 # Expense Tracker
 
-A modern and professional FastAPI expense tracker utilizing SQLite storage, dynamic currency preferences, customizable budgets, interactive animations, and a React-based interactive landing page background.
+A modern and professional FastAPI expense tracker utilizing Supabase (PostgreSQL) storage, dynamic currency preferences, customizable budgets, interactive animations, and a React-based interactive landing page background.
 
 ## Key Features
 
@@ -23,7 +23,7 @@ A modern and professional FastAPI expense tracker utilizing SQLite storage, dyna
 ### Backend (Python)
 - **FastAPI**: Modern, fast (high-performance) web framework.
 - **Uvicorn**: Lightning-fast ASGI server implementation.
-- **SQLite3**: Robust, local SQL database engine.
+- **Supabase (PostgreSQL)**: Scalable, cloud-hosted relational database.
 - **Jinja2**: Templating engine for dynamic HTML rendering.
 - **SlowAPI**: Rate limiting middleware for FastAPI.
 - **Pillow**: Advanced image processing for receipt validation.
@@ -38,11 +38,26 @@ A modern and professional FastAPI expense tracker utilizing SQLite storage, dyna
 - **Vite**: High-performance frontend toolchain/bundler.
 - **Vanilla CSS**: Custom styling with CSS variables, transitions, and responsive grid layouts.
 
+## Database Schematic
+
+The application utilizes a PostgreSQL database managed via Supabase.
+
+| Table | Description |
+| :--- | :--- |
+| `users` | Stores user credentials and profile information. |
+| `categories` | Stores budget categories associated with a user. |
+| `expenses` | Stores individual expense records. |
+| `income` | Stores individual income records. |
+| `recurring_expenses` | Stores configuration for recurring expenses and next occurrence. |
+| `recurring_income` | Stores configuration for recurring income and next occurrence. |
+| `settings` | User-specific application settings (e.g., currency, budget limits). |
+
 ## Recent Updates
 
 - **Income Feature Integration**: Added `income` and `recurring_income` management, integrated into dashboard summary and financial reporting.
 - **Security Patch**: Replaced `passlib` dependency with direct `bcrypt` implementation, incorporating strict 72-byte password truncation and frontend length limits to resolve hashing vulnerabilities.
 - **Database Optimization**: Optimized recurring transaction logic in `app/crud/recurring.py` to run once per day per user, reducing database overhead.
+- **Architecture**: Updated documentation to reflect Supabase/PostgreSQL as the primary database storage.
 
 ## Run Locally
 

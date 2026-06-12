@@ -189,6 +189,12 @@ export default function Galaxy({
   const targetMouseActive = useRef(0.0);
   const smoothMouseActive = useRef(0.0);
 
+  // Detect mobile
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+  const effectiveDensity = isMobile ? density * 0.5 : density;
+  const effectiveSpeed = isMobile ? speed * 0.6 : speed;
+  const effectiveMouseInteraction = isMobile ? false : mouseInteraction;
+
   useEffect(() => {
     if (!ctnDom.current) return undefined;
 
@@ -236,9 +242,9 @@ export default function Galaxy({
         uFocal: { value: new Float32Array(focal) },
         uRotation: { value: new Float32Array(rotation) },
         uStarSpeed: { value: starSpeed },
-        uDensity: { value: density },
+        uDensity: { value: effectiveDensity },
         uHueShift: { value: hueShift },
-        uSpeed: { value: speed },
+        uSpeed: { value: effectiveSpeed },
         uMouse: {
           value: new Float32Array([smoothMousePos.current.x, smoothMousePos.current.y])
         },
@@ -292,7 +298,7 @@ export default function Galaxy({
       targetMouseActive.current = 0.0;
     }
 
-    if (mouseInteraction) {
+    if (effectiveMouseInteraction) {
       window.addEventListener('mousemove', handleMouseMove);
       window.addEventListener('mouseleave', handleMouseLeave);
     }
@@ -300,7 +306,7 @@ export default function Galaxy({
     return () => {
       cancelAnimationFrame(animateId);
       window.removeEventListener('resize', resize);
-      if (mouseInteraction) {
+      if (effectiveMouseInteraction) {
         window.removeEventListener('mousemove', handleMouseMove);
         window.removeEventListener('mouseleave', handleMouseLeave);
       }

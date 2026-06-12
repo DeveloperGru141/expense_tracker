@@ -1,25 +1,17 @@
-const CACHE_NAME = "expense-tracker-v3";
+const CACHE_NAME = "expense-tracker-v4";
 const CORE_ASSETS = [
   "/",
   "/login",
-  "/static/style.css?v=2.0.1",
-  "/static/app.js?v=2.0.1",
+  "/register",
+  "/static/style.css",
+  "/static/app.js",
   "/static/manifest.webmanifest"
 ];
 
 self.addEventListener("install", event => {
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache => {
-      const promises = CORE_ASSETS.map(asset => {
-        return fetch(new Request(asset, { cache: "reload" }))
-          .then(res => {
-            if (res.ok) {
-              return cache.put(asset, res);
-            }
-            throw new Error(`Failed to fetch: ${asset}`);
-          });
-      });
-      return Promise.all(promises);
+      return cache.addAll(CORE_ASSETS);
     })
   );
   self.skipWaiting();
@@ -40,24 +32,27 @@ self.addEventListener("activate", event => {
 
 self.addEventListener("fetch", event => {
   const { request } = event;
-  if (request.method !== "GET") {
+  
+  // Cache-first for static assets
+  if (request.url.includes("/static/")) {
+    event.respondWith(
+      caches.match(request).then(cached => {
+        return cached || fetch(request).then(response => {
+          const responseClone = response.clone();
+          caches.open(CACHE_NAME).then(cache => cache.put(request, responseClone));
+          return response;
+        });
+      })
+    );
     return;
   }
 
+  // Network-first for navigation and dynamic pages
   event.respondWith(
     fetch(request)
       .then(response => {
-        const url = new URL(request.url);
-        if (
-          url.origin === self.location.origin &&
-          url.pathname.startsWith("/static/") &&
-          response.status === 200
-        ) {
-          const responseClone = response.clone();
-          caches.open(CACHE_NAME).then(cache => cache.put(request, responseClone));
-        }
         return response;
       })
-      .catch(() => caches.match(request).then(cached => cached || caches.match("/")))
+      .catch(() => caches.match(request))
   );
 });

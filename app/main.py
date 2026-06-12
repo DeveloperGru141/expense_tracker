@@ -7,13 +7,11 @@ from slowapi.errors import RateLimitExceeded
 
 from app.core.config import BASE_DIR, templates
 from app.core.security import get_csrf_token, set_csrf_cookie
-from app.db.database import init_db
 from app.api.endpoints import auth, expenses, income, analytics, settings, recurring
 from app.core.limiter import limiter
 
 @asynccontextmanager
 async def lifespan(_: FastAPI):
-    init_db()
     yield
 
 app = FastAPI(title="Expense Tracker", lifespan=lifespan)

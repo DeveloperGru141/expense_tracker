@@ -1,7 +1,7 @@
 import os
 from fastapi import Request, HTTPException
 from supabase import create_client
-from gotrue import AuthApiError
+from supabase import AuthApiError
 
 # We need a new Supabase client specifically for Auth if we want to verify tokens,
 # or we can verify the JWT locally using pyjwt if we have the secret.

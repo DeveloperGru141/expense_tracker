@@ -1,6 +1,5 @@
 import os
 from supabase import create_client, Client
-from app.core.config import config # Assuming we can reuse the config loader
 
 # Initialize Supabase client
 url = os.getenv("SUPABASE_URL")

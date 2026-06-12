@@ -6,7 +6,7 @@ from app.core.security import require_csrf
 from app.crud.expenses import fetch_expenses
 from app.crud.analytics import build_summary
 from app.crud.recurring import process_recurring_expenses, fetch_recurring_expenses, fetch_recurring_income
-from app.db.database import get_connection
+from app.db.database import supabase
 
 router = APIRouter()
 
@@ -42,23 +42,22 @@ def create_recurring(
     user_id = require_user(request)
     require_csrf(request, csrf_token)
     table = "recurring_expenses" if type == "expense" else "recurring_income"
-    with get_connection() as connection:
-        connection.execute(
-            f"""
-            INSERT INTO {table} (user_id, title, amount, category, frequency, start_date, next_occurrence, notes)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-            """,
-            (user_id, title.strip(), amount, category.strip(), frequency, start_date, start_date, notes.strip()),
-        )
-        connection.commit()
+    supabase.table(table).insert({
+        "user_id": user_id,
+        "title": title.strip(),
+        "amount": amount,
+        "category": category.strip(),
+        "frequency": frequency,
+        "start_date": start_date,
+        "next_occurrence": start_date,
+        "notes": notes.strip()
+    }).execute()
     return RedirectResponse(url="/recurring", status_code=303)
 
 @router.post("/recurring/{recurring_id}/delete")
-def delete_recurring(request: Request, recurring_id: int, type: str = Form("expense"), csrf_token: str = Form(...)):
+def delete_recurring(request: Request, recurring_id: str, type: str = Form("expense"), csrf_token: str = Form(...)):
     user_id = require_user(request)
     require_csrf(request, csrf_token)
     table = "recurring_expenses" if type == "expense" else "recurring_income"
-    with get_connection() as connection:
-        connection.execute(f"DELETE FROM {table} WHERE id = ? AND user_id = ?", (recurring_id, user_id))
-        connection.commit()
+    supabase.table(table).delete().eq("id", recurring_id).eq("user_id", user_id).execute()
     return RedirectResponse(url="/recurring", status_code=303)

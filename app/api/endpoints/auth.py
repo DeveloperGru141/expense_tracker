@@ -64,20 +64,6 @@ async def login(
     except Exception:
         return templates.TemplateResponse(request=request, name="login.html", context={"request": request, "next_url": next_url, "error": "Invalid credentials."}, status_code=401)
 
-@router.get("/auth/google")
-async def login_google(request: Request):
-    # This now needs to be handled on the frontend via Supabase Auth
-    return RedirectResponse(url=f"{os.getenv('SUPABASE_URL')}/auth/v1/authorize?provider=google&redirect_to={request.url_for('auth_google_callback')}")
-
-@router.get("/auth/google/callback", name="auth_google_callback")
-async def auth_google_callback(request: Request):
-    # Handle callback from Supabase
-    token = request.query_params.get("access_token")
-    response = RedirectResponse(url="/dashboard", status_code=303)
-    if token:
-        response.set_cookie("supabase_auth_token", token, httponly=True, samesite="lax")
-    return response
-
 @router.post("/logout")
 def logout(request: Request):
     response = RedirectResponse(url="/login", status_code=303)

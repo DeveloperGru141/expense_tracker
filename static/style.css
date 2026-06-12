@@ -1023,107 +1023,6 @@ th {
     font-weight: 600;
 }
 
-@media (max-width: 980px) {
-    :root {
-        --sidebar-width: 100%;
-    }
-
-    .sidebar {
-        position: static;
-        min-height: auto;
-    }
-
-    .page {
-        margin-left: 0;
-        padding-top: 1rem;
-    }
-
-    .page-header,
-    .hero,
-    .content-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .landing-topbar,
-    .landing-hero,
-    .feature-section,
-    .feature-section.reverse,
-    .benefit-grid,
-    .testimonial-section,
-    .closing-banner,
-    .logo-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .landing-topbar {
-        border-radius: 28px;
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .landing-nav {
-        justify-content: flex-start;
-    }
-
-    .landing-hero {
-        min-height: auto;
-        padding-top: 1rem;
-    }
-
-    .landing-title,
-    .feature-copy h2,
-    .section-intro h2,
-    .closing-banner h2 {
-        max-width: none;
-    }
-
-    .hero-metrics {
-        grid-template-columns: 1fr;
-    }
-
-    .hero-stage {
-        min-height: 660px;
-    }
-
-    .hero-collage {
-        position: relative;
-        inset: auto;
-        min-height: 560px;
-    }
-
-    .hero-panel-main {
-        width: min(100%, 320px);
-    }
-
-    .hero-panel-left {
-        left: 0;
-        top: 9rem;
-    }
-
-    .hero-panel-right {
-        right: 0;
-        top: 20rem;
-    }
-
-    .hero-panel-bottom {
-        left: 4rem;
-        bottom: 1rem;
-    }
-
-    .hero-float-card {
-        right: 0;
-    }
-
-    .feature-section.reverse .feature-copy,
-    .feature-section.reverse .feature-visual {
-        order: initial;
-    }
-
-    .testimonial-section {
-        grid-template-columns: 1fr;
-    }
-}
-
 /* Budget warning alerts */
 .budget-alert-banner {
     display: flex;
@@ -1220,6 +1119,108 @@ th {
     font-size: 0.9rem;
 }
 
+@media (max-width: 980px) {
+    :root {
+        --sidebar-width: 100%;
+    }
+
+    .sidebar {
+        position: static;
+        min-height: auto;
+        padding: 1rem;
+    }
+
+    .page {
+        margin-left: 0;
+        padding: 1rem;
+    }
+
+    .page-header,
+    .hero,
+    .content-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .landing-topbar,
+    .landing-hero,
+    .feature-section,
+    .feature-section.reverse,
+    .benefit-grid,
+    .testimonial-section,
+    .closing-banner,
+    .logo-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .landing-topbar {
+        border-radius: 28px;
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .landing-nav {
+        justify-content: flex-start;
+    }
+
+    .landing-hero {
+        min-height: auto;
+        padding-top: 1rem;
+    }
+
+    .landing-title,
+    .feature-copy h2,
+    .section-intro h2,
+    .closing-banner h2 {
+        max-width: none;
+    }
+
+    .hero-metrics {
+        grid-template-columns: 1fr;
+    }
+
+    .hero-stage {
+        min-height: 660px;
+    }
+
+    .hero-collage {
+        position: relative;
+        inset: auto;
+        min-height: 560px;
+    }
+
+    .hero-panel-main {
+        width: min(100%, 320px);
+    }
+
+    .hero-panel-left {
+        left: 0;
+        top: 9rem;
+    }
+
+    .hero-panel-right {
+        right: 0;
+        top: 20rem;
+    }
+
+    .hero-panel-bottom {
+        left: 4rem;
+        bottom: 1rem;
+    }
+
+    .hero-float-card {
+        right: 0;
+    }
+
+    .feature-section.reverse .feature-copy,
+    .feature-section.reverse .feature-visual {
+        order: initial;
+    }
+
+    .testimonial-section {
+        grid-template-columns: 1fr;
+    }
+}
+
 @media (max-width: 780px) {
     .login-shell {
         grid-template-columns: 1fr;
@@ -1229,5 +1230,24 @@ th {
 
     .login-title {
         max-width: none;
+    }
+}
+
+@media (max-width: 600px) {
+    .page-title {
+        font-size: 1.8rem;
+    }
+
+    .summary-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .content-grid {
+        gap: 1rem;
+    }
+
+    .stat-card strong,
+    .summary-pill strong {
+        font-size: 1.5rem;
     }
 }
