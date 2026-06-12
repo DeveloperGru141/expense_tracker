@@ -6,23 +6,33 @@ from app.core.security import require_csrf
 from app.crud.income import fetch_income, create_income, delete_income
 from app.crud.recurring import process_recurring_expenses
 from app.api.utils import render_page
+from app.exceptions import DatabaseError
+import logging
 
+logger = logging.getLogger(__name__)
 router = APIRouter()
 
 @router.get("/income")
 def income_page(request: Request, q: str = ""):
     user_id = require_user(request)
-    process_recurring_expenses(user_id)
-    income_list = fetch_income(user_id, search=q)
-    
-    return render_page(
-        request,
-        "income.html",
-        "Income",
-        user_id,
-        income_list=income_list,
-        search_query=q,
-    )
+    try:
+        process_recurring_expenses(user_id)
+        income_list = fetch_income(user_id, search=q)
+        
+        return render_page(
+            request,
+            "income.html",
+            "Income",
+            user_id,
+            income_list=income_list,
+            search_query=q,
+        )
+    except DatabaseError as de:
+        logger.error(f"Database error: {de}")
+        raise HTTPException(status_code=500, detail=str(de))
+    except Exception as e:
+        logger.error(f"Error loading income page: {e}")
+        raise HTTPException(status_code=500, detail="Internal server error")
 
 @router.post("/income")
 def add_income(
@@ -34,23 +44,35 @@ def add_income(
     notes: str = Form(""),
     csrf_token: str = Form(...),
 ):
-    user_id = require_user(request)
-    require_csrf(request, csrf_token)
-    
     try:
-        date.fromisoformat(income_date)
-    except ValueError:
-        raise HTTPException(status_code=422, detail="Invalid date format")
+        user_id = require_user(request)
+        require_csrf(request, csrf_token)
+        
+        try:
+            date.fromisoformat(income_date)
+        except ValueError:
+            raise HTTPException(status_code=422, detail="Invalid date format")
 
-    create_income(user_id, {
-        "title": title.strip(),
-        "amount": amount,
-        "category": category.strip(),
-        "income_date": income_date,
-        "notes": notes.strip(),
-    })
-    
-    return RedirectResponse(url="/income", status_code=303)
+        income_data = {
+            "title": title.strip(),
+            "amount": amount,
+            "category": category.strip(),
+            "income_date": income_date,
+            "notes": notes.strip(),
+        }
+        logger.info(f"Adding income for user {user_id}: {income_data}")
+        try:
+            create_income(user_id, income_data)
+        except DatabaseError as de:
+            logger.error(f"Database error: {de}")
+            raise HTTPException(status_code=500, detail=str(de))
+        
+        return RedirectResponse(url="/income", status_code=303)
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        logger.exception(f"Error adding income: {e}")
+        raise HTTPException(status_code=500, detail="Failed to add income")
 
 @router.post("/income/{income_id}/delete")
 def remove_income(
@@ -58,8 +80,18 @@ def remove_income(
     income_id: int,
     csrf_token: str = Form(...),
 ):
-    user_id = require_user(request)
-    require_csrf(request, csrf_token)
-    
-    delete_income(user_id, income_id)
-    return RedirectResponse(url="/income", status_code=303)
+    try:
+        user_id = require_user(request)
+        require_csrf(request, csrf_token)
+        
+        try:
+            delete_income(user_id, income_id)
+        except DatabaseError as de:
+            logger.error(f"Database error: {de}")
+            raise HTTPException(status_code=500, detail=str(de))
+        return RedirectResponse(url="/income", status_code=303)
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        logger.error(f"Error deleting income: {e}")
+        raise HTTPException(status_code=500, detail="Failed to delete income")

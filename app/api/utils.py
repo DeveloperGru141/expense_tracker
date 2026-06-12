@@ -2,6 +2,7 @@ from typing import Any
 from fastapi import Request
 from app.core.config import templates, NAV_ITEMS
 from app.db.database import supabase
+from app.core.security import get_csrf_token
 from app.crud.categories import fetch_categories
 from app.crud.expenses import fetch_expenses
 from app.crud.analytics import build_summary
@@ -59,6 +60,7 @@ def render_page(
         "nav_items": NAV_ITEMS,
         "settings": resolved_settings,
         "categories": categories,
+        "csrf_token": get_csrf_token(request),
     }
     shared_context.update(context)
     shared_context["settings"] = resolved_settings

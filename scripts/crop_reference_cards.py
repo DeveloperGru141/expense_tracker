@@ -6,7 +6,7 @@ from PIL import Image
 
 
 ROOT = Path(__file__).resolve().parent.parent
-SOURCE = Path(r"C:\Users\ADEMOLA\Downloads\d54868798ce26014a2d5edac9fa11eac.webp")
+SOURCE = Path(r"C:\Users\ADEMOLA\Downloads\original-a4491a2e2bc8759445ec48a5473da649.webp")
 OUT_DIR = ROOT / "static" / "images"
 
 

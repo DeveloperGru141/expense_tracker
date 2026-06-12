@@ -19,7 +19,7 @@ def register_page(request: Request):
 @limiter.limit("5/minute")
 async def register(
     request: Request,
-    username: str = Form(...),
+    email: str = Form(...),
     password: str = Form(...),
     confirm_password: str = Form(...),
 ):
@@ -28,15 +28,11 @@ async def register(
     
     try:
         # Supabase uses email/password for registration
-        auth_response = supabase.auth.sign_up({"email": username, "password": password})
-        
-        # User is created, now seed categories using their ID
-        user_id = auth_response.user.id
-        supabase.table("users").insert({"id": user_id, "username": username}).execute()
+        auth_response = supabase.auth.sign_up({"email": email, "password": password})
         
     except Exception as e:
         logger.exception(f"Registration failed: {e}")
-        return templates.TemplateResponse(request=request, name="register.html", context={"request": request, "error": "Registration failed."}, status_code=400)
+        return templates.TemplateResponse(request=request, name="register.html", context={"request": request, "error": "Registration failed: " + str(e)}, status_code=400)
         
     return RedirectResponse(url="/login", status_code=303)
 
@@ -50,12 +46,12 @@ def login_page(request: Request, next: str = "/dashboard"):
 @limiter.limit("5/minute")
 async def login(
     request: Request,
-    username: str = Form(...),
+    email: str = Form(...),
     password: str = Form(...),
     next_url: str = Form("/dashboard"),
 ):
     try:
-        auth_response = supabase.auth.sign_in_with_password({"email": username, "password": password})
+        auth_response = supabase.auth.sign_in_with_password({"email": email, "password": password})
         token = auth_response.session.access_token
         
         response = RedirectResponse(url=next_url, status_code=303)

@@ -18,7 +18,7 @@
                 <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
                 <label>
                     <span>Type</span>
-                    <select name="type" required onchange="updateCategories(this.value)">
+                    <select name="type" required>
                         <option value="expense">Expense</option>
                         <option value="income">Income</option>
                     </select>
@@ -33,14 +33,7 @@
                 </label>
                 <label>
                     <span>Category</span>
-                    <div id="category-container">
-                        <select name="category" required id="expense-cats">
-                            {% for cat in categories %}
-                                <option value="{{ cat.name }}">{{ cat.name }}</option>
-                            {% endfor %}
-                        </select>
-                        <input type="text" name="category" placeholder="Salary, Freelance..." id="income-cats" style="display: none;" disabled list="income-categories">
-                    </div>
+                    <input type="text" name="category" placeholder="e.g. Groceries, Rent, Salary" required>
                 </label>
                 <label>
                     <span>Frequency</span>
@@ -143,32 +136,6 @@
             {% endif %}
         </section>
     </section>
-
-    <datalist id="income-categories">
-        <option value="Salary">
-        <option value="Freelance">
-        <option value="Investment">
-        <option value="Gift">
-        <option value="Other">
-    </datalist>
-
-    <script>
-        function updateCategories(type) {
-            const expSelect = document.getElementById('expense-cats');
-            const incInput = document.getElementById('income-cats');
-            if (type === 'income') {
-                expSelect.style.display = 'none';
-                expSelect.disabled = true;
-                incInput.style.display = 'block';
-                incInput.disabled = false;
-            } else {
-                expSelect.style.display = 'block';
-                expSelect.disabled = false;
-                incInput.style.display = 'none';
-                incInput.disabled = true;
-            }
-        }
-    </script>
 
     <style>
         .badge {

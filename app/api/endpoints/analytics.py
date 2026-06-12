@@ -1,31 +1,48 @@
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, Request, HTTPException
 from app.api.deps import require_user
 from app.api.utils import render_page
 from app.crud.expenses import fetch_expenses
 from app.crud.analytics import build_summary, build_analytics, build_reports
+from app.exceptions import DatabaseError
+import logging
 
+logger = logging.getLogger(__name__)
 router = APIRouter()
 
 @router.get("/dashboard")
 def dashboard(request: Request):
-    user_id = require_user(request)
-    from app.crud.recurring import process_recurring_expenses
-    process_recurring_expenses(user_id)
-    
-    from app.crud.categories import fetch_categories
-    from app.crud.income import fetch_income
-    categories = fetch_categories(user_id)
-    expenses = fetch_expenses(user_id)
-    income = fetch_income(user_id)
-    summary = build_summary(expenses, categories, income)
-    return render_page(
-        request,
-        "dashboard.html",
-        "Dashboard",
-        user_id,
-        summary=summary,
-        expenses=expenses[:5],
-    )
+    try:
+        user_id = require_user(request)
+        from app.crud.recurring import process_recurring_expenses
+        try:
+            process_recurring_expenses(user_id)
+        except Exception as e:
+            raise DatabaseError("Failed to process recurring expenses", original_exception=e)
+        
+        from app.crud.categories import fetch_categories
+        from app.crud.income import fetch_income
+        try:
+            categories = fetch_categories(user_id)
+            expenses = fetch_expenses(user_id)
+            income = fetch_income(user_id)
+        except Exception as e:
+            raise DatabaseError("Failed to fetch dashboard data", original_exception=e)
+            
+        summary = build_summary(expenses, categories, income)
+        return render_page(
+            request,
+            "dashboard.html",
+            "Dashboard",
+            user_id,
+            summary=summary,
+            expenses=expenses[:5],
+        )
+    except DatabaseError as de:
+        logger.error(f"Database error loading dashboard: {de}")
+        raise HTTPException(status_code=500, detail=str(de))
+    except Exception as e:
+        logger.exception(f"Unexpected error loading dashboard: {e}")
+        raise HTTPException(status_code=500, detail="Internal server error")
 
 @router.get("/analytics")
 def analytics_page(request: Request):
