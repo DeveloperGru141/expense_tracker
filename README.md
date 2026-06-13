@@ -54,6 +54,9 @@ The application utilizes a PostgreSQL database managed via Supabase.
 
 ## Recent Updates
 
+- **Environment Configuration**: Added `.env` file management, `python-dotenv` integration, and updated configuration to load secrets securely.
+- **Mobile Navigation Redesign**: Implemented a floating pill-style bottom navigation bar, removed the sidebar toggle button, and optimized layout for mobile responsiveness.
+- **Production Readiness**: Hardened `.gitignore` to exclude sensitive environment files, local database artifacts, and OS/IDE clutter.
 - **Income Feature Integration**: Added `income` and `recurring_income` management, integrated into dashboard summary and financial reporting.
 - **Security Patch**: Replaced `passlib` dependency with direct `bcrypt` implementation, incorporating strict 72-byte password truncation and frontend length limits to resolve hashing vulnerabilities.
 - **Database Optimization**: Optimized recurring transaction logic in `app/crud/recurring.py` to run once per day per user, reducing database overhead.

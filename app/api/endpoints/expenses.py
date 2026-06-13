@@ -1,4 +1,5 @@
 import secrets
+import logging
 from datetime import date
 from fastapi import APIRouter, Request, Form, UploadFile, File, HTTPException
 from fastapi.responses import RedirectResponse
@@ -8,40 +9,37 @@ from app.core.config import templates, UPLOAD_DIR
 from app.crud.expenses import fetch_expenses, create_expense, delete_expense
 from app.crud.recurring import process_recurring_expenses
 from app.crud.analytics import build_summary
+from app.crud.income import fetch_income
+from app.api.utils import render_page
 from app.exceptions import DatabaseError
+from app.core.limiter import limiter
 
+logger = logging.getLogger(__name__)
 router = APIRouter()
 
 @router.get("/expenses")
 def expenses_page(request: Request, q: str = ""):
-    user_id = require_user(request)
     try:
+        user_id = require_user(request)
         process_recurring_expenses(user_id)
         expenses = fetch_expenses(user_id, search=q)
+        summary = build_summary(expenses)
+        
+        return render_page(
+            request,
+            "expenses.html",
+            "Expenses",
+            user_id,
+            summary=summary,
+            expenses=expenses,
+            search_query=q,
+        )
     except DatabaseError as de:
-        logger.error(f"Database error: {de}")
+        logger.error(f"Database error loading expenses: {de}")
         raise HTTPException(status_code=500, detail=str(de))
-
-    summary = build_summary(expenses)
-    
-    from app.api.utils import render_page
-    return render_page(
-        request,
-        "expenses.html",
-        "Expenses",
-        user_id,
-        summary=summary,
-        expenses=expenses,
-        search_query=q,
-    )
-
-from app.core.limiter import limiter
-
-import logging
-
-logger = logging.getLogger(__name__)
-
-# ... (router definition)
+    except Exception as e:
+        logger.exception(f"Unexpected error loading expenses: {e}")
+        raise HTTPException(status_code=500, detail="Internal server error")
 
 @router.post("/expenses")
 @limiter.limit("10/minute")
@@ -60,6 +58,9 @@ async def add_expense(
         user_id = require_user(request)
         require_csrf(request, csrf_token)
         
+        if amount <= 0:
+            raise HTTPException(status_code=422, detail="Amount must be positive")
+        
         try:
             date.fromisoformat(expense_date)
         except ValueError:
@@ -67,17 +68,14 @@ async def add_expense(
 
         receipt_filename = ""
         if receipt and receipt.filename:
-            # Step 4: Security - Advanced File Validation
             from PIL import Image
             import io
             
             content = await receipt.read()
             try:
                 img = Image.open(io.BytesIO(content))
-                img.verify() # Verify it's an image
-                # Re-read for saving since verify() can close the file or move pointer
+                img.verify() 
                 img = Image.open(io.BytesIO(content))
-                img.format.lower() # Check format
             except Exception:
                 raise HTTPException(status_code=400, detail="Invalid image file")
 
@@ -97,39 +95,42 @@ async def add_expense(
             "notes": notes.strip(),
             "receipt_image": receipt_filename
         }
-        logger.info(f"Adding expense for user {user_id}: {expense_data}")
-        try:
-            create_expense(user_id, expense_data)
-        except DatabaseError as de:
-            logger.error(f"Database error: {de}")
-            raise HTTPException(status_code=500, detail=str(de))
+        
+        logger.info(f"Adding expense for user {user_id}: {title}")
+        create_expense(user_id, expense_data)
         
         return RedirectResponse(url=next_url, status_code=303)
-    except HTTPException as e:
-        raise e
+    except HTTPException:
+        raise
+    except DatabaseError as de:
+        logger.error(f"Database error adding expense: {de}")
+        raise HTTPException(status_code=500, detail=str(de))
     except Exception as e:
-        logger.exception(f"Error adding expense: {e}")
+        logger.exception(f"Unexpected error adding expense: {e}")
         raise HTTPException(status_code=500, detail="Failed to add expense")
 
 @router.post("/expenses/{expense_id}/delete")
 def remove_expense(
     request: Request,
-    expense_id: int,
+    expense_id: str,
     next_url: str = Form("/expenses"),
     csrf_token: str = Form(...),
 ):
-    user_id = require_user(request)
-    require_csrf(request, csrf_token)
-    
     try:
+        user_id = require_user(request)
+        require_csrf(request, csrf_token)
+        
         receipt_image = delete_expense(user_id, expense_id)
-    except DatabaseError as de:
-        logger.error(f"Database error: {de}")
-        raise HTTPException(status_code=500, detail=str(de))
 
-    if receipt_image:
-        img_path = UPLOAD_DIR / receipt_image
-        if img_path.exists():
-            img_path.unlink()
-            
-    return RedirectResponse(url=next_url, status_code=303)
+        if receipt_image:
+            img_path = UPLOAD_DIR / receipt_image
+            if img_path.exists():
+                img_path.unlink()
+                
+        return RedirectResponse(url=next_url, status_code=303)
+    except DatabaseError as de:
+        logger.error(f"Database error deleting expense: {de}")
+        raise HTTPException(status_code=500, detail=str(de))
+    except Exception as e:
+        logger.exception(f"Unexpected error deleting expense: {e}")
+        raise HTTPException(status_code=500, detail="Failed to delete expense")

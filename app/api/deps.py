@@ -9,12 +9,19 @@ from supabase import AuthApiError
 from app.db.database import supabase
 
 def get_authenticated_user_id(request: Request) -> str | None:
+    try:
+        auth_headers = getattr(supabase.postgrest, "headers", {})
+        auth_headers.pop("Authorization", None)
+    except Exception:
+        pass
+
     token = request.cookies.get("supabase_auth_token")
     if not token:
         return None
     
     try:
         user = supabase.auth.get_user(token)
+        supabase.postgrest.auth(token)
         return user.user.id
     except Exception:
         return None

@@ -20,6 +20,12 @@
         </section>
     {% endif %}
 
+    {% if cleared %}
+        <section class="flash-banner" style="background: var(--danger);">
+            Your account data has been successfully deleted.
+        </section>
+    {% endif %}
+
     <section class="content-grid">
         <section class="card form-card">
             <h3>Preferences</h3>
@@ -82,5 +88,23 @@
                 </table>
             </div>
         </section>
+    </section>
+
+    <section class="card danger-zone" style="margin-top: 3rem; border: 1px solid rgba(239, 68, 68, 0.15); background: rgba(239, 68, 68, 0.04); padding: 1.5rem;">
+        <div style="padding-bottom: 1rem;">
+            <h3 style="color: #fecaca; font-size: 1.1rem; margin-bottom: 0.5rem;">&#9888; Account Management</h3>
+            <p class="subtext" style="color: rgba(254, 202, 202, 0.7);">Update your account status and permanent data settings.</p>
+        </div>
+
+        <div class="danger-zone-action" style="display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding-top: 1rem; border-top: 1px solid rgba(239, 68, 68, 0.1); flex-wrap: wrap;">
+            <div style="flex: 1; min-width: 200px;">
+                <strong style="display: block; margin-bottom: 0.25rem; color: #fca5a5;">Delete account permanently</strong>
+                <p class="muted-text" style="font-size: 0.85rem; line-height: 1.6; color: rgba(254, 202, 202, 0.6);">Once you delete your account, there is no going back. This will erase your profile, all financial entries, and custom settings immediately.</p>
+            </div>
+            <form action="/settings/delete-account" method="post" onsubmit="return confirm('WARNING: This will permanently delete your account and ALL data. This action cannot be undone. Are you absolutely sure?');">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                <button type="submit" class="delete-button" style="background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.3); color: #fca5a5; padding: 0.65rem 1.25rem; font-weight: 600; font-size: 0.85rem; border-radius: var(--radius-sm); cursor: pointer; transition: all 0.2s ease; white-space: nowrap;">Delete Account</button>
+            </form>
+        </div>
     </section>
 {% endblock %}

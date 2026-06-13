@@ -2,7 +2,7 @@ from typing import Any
 from app.db.database import supabase
 from app.exceptions import DatabaseError
 
-def fetch_expenses(user_id: int, search: str = "") -> list[dict[str, Any]]:
+def fetch_expenses(user_id: str, search: str = "") -> list[dict[str, Any]]:
     try:
         query = supabase.table("expenses").select("*").eq("user_id", user_id)
         
@@ -14,7 +14,7 @@ def fetch_expenses(user_id: int, search: str = "") -> list[dict[str, Any]]:
     except Exception as e:
         raise DatabaseError("Error fetching expenses", original_exception=e)
 
-def create_expense(user_id: int, data: dict[str, Any]) -> int:
+def create_expense(user_id: str, data: dict[str, Any]) -> str:
     try:
         response = supabase.table("expenses").insert({
             "user_id": user_id,
@@ -29,13 +29,11 @@ def create_expense(user_id: int, data: dict[str, Any]) -> int:
     except Exception as e:
         raise DatabaseError("Error creating expense", original_exception=e)
 
-def delete_expense(user_id: int, expense_id: int) -> str | None:
+def delete_expense(user_id: str, expense_id: str) -> str | None:
     try:
-        # First get the receipt_image
         response = supabase.table("expenses").select("receipt_image").eq("id", expense_id).eq("user_id", user_id).execute()
-        receipt_image = response.data[0]["receipt_image"] if response.data else None
+        receipt_image = response.data[0]["receipt_image"] if response.data and len(response.data) > 0 else None
         
-        # Then delete
         supabase.table("expenses").delete().eq("id", expense_id).eq("user_id", user_id).execute()
         return receipt_image
     except Exception as e:

@@ -4,19 +4,19 @@ from app.api.deps import require_user
 from app.api.utils import render_page
 from app.db.database import supabase
 from app.crud.analytics import build_summary
+from app.crud.expenses import fetch_expenses
+from app.crud.income import fetch_income
 from app.exceptions import DatabaseError
+from app.core.security import require_csrf
 import logging
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
 
 @router.get("/settings")
-def settings_page(request: Request, saved: int = 0):
+def settings_page(request: Request, saved: int = 0, cleared: int = 0):
     try:
         user_id = require_user(request)
-        # Fetch income, expenses, etc. through CRUD
-        from app.crud.expenses import fetch_expenses
-        from app.crud.income import fetch_income
         summary = build_summary(fetch_expenses(user_id), income=fetch_income(user_id))
         
         return render_page(
@@ -26,6 +26,7 @@ def settings_page(request: Request, saved: int = 0):
             user_id,
             summary=summary,
             saved=bool(saved),
+            cleared=bool(cleared),
         )
     except Exception as e:
         logger.error(f"Error loading settings: {e}")
@@ -71,14 +72,38 @@ def update_settings(
         logger.exception(f"Unexpected error updating settings: {e}")
         raise HTTPException(status_code=500, detail="Failed to update settings")
 
-@router.post("/categories/{category_id}/budget")
-def update_cat_budget(
+@router.post("/settings/delete-account")
+def delete_account(
     request: Request,
-    category_id: str, # Supabase uses UUIDs
-    budget_limit: float = Form(...),
+    csrf_token: str = Form(...),
 ):
     try:
         user_id = require_user(request)
+        require_csrf(request, csrf_token)
+        
+        from app.crud.settings import delete_user_account
+        delete_user_account(user_id)
+        
+        response = RedirectResponse(url="/register?deleted=1", status_code=303)
+        response.delete_cookie("supabase_auth_token")
+        return response
+    except DatabaseError as de:
+        logger.error(f"Database error deleting account: {de}")
+        raise HTTPException(status_code=500, detail=str(de))
+    except Exception as e:
+        logger.exception(f"Unexpected error deleting account: {e}")
+        raise HTTPException(status_code=500, detail="Failed to delete account")
+
+@router.post("/categories/{category_id}/budget")
+def update_cat_budget(
+    request: Request,
+    category_id: str,
+    budget_limit: float = Form(...),
+    csrf_token: str = Form(...),
+):
+    try:
+        user_id = require_user(request)
+        require_csrf(request, csrf_token)
         
         from app.crud.categories import update_category_budget
         update_category_budget(user_id, category_id, budget_limit)

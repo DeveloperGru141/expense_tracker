@@ -4,7 +4,7 @@ from app.db.database import supabase
 from typing import Any
 from app.exceptions import DatabaseError
 
-def process_recurring_expenses(user_id: int) -> None:
+def process_recurring_expenses(user_id: str) -> None:
     try:
         today = date.today()
         
@@ -63,13 +63,13 @@ def process_recurring_expenses(user_id: int) -> None:
     except Exception as e:
         raise DatabaseError("Error processing recurring expenses", original_exception=e)
 
-def fetch_recurring_expenses(user_id: int) -> list[dict[str, Any]]:
+def fetch_recurring_expenses(user_id: str) -> list[dict[str, Any]]:
     try:
         return supabase.table("recurring_expenses").select("*").eq("user_id", user_id).order("next_occurrence").execute().data
     except Exception as e:
         raise DatabaseError("Error fetching recurring expenses", original_exception=e)
 
-def fetch_recurring_income(user_id: int) -> list[dict[str, Any]]:
+def fetch_recurring_income(user_id: str) -> list[dict[str, Any]]:
     try:
         return supabase.table("recurring_income").select("*").eq("user_id", user_id).order("next_occurrence").execute().data
     except Exception as e:

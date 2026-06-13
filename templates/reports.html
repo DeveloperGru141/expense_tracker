@@ -38,6 +38,27 @@
         </form>
     </section>
 
+    {% if summary %}
+    <section class="summary-grid" style="margin-bottom: 1rem;">
+        <article class="card stat-card">
+            <span>Total (Filtered)</span>
+            <strong style="color: var(--danger);">{{ settings.currency_symbol }}{{ '%.2f'|format(summary.total) }}</strong>
+        </article>
+        <article class="card stat-card">
+            <span>Income (Filtered)</span>
+            <strong style="color: var(--success);">{{ settings.currency_symbol }}{{ '%.2f'|format(summary.total_income) }}</strong>
+        </article>
+        <article class="card stat-card">
+            <span>Net Balance</span>
+            <strong>{{ settings.currency_symbol }}{{ '%.2f'|format(summary.balance) }}</strong>
+        </article>
+        <article class="card stat-card">
+            <span>Entries</span>
+            <strong>{{ summary.count }}</strong>
+        </article>
+    </section>
+    {% endif %}
+
     <section class="card table-card">
         <h3>Monthly Performance</h3>
         {% if reports %}

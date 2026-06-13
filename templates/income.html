@@ -52,18 +52,18 @@
 
         <section class="card overview-card">
             <h3>Summary</h3>
-            <div class="stat-group">
-                <div class="stat-item">
-                    <span>Total Income</span>
-                    <strong style="color: var(--success, #10b981);">{{ settings.currency_symbol }}{{ '%.2f'|format(summary.total_income) }}</strong>
+            <div class="stat-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 1rem; margin-top: 0.75rem;">
+                <div>
+                    <span style="color: var(--muted); font-size: 0.85rem;">Total Income</span>
+                    <strong style="display: block; margin-top: 0.25rem; color: var(--success, #10b981); font-size: 1.4rem;">{{ settings.currency_symbol }}{{ '%.2f'|format(summary.total_income) }}</strong>
                 </div>
-                <div class="stat-item">
-                    <span>Total Expenses</span>
-                    <strong style="color: var(--danger, #ef4444);">{{ settings.currency_symbol }}{{ '%.2f'|format(summary.total) }}</strong>
+                <div>
+                    <span style="color: var(--muted); font-size: 0.85rem;">Total Expenses</span>
+                    <strong style="display: block; margin-top: 0.25rem; color: var(--danger, #ef4444); font-size: 1.4rem;">{{ settings.currency_symbol }}{{ '%.2f'|format(summary.total) }}</strong>
                 </div>
-                <div class="stat-item">
-                    <span>Net Balance</span>
-                    <strong style="font-size: 1.5rem;">{{ settings.currency_symbol }}{{ '%.2f'|format(summary.balance) }}</strong>
+                <div>
+                    <span style="color: var(--muted); font-size: 0.85rem;">Net Balance</span>
+                    <strong style="display: block; margin-top: 0.25rem; font-size: 1.5rem;">{{ settings.currency_symbol }}{{ '%.2f'|format(summary.balance) }}</strong>
                 </div>
             </div>
         </section>

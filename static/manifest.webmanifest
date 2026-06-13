@@ -1,11 +1,14 @@
 {
-  "name": "Expense Tracker",
-  "short_name": "Expenses",
-  "start_url": "/",
+  "name": "ExpenseFlow - Smart Expense Tracker",
+  "short_name": "ExpenseFlow",
+  "start_url": "/dashboard",
   "display": "standalone",
-  "background_color": "#06101a",
+  "background_color": "#04080f",
   "theme_color": "#06101a",
-  "description": "Track expenses, monitor spending, and export reports.",
+  "description": "Track expenses, monitor budgets, export reports, and gain financial clarity.",
+  "orientation": "portrait-primary",
+  "lang": "en",
+  "categories": ["finance", "productivity"],
   "icons": [
     {
       "src": "/static/images/landing-analytics-card.png",

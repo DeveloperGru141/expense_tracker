@@ -14,8 +14,8 @@ router = APIRouter()
 
 @router.get("/income")
 def income_page(request: Request, q: str = ""):
-    user_id = require_user(request)
     try:
+        user_id = require_user(request)
         process_recurring_expenses(user_id)
         income_list = fetch_income(user_id, search=q)
         
@@ -28,10 +28,10 @@ def income_page(request: Request, q: str = ""):
             search_query=q,
         )
     except DatabaseError as de:
-        logger.error(f"Database error: {de}")
+        logger.error(f"Database error loading income: {de}")
         raise HTTPException(status_code=500, detail=str(de))
     except Exception as e:
-        logger.error(f"Error loading income page: {e}")
+        logger.error(f"Unexpected error loading income page: {e}")
         raise HTTPException(status_code=500, detail="Internal server error")
 
 @router.post("/income")
@@ -48,6 +48,9 @@ def add_income(
         user_id = require_user(request)
         require_csrf(request, csrf_token)
         
+        if amount <= 0:
+            raise HTTPException(status_code=422, detail="Amount must be positive")
+        
         try:
             date.fromisoformat(income_date)
         except ValueError:
@@ -61,15 +64,9 @@ def add_income(
             "notes": notes.strip(),
         }
         logger.info(f"Adding income for user {user_id}: {income_data}")
-        try:
-            create_income(user_id, income_data)
-        except DatabaseError as de:
-            logger.error(f"Database error: {de}")
-            raise HTTPException(status_code=500, detail=str(de))
+        create_income(user_id, income_data)
         
         return RedirectResponse(url="/income", status_code=303)
-    except HTTPException as e:
-        raise e
     except Exception as e:
         logger.exception(f"Error adding income: {e}")
         raise HTTPException(status_code=500, detail="Failed to add income")
@@ -77,7 +74,7 @@ def add_income(
 @router.post("/income/{income_id}/delete")
 def remove_income(
     request: Request,
-    income_id: int,
+    income_id: str,
     csrf_token: str = Form(...),
 ):
     try:
@@ -90,8 +87,6 @@ def remove_income(
             logger.error(f"Database error: {de}")
             raise HTTPException(status_code=500, detail=str(de))
         return RedirectResponse(url="/income", status_code=303)
-    except HTTPException as e:
-        raise e
     except Exception as e:
         logger.error(f"Error deleting income: {e}")
         raise HTTPException(status_code=500, detail="Failed to delete income")

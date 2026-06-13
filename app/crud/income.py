@@ -2,7 +2,7 @@ from typing import Any
 from app.db.database import supabase
 from app.exceptions import DatabaseError
 
-def fetch_income(user_id: int, search: str = "") -> list[dict[str, Any]]:
+def fetch_income(user_id: str, search: str = "") -> list[dict[str, Any]]:
     try:
         query = supabase.table("income").select("*").eq("user_id", user_id)
         
@@ -14,7 +14,7 @@ def fetch_income(user_id: int, search: str = "") -> list[dict[str, Any]]:
     except Exception as e:
         raise DatabaseError("Error fetching income", original_exception=e)
 
-def create_income(user_id: int, data: dict[str, Any]) -> int:
+def create_income(user_id: str, data: dict[str, Any]) -> str:
     try:
         response = supabase.table("income").insert({
             "user_id": user_id,
@@ -28,7 +28,7 @@ def create_income(user_id: int, data: dict[str, Any]) -> int:
     except Exception as e:
         raise DatabaseError("Error creating income", original_exception=e)
 
-def delete_income(user_id: int, income_id: int) -> None:
+def delete_income(user_id: str, income_id: str) -> None:
     try:
         supabase.table("income").delete().eq("id", income_id).eq("user_id", user_id).execute()
     except Exception as e:
