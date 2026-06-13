@@ -129,6 +129,7 @@ document.addEventListener("DOMContentLoaded", () => {
         clearTimeout(resizeTimer);
         resizeTimer = setTimeout(() => {
             document.querySelectorAll("canvas").forEach(canvas => {
+                if (canvas.closest(".galaxy-container")) return;
                 const parent = canvas.parentElement;
                 if (parent) {
                     const rect = parent.getBoundingClientRect();
