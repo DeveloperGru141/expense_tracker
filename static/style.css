@@ -859,27 +859,40 @@ h1, h2, h3, h4, h5, h6 {
     left: 0;
     right: 0;
     height: auto;
-    min-height: 52px;
-    padding: 0.35rem 0.5rem;
+    min-height: 72px;
+    padding: 0.45rem 0.75rem;
     background: rgba(8, 14, 26, 0.96);
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
     border-top: 1px solid rgba(255, 255, 255, 0.06);
     z-index: 200;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     gap: 0;
     box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.4);
-    padding-bottom: max(0.35rem, env(safe-area-inset-bottom, 0px));
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    scroll-behavior: smooth;
+    scroll-snap-type: x proximity;
+    scroll-padding-inline: 1rem;
+    padding-bottom: max(0.45rem, env(safe-area-inset-bottom, 0px));
+}
+
+.mobile-nav::-webkit-scrollbar {
+    display: none;
 }
 
 .mobile-nav-inner {
     display: flex;
     align-items: center;
-    justify-content: space-around;
-    max-width: 500px;
+    justify-content: center;
+    gap: 0.15rem;
+    min-width: max-content;
     width: 100%;
+    max-width: 520px;
     margin: 0 auto;
+    padding: 0 0.25rem;
 }
 
 .mobile-nav-link {
@@ -888,30 +901,32 @@ h1, h2, h3, h4, h5, h6 {
     align-items: center;
     justify-content: center;
     gap: 0.2rem;
-    padding: 0.3rem 0.4rem;
-    border-radius: 12px;
+    padding: 0.35rem 0.65rem;
+    border-radius: 14px;
     color: rgba(249, 245, 238, 0.45);
     text-decoration: none;
-    font-size: 0.6rem;
+    font-size: 0.65rem;
     font-weight: 500;
     white-space: nowrap;
     transition: all 0.2s ease;
-    flex: 1;
-    min-height: 44px;
-    max-width: 80px;
+    flex: 1 0 auto;
+    min-height: 48px;
+    min-width: 64px;
+    max-width: 88px;
     -webkit-tap-highlight-color: transparent;
     user-select: none;
     position: relative;
+    scroll-snap-align: center;
 }
 
 .mobile-nav-link .nav-icon {
-    font-size: 1.15rem;
+    font-size: 1.25rem;
     line-height: 1;
     transition: transform 0.2s ease;
 }
 
 .mobile-nav-label {
-    font-size: 0.5rem;
+    font-size: 0.55rem;
     line-height: 1;
     letter-spacing: 0.02em;
     opacity: 0.85;
@@ -924,13 +939,13 @@ h1, h2, h3, h4, h5, h6 {
 .mobile-nav-link.active::before {
     content: '';
     position: absolute;
-    top: -1px;
+    top: 0;
     left: 50%;
     transform: translateX(-50%);
-    width: 24px;
-    height: 2px;
+    width: 20px;
+    height: 3px;
     background: var(--primary, #0f766e);
-    border-radius: 0 0 2px 2px;
+    border-radius: 0 0 3px 3px;
 }
 
 .mobile-nav-link.active .nav-icon {
