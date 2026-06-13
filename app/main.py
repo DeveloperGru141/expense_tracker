@@ -73,6 +73,10 @@ def health_check():
         pass
     return {"status": "healthy" if db_ok else "degraded", "database": "connected" if db_ok else "unreachable", "service": "expense-tracker"}
 
+@app.get("/favicon.ico")
+def favicon():
+    return FileResponse(BASE_DIR / "static" / "images" / "calculator.png", media_type="image/png")
+
 @app.get("/sw.js")
 def service_worker(request: Request):
     return FileResponse(BASE_DIR / "static" / "sw.js", media_type="application/javascript")
