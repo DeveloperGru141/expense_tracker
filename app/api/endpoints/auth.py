@@ -1,10 +1,9 @@
-from fastapi import APIRouter, Request, Form, Response, HTTPException
+from fastapi import APIRouter, Request, Form
 from fastapi.responses import RedirectResponse
 from app.db.database import supabase
 from app.api.deps import get_authenticated_user_id
 from app.core.config import templates
 from app.core.limiter import limiter
-from app.exceptions import DatabaseError
 import logging
 
 logger = logging.getLogger(__name__)
@@ -53,32 +52,13 @@ async def register(
                 status_code=400
             )
 
-        user_id = auth_response.user.id
-        
-        # 2. Create entry in public.users table
-        try:
-            supabase.table("users").insert({"id": user_id, "username": email}).execute()
-        except Exception as e:
-            # If database insert fails, we have a partial registration. 
-            # In a production app, you might want to cleanup the Auth user here or handle it.
-            logger.error(f"Failed to create user profile in public.users: {e}")
-            raise DatabaseError("Failed to create user profile", original_exception=e)
-            
-    except DatabaseError as de:
-        logger.error(f"Database error during registration: {de}")
-        return templates.TemplateResponse(
-            request=request, 
-            name="register.html", 
-            context={"request": request, "error": "Database error during profile setup."}, 
-            status_code=500
-        )
     except Exception as e:
-        logger.exception(f"Unexpected error during registration: {e}")
+        logger.error(f"Registration failed: {e}")
         return templates.TemplateResponse(
             request=request, 
             name="register.html", 
-            context={"request": request, "error": "An unexpected error occurred."}, 
-            status_code=500
+            context={"request": request, "error": "Registration failed. Please try again."}, 
+            status_code=400
         )
         
     return RedirectResponse(url="/login?registered=1", status_code=303)
