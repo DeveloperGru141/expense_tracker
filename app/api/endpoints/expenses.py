@@ -10,7 +10,7 @@ from app.crud.expenses import fetch_expenses, create_expense, delete_expense
 from app.crud.recurring import process_recurring_expenses
 from app.crud.analytics import build_summary
 from app.crud.income import fetch_income
-from app.api.utils import render_page
+from app.api.utils import render_page, validate_redirect_url
 from app.exceptions import AuthError, DatabaseError
 from app.core.limiter import limiter
 from app.storage import upload_receipt, delete_receipt, enrich_expense_with_receipt
@@ -18,10 +18,15 @@ from app.storage import upload_receipt, delete_receipt, enrich_expense_with_rece
 logger = logging.getLogger(__name__)
 router = APIRouter()
 
+MAX_TITLE_LENGTH = 200
+MAX_NOTES_LENGTH = 1000
+MAX_SEARCH_LENGTH = 100
+
 @router.get("/expenses")
 def expenses_page(request: Request, q: str = ""):
     try:
         user_id = require_user(request)
+        q = q[:MAX_SEARCH_LENGTH] if q else ""
         process_recurring_expenses(user_id)
         expenses = fetch_expenses(user_id, search=q)
         expenses = [enrich_expense_with_receipt(e) for e in expenses]
@@ -62,8 +67,17 @@ async def add_expense(
         user_id = require_user(request)
         require_csrf(request, csrf_token)
 
+        title = title.strip()[:MAX_TITLE_LENGTH]
+        notes = notes.strip()[:MAX_NOTES_LENGTH]
+        category = category.strip()[:100]
+        next_url = validate_redirect_url(next_url[:500])
+
+        if not title:
+            raise HTTPException(status_code=422, detail="Title is required")
         if amount <= 0:
             raise HTTPException(status_code=422, detail="Amount must be positive")
+        if not category:
+            raise HTTPException(status_code=422, detail="Category is required")
 
         try:
             date.fromisoformat(expense_date)
@@ -76,6 +90,9 @@ async def add_expense(
             import io
 
             content = await receipt.read()
+            if len(content) > 10 * 1024 * 1024:
+                raise HTTPException(status_code=400, detail="Receipt image too large (max 10MB)")
+
             try:
                 img = Image.open(io.BytesIO(content))
                 img.verify()
@@ -94,11 +111,11 @@ async def add_expense(
                 receipt_image = stored_path
 
         expense_data = {
-            "title": title.strip(),
+            "title": title,
             "amount": amount,
-            "category": category.strip(),
+            "category": category,
             "expense_date": expense_date,
-            "notes": notes.strip(),
+            "notes": notes,
             "receipt_image": receipt_image
         }
 
@@ -130,6 +147,7 @@ def remove_expense(
         if receipt_image:
             delete_receipt(receipt_image)
 
+        next_url = validate_redirect_url(next_url[:500])
         return RedirectResponse(url=next_url, status_code=303)
     except (AuthError, HTTPException):
         raise

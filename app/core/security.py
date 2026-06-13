@@ -6,9 +6,7 @@ from fastapi import Request, HTTPException
 from app.core.config import SESSION_SECRET, AUTH_COOKIE, CSRF_COOKIE
 
 def get_password_hash(password: str) -> str:
-    # Truncate to 72 bytes as per bcrypt limits
     password_bytes = password.encode("utf-8")[:72]
-    # Generate salt and hash
     hashed = bcrypt.hashpw(password_bytes, bcrypt.gensalt())
     return hashed.decode("utf-8")
 
@@ -42,10 +40,11 @@ def require_csrf(request: Request, csrf_token: str) -> None:
     if not expected_token or csrf_token != expected_token:
         raise HTTPException(status_code=403, detail="Invalid CSRF token.")
 
-def set_csrf_cookie(response, csrf_token: str) -> None:
+def set_csrf_cookie(response, csrf_token: str, is_secure: bool = False) -> None:
     response.set_cookie(
         CSRF_COOKIE,
         csrf_token,
         httponly=True,
         samesite="lax",
+        secure=is_secure,
     )

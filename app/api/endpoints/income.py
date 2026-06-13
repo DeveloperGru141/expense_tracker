@@ -13,13 +13,18 @@ import logging
 logger = logging.getLogger(__name__)
 router = APIRouter()
 
+MAX_TITLE_LENGTH = 200
+MAX_NOTES_LENGTH = 1000
+MAX_SEARCH_LENGTH = 100
+
 @router.get("/income")
 def income_page(request: Request, q: str = ""):
     try:
         user_id = require_user(request)
+        q = q[:MAX_SEARCH_LENGTH] if q else ""
         process_recurring_expenses(user_id)
         income_list = fetch_income(user_id, search=q)
-        
+
         return render_page(
             request,
             "income.html",
@@ -51,25 +56,33 @@ def add_income(
     try:
         user_id = require_user(request)
         require_csrf(request, csrf_token)
-        
+
+        title = title.strip()[:MAX_TITLE_LENGTH]
+        notes = notes.strip()[:MAX_NOTES_LENGTH]
+        category = category.strip()[:100]
+
+        if not title:
+            raise HTTPException(status_code=422, detail="Title is required")
         if amount <= 0:
             raise HTTPException(status_code=422, detail="Amount must be positive")
-        
+        if not category:
+            raise HTTPException(status_code=422, detail="Category is required")
+
         try:
             date.fromisoformat(income_date)
         except ValueError:
             raise HTTPException(status_code=422, detail="Invalid date format")
 
         income_data = {
-            "title": title.strip(),
+            "title": title,
             "amount": amount,
-            "category": category.strip(),
+            "category": category,
             "income_date": income_date,
-            "notes": notes.strip(),
+            "notes": notes,
         }
-        logger.info(f"Adding income for user {user_id}: {income_data}")
+        logger.info(f"Adding income for user {user_id}: {title}")
         create_income(user_id, income_data)
-        
+
         return RedirectResponse(url="/income", status_code=303)
     except (AuthError, HTTPException):
         raise
@@ -87,7 +100,7 @@ def remove_income(
     try:
         user_id = require_user(request)
         require_csrf(request, csrf_token)
-        
+
         try:
             delete_income(user_id, income_id)
         except DatabaseError as de:

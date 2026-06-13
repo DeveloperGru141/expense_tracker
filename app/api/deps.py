@@ -3,20 +3,16 @@ from app.db.database import supabase
 from app.exceptions import AuthError
 
 def get_authenticated_user_id(request: Request) -> str | None:
-    try:
-        auth_headers = getattr(supabase.postgrest, "headers", {})
-        auth_headers.pop("Authorization", None)
-    except Exception:
-        pass
-
     token = request.cookies.get("supabase_auth_token")
     if not token:
         return None
-    
+
     try:
-        user = supabase.auth.get_user(token)
+        auth_response = supabase.auth.get_user(token)
+        if not auth_response or not auth_response.user:
+            return None
         supabase.postgrest.auth(token)
-        return user.user.id
+        return auth_response.user.id
     except Exception:
         return None
 

@@ -90,7 +90,8 @@ def landing_page(request: Request):
         name="index.html",
         context={"request": request, "csrf_token": csrf_token},
     )
-    set_csrf_cookie(response, csrf_token)
+    is_secure = request.url.scheme == "https"
+    set_csrf_cookie(response, csrf_token, is_secure=is_secure)
     return response
 
 app.include_router(auth.router)

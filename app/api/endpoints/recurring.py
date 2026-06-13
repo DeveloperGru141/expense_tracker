@@ -15,16 +15,20 @@ import logging
 logger = logging.getLogger(__name__)
 router = APIRouter()
 
+MAX_TITLE_LENGTH = 200
+MAX_NOTES_LENGTH = 1000
+VALID_FREQUENCIES = {"daily", "weekly", "monthly", "yearly"}
+
 @router.get("/recurring")
 def recurring_page(request: Request):
     try:
         user_id = require_user(request)
         process_recurring_expenses(user_id)
-        
+
         recurrings = fetch_recurring_expenses(user_id)
         recurring_incomes = fetch_recurring_income(user_id)
         summary = build_summary(fetch_expenses(user_id))
-        
+
         return render_page(
             request,
             "recurring.html",
@@ -59,34 +63,44 @@ def create_recurring(
     try:
         user_id = require_user(request)
         require_csrf(request, csrf_token)
-        
+
+        title = title.strip()[:MAX_TITLE_LENGTH]
+        notes = notes.strip()[:MAX_NOTES_LENGTH]
+        category = category.strip()[:100]
+        frequency = frequency.strip().lower()
+        type = type.strip().lower()
+
+        if not title:
+            raise HTTPException(status_code=422, detail="Title is required")
         if amount <= 0:
             raise HTTPException(status_code=422, detail="Amount must be positive")
-        
-        valid_frequencies = ["daily", "weekly", "monthly", "yearly"]
-        if frequency not in valid_frequencies:
-            raise HTTPException(status_code=422, detail=f"Invalid frequency. Must be one of: {', '.join(valid_frequencies)}")
-        
+        if not category:
+            raise HTTPException(status_code=422, detail="Category is required")
+        if frequency not in VALID_FREQUENCIES:
+            raise HTTPException(status_code=422, detail=f"Invalid frequency. Must be one of: {', '.join(sorted(VALID_FREQUENCIES))}")
+        if type not in ("expense", "income"):
+            raise HTTPException(status_code=422, detail="Type must be 'expense' or 'income'")
+
         try:
             date.fromisoformat(start_date)
         except ValueError:
             raise HTTPException(status_code=422, detail="Invalid date format")
-        
+
         table = "recurring_expenses" if type == "expense" else "recurring_income"
         recurring_data = {
             "user_id": user_id,
-            "title": title.strip(),
+            "title": title,
             "amount": amount,
-            "category": category.strip(),
+            "category": category,
             "frequency": frequency,
             "start_date": start_date,
             "next_occurrence": start_date,
-            "notes": notes.strip()
+            "notes": notes
         }
-        
+
         logger.info(f"Creating recurring {type} for user {user_id}: {title}")
         supabase.table(table).insert(recurring_data).execute()
-            
+
         return RedirectResponse(url="/recurring", status_code=303)
     except (AuthError, HTTPException):
         raise
@@ -100,21 +114,22 @@ def create_recurring(
 @router.post("/recurring/{recurring_id}/delete")
 @limiter.limit("10/minute")
 def delete_recurring(
-    request: Request, 
-    recurring_id: str, 
-    type: str = Form("expense"), 
+    request: Request,
+    recurring_id: str,
+    type: str = Form("expense"),
     csrf_token: str = Form(...),
 ):
     try:
         user_id = require_user(request)
         require_csrf(request, csrf_token)
-        
+
+        type = type.strip().lower()
         table = "recurring_expenses" if type == "expense" else "recurring_income"
         try:
             supabase.table(table).delete().eq("id", recurring_id).eq("user_id", user_id).execute()
         except Exception as e:
             raise DatabaseError(f"Failed to delete recurring {type}", original_exception=e)
-            
+
         return RedirectResponse(url="/recurring", status_code=303)
     except (AuthError, HTTPException):
         raise

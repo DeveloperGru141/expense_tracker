@@ -14,12 +14,14 @@ import logging
 logger = logging.getLogger(__name__)
 router = APIRouter()
 
+MAX_DISPLAY_NAME_LENGTH = 100
+
 @router.get("/settings")
 def settings_page(request: Request, saved: int = 0, cleared: int = 0):
     try:
         user_id = require_user(request)
         summary = build_summary(fetch_expenses(user_id), income=fetch_income(user_id))
-        
+
         return render_page(
             request,
             "settings.html",
@@ -46,28 +48,36 @@ def update_settings(
 ):
     try:
         user_id = require_user(request)
-        
+
+        display_name = display_name.strip()[:MAX_DISPLAY_NAME_LENGTH]
+        currency_code = currency_code.strip().upper()[:3] or "NGN"
+        monthly_budget = monthly_budget.strip()[:20]
+        budget_alert = budget_alert.strip()[:5]
+
+        if currency_code not in ("NGN", "USD", "EUR", "GBP"):
+            currency_code = "NGN"
+
         try:
             response = supabase.table("users").select("username").eq("id", user_id).execute()
         except Exception as e:
             raise DatabaseError("Failed to fetch user data", original_exception=e)
-            
+
         username = response.data[0]["username"] if response.data else "User"
-            
+
         values = {
-            "currency_code": currency_code.strip().upper() or "NGN",
-            "monthly_budget": monthly_budget.strip(),
-            "budget_alert": budget_alert.strip() or "80",
-            "display_name": display_name.strip() or username,
+            "currency_code": currency_code or "NGN",
+            "monthly_budget": monthly_budget,
+            "budget_alert": budget_alert or "80",
+            "display_name": display_name or username,
         }
-        
+
         logger.info(f"Updating settings for user {user_id}: {values}")
         for key, value in values.items():
             try:
                 supabase.table("settings").upsert({"user_id": user_id, "key": key, "value": value}).execute()
             except Exception as e:
                 raise DatabaseError(f"Failed to update setting: {key}", original_exception=e)
-            
+
         return RedirectResponse(url="/settings?saved=1", status_code=303)
     except (AuthError, HTTPException):
         raise
@@ -87,10 +97,15 @@ def delete_account(
     try:
         user_id = require_user(request)
         require_csrf(request, csrf_token)
-        
+
         from app.crud.settings import delete_user_account
         delete_user_account(user_id)
-        
+
+        try:
+            supabase.auth.admin.delete_user(user_id)
+        except Exception as e:
+            logger.warning(f"Failed to delete auth user {user_id}: {e}")
+
         response = RedirectResponse(url="/register?deleted=1", status_code=303)
         response.delete_cookie("supabase_auth_token")
         return response
@@ -114,10 +129,13 @@ def update_cat_budget(
     try:
         user_id = require_user(request)
         require_csrf(request, csrf_token)
-        
+
+        if budget_limit < 0:
+            raise HTTPException(status_code=422, detail="Budget must be zero or positive")
+
         from app.crud.categories import update_category_budget
         update_category_budget(user_id, category_id, budget_limit)
-        
+
         return RedirectResponse(url="/settings?saved=1", status_code=303)
     except (AuthError, HTTPException):
         raise
