@@ -4,9 +4,12 @@
 
 {% block content %}
     <section class="page-header">
-        <div>
-            <p class="eyebrow">Reports</p>
-            <h2 class="page-title">Detailed Financial Summary</h2>
+        <div class="page-header-main">
+            <button class="back-btn" onclick="history.back()" type="button" aria-label="Go back">&#8592;</button>
+            <div>
+                <p class="eyebrow">Reports</p>
+                <h2 class="page-title">Detailed Financial Summary</h2>
+            </div>
         </div>
         <div class="export-actions">
             <a href="/reports/export?format=csv&date_from={{ filters.date_from }}&date_to={{ filters.date_to }}&category={{ filters.category }}" class="button secondary">CSV</a>
