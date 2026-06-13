@@ -1935,3 +1935,32 @@ input:-webkit-autofill:focus {
         font-size: 0.55rem;
     }
 }
+
+@media (pointer: coarse) {
+    .card,
+    .stat-card,
+    .form-card,
+    .overview-card,
+    .table-card,
+    .placeholder-card,
+    .hero-metrics article,
+    .hero-panel,
+    .logo-strip,
+    .testimonial-card,
+    .login-panel {
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+    }
+    .sidebar-toggle,
+    .mobile-bottom-nav,
+    button,
+    .btn,
+    a,
+    input,
+    select,
+    textarea,
+    label,
+    [role="button"] {
+        touch-action: manipulation;
+    }
+}
