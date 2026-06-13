@@ -55,21 +55,22 @@
         </main>
 
         <nav class="mobile-nav" id="mobileNav" aria-label="Mobile navigation">
-            {% for item in nav_items %}
-                <a
-                    href="{{ item.path }}"
-                    class="mobile-nav-link{% if active_page == item.name %} active{% endif %}"
-                    title="{{ item.name }}"
-                >
-                    <span class="nav-icon" aria-hidden="true">{{ item.icon }}</span>
-                    <span class="mobile-nav-label">{{ item.name }}</span>
-                </a>
-            {% endfor %}
-            <button id="installAppMobile" class="mobile-install-btn" hidden title="Install App">&#x21E9;</button>
-            <form action="/logout" method="post" class="mobile-logout-form" data-exit="true">
-                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-                <button type="button" class="mobile-logout-button" data-exit="true" aria-label="Sign Out">&#x2190;</button>
-            </form>
+            <div class="mobile-nav-inner">
+                {% for item in nav_items %}
+                    <a
+                        href="{{ item.path }}"
+                        class="mobile-nav-link{% if active_page == item.name %} active{% endif %}"
+                        title="{{ item.name }}"
+                    >
+                        <span class="nav-icon" aria-hidden="true">{{ item.icon }}</span>
+                        <span class="mobile-nav-label">{{ item.name }}</span>
+                    </a>
+                {% endfor %}
+                <form action="/logout" method="post" class="mobile-logout-form" data-exit="true">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                    <button type="button" class="mobile-logout-button" data-exit="true" aria-label="Sign Out">&#x23fb;</button>
+                </form>
+            </div>
         </nav>
     </div>
 </body>
