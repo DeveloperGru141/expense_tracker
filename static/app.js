@@ -190,4 +190,21 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         }
     }
+
+    // 13. Two-step exit confirmation
+    document.querySelectorAll("button[data-exit]").forEach(btn => {
+        btn.addEventListener("click", function () {
+            const exitIntent = sessionStorage.getItem("exitIntent");
+            if (exitIntent) {
+                sessionStorage.removeItem("exitIntent");
+                const form = this.closest("form[data-exit]");
+                if (form) form.submit();
+            } else {
+                sessionStorage.setItem("exitIntent", "true");
+                if (location.pathname !== "/dashboard") {
+                    location.href = "/dashboard";
+                }
+            }
+        });
+    });
 });

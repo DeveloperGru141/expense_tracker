@@ -42,9 +42,9 @@
 
             <button id="installApp" class="install-btn" hidden>Install App</button>
 
-            <form action="/logout" method="post" class="logout-form">
+            <form action="/logout" method="post" class="logout-form" data-exit="true">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-                <button type="submit" class="logout-button">Sign Out</button>
+                <button type="button" class="logout-button" data-exit="true">Sign Out</button>
             </form>
         </aside>
 
@@ -66,9 +66,9 @@
                 </a>
             {% endfor %}
             <button id="installAppMobile" class="mobile-install-btn" hidden title="Install App">&#x21E9;</button>
-            <form action="/logout" method="post" class="mobile-logout-form">
+            <form action="/logout" method="post" class="mobile-logout-form" data-exit="true">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-                <button type="submit" class="mobile-logout-button" aria-label="Sign Out">&#x2190;</button>
+                <button type="button" class="mobile-logout-button" data-exit="true" aria-label="Sign Out">&#x2190;</button>
             </form>
         </nav>
     </div>
