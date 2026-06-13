@@ -175,4 +175,18 @@ document.addEventListener("DOMContentLoaded", () => {
     if ("ontouchstart" in window) {
         document.body.classList.add("touch-device");
     }
+
+    // 12. Auto-scroll mobile nav to active item
+    const mobileNav = document.getElementById("mobileNav");
+    if (mobileNav) {
+        const activeLink = mobileNav.querySelector(".mobile-nav-link.active");
+        if (activeLink) {
+            requestAnimationFrame(() => {
+                const navRect = mobileNav.getBoundingClientRect();
+                const linkRect = activeLink.getBoundingClientRect();
+                const offset = linkRect.left - navRect.left - navRect.width / 2 + linkRect.width / 2;
+                mobileNav.scrollBy({ left: offset, behavior: "smooth" });
+            });
+        }
+    }
 });
