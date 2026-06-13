@@ -146,7 +146,32 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // 10. Add touch class for mobile hover fix
+    // 10. PWA install prompt
+    let deferredPrompt = null;
+    const installBtns = [document.getElementById("installApp"), document.getElementById("installAppMobile")].filter(Boolean);
+
+    window.addEventListener("beforeinstallprompt", (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        installBtns.forEach(btn => btn.hidden = false);
+    });
+
+    installBtns.forEach(btn => {
+        btn.addEventListener("click", async () => {
+            if (!deferredPrompt) return;
+            deferredPrompt.prompt();
+            const result = await deferredPrompt.userChoice;
+            deferredPrompt = null;
+            installBtns.forEach(b => b.hidden = true);
+        });
+    });
+
+    window.addEventListener("appinstalled", () => {
+        deferredPrompt = null;
+        installBtns.forEach(btn => btn.hidden = true);
+    });
+
+    // 11. Add touch class for mobile hover fix
     if ("ontouchstart" in window) {
         document.body.classList.add("touch-device");
     }

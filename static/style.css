@@ -924,8 +924,30 @@ h1, h2, h3, h4, h5, h6 {
 .mobile-logout-form {
     display: flex;
     align-items: center;
+    gap: 0.25rem;
     padding-left: 0.5rem;
     flex: 0 0 auto;
+}
+
+.mobile-install-btn {
+    min-width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(99, 102, 241, 0.1);
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    color: rgba(249, 245, 238, 0.75);
+    font-size: 1rem;
+    padding: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.mobile-install-btn:hover {
+    background: rgba(99, 102, 241, 0.25);
+    color: #f9f5ee;
 }
 
 .mobile-logout-button {
@@ -1392,6 +1414,26 @@ th {
     background: rgba(180, 83, 9, 0.1) !important;
     border-color: var(--accent-warm) !important;
     color: var(--accent-warm) !important;
+}
+
+.install-btn {
+    width: 100%;
+    padding: 0.6rem 1rem;
+    margin-bottom: 0.5rem;
+    border-radius: 14px;
+    color: rgba(249, 245, 238, 0.75);
+    background: rgba(99, 102, 241, 0.1);
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.install-btn:hover {
+    background: rgba(99, 102, 241, 0.18);
+    border-color: rgba(99, 102, 241, 0.35);
+    color: #f9f5ee;
 }
 
 .logout-form {
