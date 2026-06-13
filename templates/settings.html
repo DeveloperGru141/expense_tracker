@@ -88,17 +88,20 @@
         </section>
     </section>
 
-    <section class="card danger-zone">
-        <h3 class="danger-heading">&#9888; Permanent deletion</h3>
-        <p class="subtext">The following actions are irreversible. Please proceed with caution.</p>
+    <section class="danger-zone">
+        <div class="danger-header">
+            <div class="danger-icon">&#9888;</div>
+            <h3 class="danger-heading">Danger Zone</h3>
+        </div>
+        <p class="subtext">These actions are irreversible. Proceed with caution.</p>
         <div class="danger-action">
             <div class="danger-info">
                 <strong>Delete account permanently</strong>
-                <p class="muted-text">This will permanently delete your profile, settings, and all financial data. You will be logged out immediately.</p>
+                <p>This will permanently delete your profile, settings, and all financial data. You will be logged out immediately.</p>
             </div>
             <form action="/settings/delete-account" method="post" onsubmit="return confirm('WARNING: This will permanently delete your ENTIRE account and all associated data. This action cannot be undone. Are you absolutely sure?');">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-                <button type="submit" class="delete-account-btn">Delete My Account</button>
+                <button type="submit" class="delete-account-btn">Delete account</button>
             </form>
         </div>
     </section>
