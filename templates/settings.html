@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Settings | Expense Tracker{% endblock %}
+{% block title %}Settings | ExpenseFlow{% endblock %}
 
 {% block content %}
     <section class="page-header">
@@ -15,15 +15,11 @@
     </section>
 
     {% if saved %}
-        <section class="flash-banner">
-            Settings saved successfully.
-        </section>
+        <section class="flash-banner">Settings saved successfully.</section>
     {% endif %}
 
     {% if cleared %}
-        <section class="flash-banner" style="background: var(--danger);">
-            Your account data has been successfully deleted.
-        </section>
+        <section class="flash-banner flash-banner--danger">Your account data has been successfully deleted.</section>
     {% endif %}
 
     <section class="content-grid">
@@ -43,7 +39,7 @@
                     </select>
                 </label>
                 <label>
-                    <span>Overall Monthly Budget</span>
+                    <span>Monthly budget</span>
                     <input type="number" name="monthly_budget" min="0" step="0.01" value="{{ settings.monthly_budget }}" placeholder="250000">
                 </label>
                 <label>
@@ -55,8 +51,10 @@
         </section>
 
         <section class="card table-card">
-            <h3>Category Budgets</h3>
-            <p class="subtext">Set monthly limits for specific spending areas.</p>
+            <div class="section-heading">
+                <h3>Category Budgets</h3>
+                <span class="muted-text">Set monthly limits</span>
+            </div>
             <div class="table-wrap">
                 <table>
                     <thead>
@@ -70,16 +68,16 @@
                         {% for cat in categories %}
                             <tr>
                                 <td>
-                                    <div style="display: flex; align-items: center; gap: 0.5rem;">
-                                        <span style="width: 10px; height: 10px; border-radius: 50%; background: {{ cat.color }};"></span>
+                                    <div class="category-label">
+                                        <span class="category-dot" style="background: {{ cat.color }};"></span>
                                         {{ cat.name }}
                                     </div>
                                 </td>
                                 <td>
-                                    <form action="/categories/{{ cat.id }}/budget" method="post" style="display: flex; gap: 0.25rem; margin: 0;">
+                                    <form action="/categories/{{ cat.id }}/budget" method="post" class="budget-inline-form">
                                         <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-                                        <input type="number" name="budget_limit" min="0" step="0.01" value="{{ cat.budget_limit or 0 }}" style="padding: 0.35rem; width: 100px;">
-                                        <button type="submit" style="padding: 0.35rem; font-size: 0.75rem; background: var(--accent-dark);">✓</button>
+                                        <input type="number" name="budget_limit" min="0" step="0.01" value="{{ cat.budget_limit or 0 }}" class="budget-input">
+                                        <button type="submit" class="budget-save-btn">&#10003;</button>
                                     </form>
                                 </td>
                             </tr>
@@ -90,18 +88,17 @@
         </section>
     </section>
 
-    <section class="card danger-zone" style="margin-top: 2rem; border: 1px solid var(--danger);">
-        <h3 style="color: var(--danger);">permanent deletion of account</h3>
+    <section class="card danger-zone">
+        <h3 class="danger-heading">&#9888; Permanent deletion</h3>
         <p class="subtext">The following actions are irreversible. Please proceed with caution.</p>
-        
-        <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 1rem;">
-            <div>
-                <strong>Delete Account Permanently</strong>
-                <p class="muted-text" style="font-size: 0.85rem; margin-top: 0.25rem;">This will permanently delete your profile, settings, and all financial data. You will be logged out immediately.</p>
+        <div class="danger-action">
+            <div class="danger-info">
+                <strong>Delete account permanently</strong>
+                <p class="muted-text">This will permanently delete your profile, settings, and all financial data. You will be logged out immediately.</p>
             </div>
             <form action="/settings/delete-account" method="post" onsubmit="return confirm('WARNING: This will permanently delete your ENTIRE account and all associated data. This action cannot be undone. Are you absolutely sure?');">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-                <button type="submit" class="delete-button" style="background: var(--danger); border: none; padding: 0.75rem 1.5rem;">Delete My Account</button>
+                <button type="submit" class="delete-account-btn">Delete My Account</button>
             </form>
         </div>
     </section>

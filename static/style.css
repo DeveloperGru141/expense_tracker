@@ -1262,6 +1262,84 @@ th {
     line-height: 1.5;
 }
 
+/* Flash banner variants */
+.flash-banner--danger {
+    background: var(--danger) !important;
+}
+
+/* Category label with color dot */
+.category-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.category-dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+/* Budget inline form in settings table */
+.budget-inline-form {
+    display: flex;
+    gap: 0.25rem;
+    margin: 0;
+}
+
+.budget-input {
+    padding: 0.35rem !important;
+    width: 100px !important;
+}
+
+.budget-save-btn {
+    padding: 0.35rem !important;
+    font-size: 0.75rem !important;
+    min-width: 32px;
+    background: var(--accent-dark) !important;
+}
+
+/* Danger zone card */
+.danger-zone {
+    margin-top: 2rem;
+    border: 1px solid var(--danger);
+    background: rgba(185, 28, 28, 0.06);
+}
+
+.danger-heading {
+    color: var(--danger);
+    font-size: 1.05rem;
+}
+
+.danger-action {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding-top: 1rem;
+    flex-wrap: wrap;
+}
+
+.danger-info {
+    flex: 1;
+    min-width: 200px;
+}
+
+.danger-info p {
+    font-size: 0.85rem;
+    margin-top: 0.25rem;
+}
+
+.delete-account-btn {
+    background: var(--danger) !important;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    white-space: nowrap;
+    font-weight: 600;
+}
+
 .logout-form {
     margin-top: auto;
 }
