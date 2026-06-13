@@ -40,7 +40,7 @@ async def register(
             return templates.TemplateResponse(
                 request=request, 
                 name="register.html", 
-                context={"request": request, "error": "Registration failed. User may already exist."}, 
+                context={"request": request, "error": f"Registration failed: {e}"}, 
                 status_code=400
             )
 
