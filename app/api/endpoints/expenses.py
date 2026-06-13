@@ -11,7 +11,7 @@ from app.crud.recurring import process_recurring_expenses
 from app.crud.analytics import build_summary
 from app.crud.income import fetch_income
 from app.api.utils import render_page
-from app.exceptions import DatabaseError
+from app.exceptions import AuthError, DatabaseError
 from app.core.limiter import limiter
 from app.storage import upload_receipt, delete_receipt, enrich_expense_with_receipt
 
@@ -36,6 +36,8 @@ def expenses_page(request: Request, q: str = ""):
             expenses=expenses,
             search_query=q,
         )
+    except (AuthError, HTTPException):
+        raise
     except DatabaseError as de:
         logger.error(f"Database error loading expenses: {de}")
         raise HTTPException(status_code=500, detail=str(de))
@@ -104,7 +106,7 @@ async def add_expense(
         create_expense(user_id, expense_data)
 
         return RedirectResponse(url=next_url, status_code=303)
-    except HTTPException:
+    except (AuthError, HTTPException):
         raise
     except DatabaseError as de:
         logger.error(f"Database error adding expense: {de}")
@@ -129,6 +131,8 @@ def remove_expense(
             delete_receipt(receipt_image)
 
         return RedirectResponse(url=next_url, status_code=303)
+    except (AuthError, HTTPException):
+        raise
     except DatabaseError as de:
         logger.error(f"Database error deleting expense: {de}")
         raise HTTPException(status_code=500, detail=str(de))

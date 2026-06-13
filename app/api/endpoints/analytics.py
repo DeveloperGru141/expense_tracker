@@ -7,7 +7,7 @@ from app.crud.recurring import process_recurring_expenses
 from app.crud.categories import fetch_categories
 from app.crud.income import fetch_income, filter_income
 from app.api.utils import get_settings
-from app.exceptions import DatabaseError
+from app.exceptions import AuthError, DatabaseError
 from app.storage import enrich_expense_with_receipt
 import csv
 from io import StringIO, BytesIO
@@ -46,6 +46,8 @@ def dashboard(request: Request):
             summary=summary,
             expenses=recent_expenses,
         )
+    except (AuthError, HTTPException):
+        raise
     except DatabaseError as de:
         logger.error(f"Database error loading dashboard: {de}")
         raise HTTPException(status_code=500, detail=str(de))
@@ -73,6 +75,8 @@ def analytics_page(request: Request):
             summary=summary,
             analytics=analytics_data["categories"],
         )
+    except (AuthError, HTTPException):
+        raise
     except DatabaseError as de:
         logger.error(f"Database error loading analytics: {de}")
         raise HTTPException(status_code=500, detail=str(de))
@@ -101,6 +105,8 @@ def ai_insights_page(request: Request):
             analytics=analytics_data["categories"],
             insights=analytics_data["insights"],
         )
+    except (AuthError, HTTPException):
+        raise
     except DatabaseError as de:
         logger.error(f"Database error loading AI insights: {de}")
         raise HTTPException(status_code=500, detail=str(de))
@@ -141,6 +147,8 @@ def reports_page(
                 "category": category,
             },
         )
+    except (AuthError, HTTPException):
+        raise
     except DatabaseError as de:
         logger.error(f"Database error loading reports: {de}")
         raise HTTPException(status_code=500, detail=str(de))
@@ -216,6 +224,8 @@ def export_reports(
             output.seek(0)
             headers = {"Content-Disposition": "attachment; filename=financial_report.pdf"}
             return StreamingResponse(iter([output.getvalue()]), media_type="application/pdf", headers=headers)
+    except (AuthError, HTTPException):
+        raise
     except DatabaseError as de:
         logger.error(f"Database error during export: {de}")
         raise HTTPException(status_code=500, detail=str(de))

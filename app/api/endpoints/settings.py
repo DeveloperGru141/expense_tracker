@@ -6,7 +6,7 @@ from app.db.database import supabase
 from app.crud.analytics import build_summary
 from app.crud.expenses import fetch_expenses
 from app.crud.income import fetch_income
-from app.exceptions import DatabaseError
+from app.exceptions import AuthError, DatabaseError
 from app.core.security import require_csrf
 from app.core.limiter import limiter
 import logging
@@ -29,6 +29,8 @@ def settings_page(request: Request, saved: int = 0, cleared: int = 0):
             saved=bool(saved),
             cleared=bool(cleared),
         )
+    except (AuthError, HTTPException):
+        raise
     except Exception as e:
         logger.error(f"Error loading settings: {e}")
         raise HTTPException(status_code=500, detail="Internal server error")
@@ -67,6 +69,8 @@ def update_settings(
                 raise DatabaseError(f"Failed to update setting: {key}", original_exception=e)
             
         return RedirectResponse(url="/settings?saved=1", status_code=303)
+    except (AuthError, HTTPException):
+        raise
     except DatabaseError as de:
         logger.error(f"Database error updating settings: {de}")
         raise HTTPException(status_code=500, detail=str(de))
@@ -90,6 +94,8 @@ def delete_account(
         response = RedirectResponse(url="/register?deleted=1", status_code=303)
         response.delete_cookie("supabase_auth_token")
         return response
+    except (AuthError, HTTPException):
+        raise
     except DatabaseError as de:
         logger.error(f"Database error deleting account: {de}")
         raise HTTPException(status_code=500, detail=str(de))
@@ -113,6 +119,8 @@ def update_cat_budget(
         update_category_budget(user_id, category_id, budget_limit)
         
         return RedirectResponse(url="/settings?saved=1", status_code=303)
+    except (AuthError, HTTPException):
+        raise
     except Exception as e:
         logger.error(f"Error updating category budget: {e}")
         raise HTTPException(status_code=500, detail="Failed to update category budget")

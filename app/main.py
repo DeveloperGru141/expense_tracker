@@ -1,7 +1,7 @@
 import os
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import FileResponse, JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from slowapi import _rate_limit_exceeded_handler
@@ -51,7 +51,7 @@ async def database_error_handler(request: Request, exc: DatabaseError):
 
 @app.exception_handler(AuthError)
 async def auth_error_handler(request: Request, exc: AuthError):
-    return JSONResponse(status_code=401, content={"detail": str(exc)})
+    return RedirectResponse(url="/login", status_code=303)
 
 @app.exception_handler(AppError)
 async def app_error_handler(request: Request, exc: AppError):

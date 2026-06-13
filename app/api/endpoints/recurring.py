@@ -8,7 +8,7 @@ from app.crud.expenses import fetch_expenses
 from app.crud.analytics import build_summary
 from app.crud.recurring import process_recurring_expenses, fetch_recurring_expenses, fetch_recurring_income
 from app.db.database import supabase
-from app.exceptions import DatabaseError
+from app.exceptions import AuthError, DatabaseError
 from app.core.limiter import limiter
 import logging
 
@@ -34,6 +34,8 @@ def recurring_page(request: Request):
             recurring_incomes=recurring_incomes,
             summary=summary,
         )
+    except (AuthError, HTTPException):
+        raise
     except DatabaseError as de:
         logger.error(f"Database error loading recurring page: {de}")
         raise HTTPException(status_code=500, detail=str(de))
@@ -86,7 +88,7 @@ def create_recurring(
         supabase.table(table).insert(recurring_data).execute()
             
         return RedirectResponse(url="/recurring", status_code=303)
-    except HTTPException:
+    except (AuthError, HTTPException):
         raise
     except DatabaseError as de:
         logger.error(f"Database error creating recurring transaction: {de}")
@@ -114,6 +116,8 @@ def delete_recurring(
             raise DatabaseError(f"Failed to delete recurring {type}", original_exception=e)
             
         return RedirectResponse(url="/recurring", status_code=303)
+    except (AuthError, HTTPException):
+        raise
     except DatabaseError as de:
         logger.error(f"Database error deleting recurring transaction: {de}")
         raise HTTPException(status_code=500, detail=str(de))

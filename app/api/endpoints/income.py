@@ -6,7 +6,7 @@ from app.core.security import require_csrf
 from app.crud.income import fetch_income, create_income, delete_income
 from app.crud.recurring import process_recurring_expenses
 from app.api.utils import render_page
-from app.exceptions import DatabaseError
+from app.exceptions import AuthError, DatabaseError
 from app.core.limiter import limiter
 import logging
 
@@ -28,6 +28,8 @@ def income_page(request: Request, q: str = ""):
             income_list=income_list,
             search_query=q,
         )
+    except (AuthError, HTTPException):
+        raise
     except DatabaseError as de:
         logger.error(f"Database error loading income: {de}")
         raise HTTPException(status_code=500, detail=str(de))
@@ -69,6 +71,8 @@ def add_income(
         create_income(user_id, income_data)
         
         return RedirectResponse(url="/income", status_code=303)
+    except (AuthError, HTTPException):
+        raise
     except Exception as e:
         logger.exception(f"Error adding income: {e}")
         raise HTTPException(status_code=500, detail="Failed to add income")
@@ -90,6 +94,8 @@ def remove_income(
             logger.error(f"Database error: {de}")
             raise HTTPException(status_code=500, detail=str(de))
         return RedirectResponse(url="/income", status_code=303)
+    except (AuthError, HTTPException):
+        raise
     except Exception as e:
         logger.error(f"Error deleting income: {e}")
         raise HTTPException(status_code=500, detail="Failed to delete income")
