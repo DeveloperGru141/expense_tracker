@@ -8,6 +8,7 @@ from app.crud.expenses import fetch_expenses
 from app.crud.income import fetch_income
 from app.exceptions import DatabaseError
 from app.core.security import require_csrf
+from app.core.limiter import limiter
 import logging
 
 logger = logging.getLogger(__name__)
@@ -33,6 +34,7 @@ def settings_page(request: Request, saved: int = 0, cleared: int = 0):
         raise HTTPException(status_code=500, detail="Internal server error")
 
 @router.post("/settings")
+@limiter.limit("10/minute")
 def update_settings(
     request: Request,
     currency_code: str = Form("NGN"),
@@ -73,6 +75,7 @@ def update_settings(
         raise HTTPException(status_code=500, detail="Failed to update settings")
 
 @router.post("/settings/delete-account")
+@limiter.limit("3/minute")
 def delete_account(
     request: Request,
     csrf_token: str = Form(...),
@@ -95,6 +98,7 @@ def delete_account(
         raise HTTPException(status_code=500, detail="Failed to delete account")
 
 @router.post("/categories/{category_id}/budget")
+@limiter.limit("10/minute")
 def update_cat_budget(
     request: Request,
     category_id: str,

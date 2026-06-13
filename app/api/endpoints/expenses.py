@@ -5,7 +5,7 @@ from fastapi import APIRouter, Request, Form, UploadFile, File, HTTPException
 from fastapi.responses import RedirectResponse
 from app.api.deps import require_user
 from app.core.security import require_csrf
-from app.core.config import templates, UPLOAD_DIR
+from app.core.config import templates
 from app.crud.expenses import fetch_expenses, create_expense, delete_expense
 from app.crud.recurring import process_recurring_expenses
 from app.crud.analytics import build_summary
@@ -13,6 +13,7 @@ from app.crud.income import fetch_income
 from app.api.utils import render_page
 from app.exceptions import DatabaseError
 from app.core.limiter import limiter
+from app.storage import upload_receipt, delete_receipt, enrich_expense_with_receipt
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
@@ -23,8 +24,9 @@ def expenses_page(request: Request, q: str = ""):
         user_id = require_user(request)
         process_recurring_expenses(user_id)
         expenses = fetch_expenses(user_id, search=q)
+        expenses = [enrich_expense_with_receipt(e) for e in expenses]
         summary = build_summary(expenses)
-        
+
         return render_page(
             request,
             "expenses.html",
@@ -57,24 +59,24 @@ async def add_expense(
     try:
         user_id = require_user(request)
         require_csrf(request, csrf_token)
-        
+
         if amount <= 0:
             raise HTTPException(status_code=422, detail="Amount must be positive")
-        
+
         try:
             date.fromisoformat(expense_date)
         except ValueError:
             raise HTTPException(status_code=422, detail="Invalid date format")
 
-        receipt_filename = ""
+        receipt_image = ""
         if receipt and receipt.filename:
             from PIL import Image
             import io
-            
+
             content = await receipt.read()
             try:
                 img = Image.open(io.BytesIO(content))
-                img.verify() 
+                img.verify()
                 img = Image.open(io.BytesIO(content))
             except Exception:
                 raise HTTPException(status_code=400, detail="Invalid image file")
@@ -83,9 +85,11 @@ async def add_expense(
             if ext not in ["jpg", "jpeg", "png", "gif", "webp"]:
                  ext = img.format.lower() if img.format else "png"
 
-            receipt_filename = f"{secrets.token_hex(8)}.{ext}"
-            with open(UPLOAD_DIR / receipt_filename, "wb") as f:
-                f.write(content)
+            filename = f"{secrets.token_hex(8)}.{ext}"
+            content_type = f"image/{ext.replace('jpg', 'jpeg')}"
+            stored_path = upload_receipt(user_id, filename, content, content_type)
+            if stored_path:
+                receipt_image = stored_path
 
         expense_data = {
             "title": title.strip(),
@@ -93,12 +97,12 @@ async def add_expense(
             "category": category.strip(),
             "expense_date": expense_date,
             "notes": notes.strip(),
-            "receipt_image": receipt_filename
+            "receipt_image": receipt_image
         }
-        
+
         logger.info(f"Adding expense for user {user_id}: {title}")
         create_expense(user_id, expense_data)
-        
+
         return RedirectResponse(url=next_url, status_code=303)
     except HTTPException:
         raise
@@ -119,14 +123,11 @@ def remove_expense(
     try:
         user_id = require_user(request)
         require_csrf(request, csrf_token)
-        
-        receipt_image = delete_expense(user_id, expense_id)
 
+        receipt_image = delete_expense(user_id, expense_id)
         if receipt_image:
-            img_path = UPLOAD_DIR / receipt_image
-            if img_path.exists():
-                img_path.unlink()
-                
+            delete_receipt(receipt_image)
+
         return RedirectResponse(url=next_url, status_code=303)
     except DatabaseError as de:
         logger.error(f"Database error deleting expense: {de}")

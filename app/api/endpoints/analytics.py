@@ -8,6 +8,7 @@ from app.crud.categories import fetch_categories
 from app.crud.income import fetch_income, filter_income
 from app.api.utils import get_settings
 from app.exceptions import DatabaseError
+from app.storage import enrich_expense_with_receipt
 import csv
 from io import StringIO, BytesIO
 from fastapi.responses import StreamingResponse
@@ -36,13 +37,14 @@ def dashboard(request: Request):
             raise DatabaseError("Failed to fetch dashboard data", original_exception=e)
             
         summary = build_summary(expenses, categories, income)
+        recent_expenses = [enrich_expense_with_receipt(e) for e in expenses[:5]]
         return render_page(
             request,
             "dashboard.html",
             "Dashboard",
             user_id,
             summary=summary,
-            expenses=expenses[:5],
+            expenses=recent_expenses,
         )
     except DatabaseError as de:
         logger.error(f"Database error loading dashboard: {de}")

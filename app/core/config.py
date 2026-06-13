@@ -8,8 +8,6 @@ load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 DB_PATH = BASE_DIR / "expenses.db"
-UPLOAD_DIR = BASE_DIR / "static" / "uploads"
-UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 
 templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
 

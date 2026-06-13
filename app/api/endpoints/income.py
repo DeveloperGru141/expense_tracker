@@ -7,6 +7,7 @@ from app.crud.income import fetch_income, create_income, delete_income
 from app.crud.recurring import process_recurring_expenses
 from app.api.utils import render_page
 from app.exceptions import DatabaseError
+from app.core.limiter import limiter
 import logging
 
 logger = logging.getLogger(__name__)
@@ -35,6 +36,7 @@ def income_page(request: Request, q: str = ""):
         raise HTTPException(status_code=500, detail="Internal server error")
 
 @router.post("/income")
+@limiter.limit("10/minute")
 def add_income(
     request: Request,
     title: str = Form(...),
@@ -72,6 +74,7 @@ def add_income(
         raise HTTPException(status_code=500, detail="Failed to add income")
 
 @router.post("/income/{income_id}/delete")
+@limiter.limit("10/minute")
 def remove_income(
     request: Request,
     income_id: str,

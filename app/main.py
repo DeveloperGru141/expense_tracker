@@ -13,6 +13,7 @@ from app.core.config import BASE_DIR, templates
 from app.core.security import get_csrf_token, set_csrf_cookie
 from app.api.endpoints import auth, expenses, income, analytics, settings, recurring
 from app.core.limiter import limiter
+from app.db.database import supabase
 from app.exceptions import AppError, DatabaseError, AuthError
 
 logging.basicConfig(
@@ -23,7 +24,7 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 
-CORS_ORIGINS = os.getenv("CORS_ORIGINS", "").split(",") if os.getenv("CORS_ORIGINS") else ["http://localhost:8000"]
+CORS_ORIGINS = [o for o in os.getenv("CORS_ORIGINS", "").split(",") if o] or ["http://localhost:8000"]
 
 @asynccontextmanager
 async def lifespan(_: FastAPI):
@@ -64,7 +65,13 @@ async def global_exception_handler(request: Request, exc: Exception):
 
 @app.get("/health")
 def health_check():
-    return {"status": "healthy", "service": "expense-tracker"}
+    db_ok = False
+    try:
+        supabase.table("users").select("id").limit(1).execute()
+        db_ok = True
+    except Exception:
+        pass
+    return {"status": "healthy" if db_ok else "degraded", "database": "connected" if db_ok else "unreachable", "service": "expense-tracker"}
 
 @app.get("/sw.js")
 def service_worker(request: Request):

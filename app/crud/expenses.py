@@ -5,10 +5,12 @@ from app.exceptions import DatabaseError
 def fetch_expenses(user_id: str, search: str = "") -> list[dict[str, Any]]:
     try:
         query = supabase.table("expenses").select("*").eq("user_id", user_id)
-        
+
         if search:
             query = query.ilike("title", f"%{search}%")
-            
+            query = query.ilike("category", f"%{search}%")
+            query = query.ilike("notes", f"%{search}%")
+
         response = query.order("expense_date", desc=True).execute()
         return response.data
     except Exception as e:

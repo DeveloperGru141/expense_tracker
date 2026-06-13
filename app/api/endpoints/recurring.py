@@ -9,6 +9,7 @@ from app.crud.analytics import build_summary
 from app.crud.recurring import process_recurring_expenses, fetch_recurring_expenses, fetch_recurring_income
 from app.db.database import supabase
 from app.exceptions import DatabaseError
+from app.core.limiter import limiter
 import logging
 
 logger = logging.getLogger(__name__)
@@ -41,6 +42,7 @@ def recurring_page(request: Request):
         raise HTTPException(status_code=500, detail="Internal server error")
 
 @router.post("/recurring")
+@limiter.limit("10/minute")
 def create_recurring(
     request: Request,
     title: str = Form(...),
@@ -92,9 +94,9 @@ def create_recurring(
     except Exception as e:
         logger.exception(f"Unexpected error creating recurring transaction: {e}")
         raise HTTPException(status_code=500, detail="Failed to create recurring transaction")
-        raise HTTPException(status_code=500, detail="Failed to create recurring transaction")
 
 @router.post("/recurring/{recurring_id}/delete")
+@limiter.limit("10/minute")
 def delete_recurring(
     request: Request, 
     recurring_id: str, 

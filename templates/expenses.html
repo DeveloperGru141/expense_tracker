@@ -105,8 +105,8 @@
                                 <td>{{ expense.expense_date }}</td>
                                 <td>{{ settings.currency_symbol }}{{ '%.2f'|format(expense.amount) }}</td>
                                 <td>
-                                    {% if expense.receipt_image %}
-                                        <a href="{{ url_for('static', path='uploads/' + expense.receipt_image) }}" target="_blank" class="text-link">View</a>
+                                    {% if expense.receipt_url %}
+                                        <a href="{{ expense.receipt_url }}" target="_blank" rel="noopener" class="text-link">View</a>
                                     {% else %}
                                         -
                                     {% endif %}
