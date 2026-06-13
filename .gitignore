@@ -43,3 +43,5 @@ yarn-error.log*
 # Dev scripts
 scripts/
 update_css.py
+
+.vercel
