@@ -60,6 +60,10 @@ The application utilizes a PostgreSQL database managed via Supabase.
 - **Income Feature Integration**: Added `income` and `recurring_income` management, integrated into dashboard summary and financial reporting.
 - **Security Patch**: Replaced `passlib` dependency with direct `bcrypt` implementation, incorporating strict 72-byte password truncation and frontend length limits to resolve hashing vulnerabilities.
 - **Database Optimization**: Optimized recurring transaction logic in `app/crud/recurring.py` to run once per day per user, reducing database overhead.
+- **Database Schema Tightening**: Changed financial columns from `double precision` to `numeric(12,2)` to prevent floating-point rounding errors. Added indexes on all `user_id` foreign keys for query performance. Optimized RLS policies with `(select auth.uid())` to avoid per-row re-evaluation. Revoked public execute on `handle_new_user()` trigger. Added `updated_at` timestamps to all tables.
+- **Auth Token Expiration Fix**: Expired Supabase JWT tokens were being caught by generic `except Exception` blocks and converted from 401 to 500 errors. Fixed by raising `AuthError` instead, with a global handler that redirects to `/login`.
+- **Backend Security Hardening**: Added input length limits and validation to all POST endpoints. Fixed open redirect vulnerability on `next_url` parameter. Made CSRF cookie `secure` flag environment-aware. Made rate limiter proxy-aware via `X-Forwarded-For`. Added error handling to `get_settings()` and `render_page()`. `delete_account` now also removes the auth user from Supabase Auth. Added receipt file size limit (10MB).
+- **UI Cleanup**: Removed back button from all pages.
 - **Architecture**: Updated documentation to reflect Supabase/PostgreSQL as the primary database storage.
 
 ## Run Locally
