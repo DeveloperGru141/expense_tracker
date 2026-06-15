@@ -15,7 +15,12 @@
 <body class="login-page">
     <main class="login-shell">
         <section class="login-copy">
-            <a href="/" class="landing-brand">ExpenseFlow</a>
+            <div class="login-brand-block">
+                <div class="login-brand-icon">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                </div>
+                <a href="/" class="landing-brand">ExpenseFlow</a>
+            </div>
             <p class="landing-kicker">Secure workspace</p>
             <h1 class="login-title">Sign in to your expense command center.</h1>
             <p class="landing-subtext">Review spending, add entries, export reports, and keep your finance workspace behind a simple access gate.</p>
@@ -24,7 +29,7 @@
         <section class="login-panel">
             <h2>Welcome back</h2>
             {% if error %}
-                <p class="form-error" style="color: var(--danger); margin-bottom: 1rem;">{{ error }}</p>
+                <p class="form-error">{{ error }}</p>
             {% endif %}
             <form action="/login" method="post" class="expense-form">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
