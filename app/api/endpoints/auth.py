@@ -45,7 +45,7 @@ async def register(
         response = templates.TemplateResponse(
             request=request,
             name="register.html",
-            context={"request": request, "error": "Invalid email address.", "csrf_token": csrf_token},
+            context={"request": request, "error": "Invalid email address.", "csrf_token": csrf_token, "email": email},
             status_code=400,
         )
         is_secure = request.url.scheme == "https"
@@ -57,7 +57,7 @@ async def register(
         response = templates.TemplateResponse(
             request=request,
             name="register.html",
-            context={"request": request, "error": f"Password must be at least {MIN_PASSWORD_LENGTH} characters.", "csrf_token": csrf_token},
+            context={"request": request, "error": f"Password must be at least {MIN_PASSWORD_LENGTH} characters.", "csrf_token": csrf_token, "email": email},
             status_code=400,
         )
         is_secure = request.url.scheme == "https"
@@ -69,7 +69,7 @@ async def register(
         response = templates.TemplateResponse(
             request=request,
             name="register.html",
-            context={"request": request, "error": "Passwords do not match.", "csrf_token": csrf_token},
+            context={"request": request, "error": "Passwords do not match.", "csrf_token": csrf_token, "email": email},
             status_code=400,
         )
         is_secure = request.url.scheme == "https"
@@ -88,7 +88,7 @@ async def register(
             response = templates.TemplateResponse(
                 request=request,
                 name="register.html",
-                context={"request": request, "error": f"Registration failed: {error_msg}", "csrf_token": csrf_token},
+                context={"request": request, "error": f"Registration failed: {error_msg}", "csrf_token": csrf_token, "email": email},
                 status_code=400,
             )
             is_secure = request.url.scheme == "https"
@@ -100,7 +100,7 @@ async def register(
             response = templates.TemplateResponse(
                 request=request,
                 name="register.html",
-                context={"request": request, "error": "Registration failed: No user returned.", "csrf_token": csrf_token},
+                context={"request": request, "error": "Registration failed: No user returned.", "csrf_token": csrf_token, "email": email},
                 status_code=400,
             )
             is_secure = request.url.scheme == "https"
@@ -113,7 +113,7 @@ async def register(
         response = templates.TemplateResponse(
             request=request,
             name="register.html",
-            context={"request": request, "error": "Registration failed. Please try again.", "csrf_token": csrf_token},
+            context={"request": request, "error": "Registration failed. Please try again.", "csrf_token": csrf_token, "email": email},
             status_code=400,
         )
         is_secure = request.url.scheme == "https"
@@ -155,7 +155,7 @@ async def login(
         response = templates.TemplateResponse(
             request=request,
             name="login.html",
-            context={"request": request, "next_url": next_url, "error": "Email and password are required.", "csrf_token": csrf_token},
+            context={"request": request, "next_url": next_url, "error": "Email and password are required.", "csrf_token": csrf_token, "email": email},
         )
         is_secure = request.url.scheme == "https"
         set_csrf_cookie(response, csrf_token, is_secure=is_secure)
@@ -169,7 +169,7 @@ async def login(
             response = templates.TemplateResponse(
                 request=request,
                 name="login.html",
-                context={"request": request, "next_url": next_url, "error": "Invalid email or password.", "csrf_token": csrf_token},
+                context={"request": request, "next_url": next_url, "error": "Invalid email or password.", "csrf_token": csrf_token, "email": email},
             )
             is_secure = request.url.scheme == "https"
             set_csrf_cookie(response, csrf_token, is_secure=is_secure)
@@ -193,7 +193,7 @@ async def login(
         response = templates.TemplateResponse(
             request=request,
             name="login.html",
-            context={"request": request, "next_url": next_url, "error": "Invalid email or password.", "csrf_token": csrf_token},
+            context={"request": request, "next_url": next_url, "error": "Invalid email or password.", "csrf_token": csrf_token, "email": email},
         )
         is_secure = request.url.scheme == "https"
         set_csrf_cookie(response, csrf_token, is_secure=is_secure)

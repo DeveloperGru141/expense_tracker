@@ -3,19 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#06101a">
+    <meta name="theme-color" content="#06101a" id="themeColorMeta">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Expense flow | Smart Spending, Clearer Decisions</title>
     <link rel="icon" href="{{ url_for('static', path='images/calculator.svg') }}" type="image/png">
     <link rel="manifest" href="{{ url_for('static', path='manifest.webmanifest') }}">
-    <link rel="stylesheet" href="{{ url_for('static', path='style.css') }}?v=2.0.1">
-    <link rel="stylesheet" href="{{ url_for('static', path='landing-build/landing-galaxy.css') }}">
-    <script src="{{ url_for('static', path='app.js') }}?v=2.0.1" defer></script>
-    <script type="module" src="{{ url_for('static', path='landing-build/landing-galaxy.js') }}"></script>
+    <link rel="stylesheet" href="{{ url_for('static', path='style.css') }}?v=2.2.0">
+    <script src="{{ url_for('static', path='app.js') }}?v=2.2.0" defer></script>
+    <script>if(localStorage.getItem("theme")==="light"){document.documentElement.setAttribute("data-theme","light");document.getElementById("themeColorMeta")&&(document.getElementById("themeColorMeta").content="#f0f4f8")}</script>
 </head>
 <body class="landing-page">
-    <div id="landing-galaxy-root" aria-hidden="true"></div>
     <div class="landing-shell">
         <header class="landing-topbar">
             <a href="/" class="landing-brand">ExpenseFlow</a>
@@ -24,6 +22,7 @@
                 <a href="#benefits">Benefits</a>
                 <a href="#proof">Proof</a>
                 <a href="#testimonials">Reviews</a>
+                <button id="themeToggle" class="theme-toggle-link" type="button" data-theme-toggle>Toggle theme</button>
             </nav>
             <a href="/login" class="button button-dark topbar-cta">Open Dashboard</a>
         </header>

@@ -114,9 +114,9 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // 7. Active mobile nav link -- highlight current page
+    // 7. Active nav link -- highlight current page
     const currentPath = window.location.pathname;
-    document.querySelectorAll(".mobile-nav-link, .nav-link").forEach(link => {
+    document.querySelectorAll(".nav-link").forEach(link => {
         const href = link.getAttribute("href");
         if (href && href !== "#" && currentPath.startsWith(href)) {
             link.classList.add("active");
@@ -129,7 +129,6 @@ document.addEventListener("DOMContentLoaded", () => {
         clearTimeout(resizeTimer);
         resizeTimer = setTimeout(() => {
             document.querySelectorAll("canvas").forEach(canvas => {
-                if (canvas.closest(".galaxy-container")) return;
                 const parent = canvas.parentElement;
                 if (parent) {
                     const rect = parent.getBoundingClientRect();
@@ -177,19 +176,32 @@ document.addEventListener("DOMContentLoaded", () => {
         document.body.classList.add("touch-device");
     }
 
-    // 12. Auto-scroll mobile nav to active item
-    const mobileNav = document.getElementById("mobileNav");
-    if (mobileNav) {
-        const activeLink = mobileNav.querySelector(".mobile-nav-link.active");
-        if (activeLink) {
-            requestAnimationFrame(() => {
-                const navRect = mobileNav.getBoundingClientRect();
-                const linkRect = activeLink.getBoundingClientRect();
-                const offset = linkRect.left - navRect.left - navRect.width / 2 + linkRect.width / 2;
-                mobileNav.scrollBy({ left: offset, behavior: "smooth" });
-            });
-        }
+    // 12. Theme toggle
+    const themeToggle = document.getElementById("themeToggle");
+    const themeIcon = document.getElementById("themeIcon");
+    const themeLabel = document.getElementById("themeLabel");
+    const themeColorMeta = document.getElementById("themeColorMeta");
+
+    function getTheme() {
+        return localStorage.getItem("theme") || "dark";
     }
+
+    function setTheme(theme) {
+        document.documentElement.setAttribute("data-theme", theme);
+        localStorage.setItem("theme", theme);
+        if (themeIcon) themeIcon.textContent = theme === "dark" ? "\u2600" : "\u263E";
+        if (themeLabel) themeLabel.textContent = theme === "dark" ? "Light" : "Dark";
+        if (themeColorMeta) themeColorMeta.content = theme === "dark" ? "#06101a" : "#f0f4f8";
+    }
+
+    setTheme(getTheme());
+
+    document.querySelectorAll("[data-theme-toggle]").forEach(btn => {
+        btn.addEventListener("click", () => {
+            const current = getTheme();
+            setTheme(current === "dark" ? "light" : "dark");
+        });
+    });
 
     // 13. Two-step exit confirmation
     document.querySelectorAll("button[data-exit]").forEach(btn => {

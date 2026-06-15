@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="theme-color" content="#06101a">
+    <meta name="theme-color" content="#06101a" id="themeColorMeta">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="description" content="Track expenses, monitor budgets, and export financial reports with ExpenseFlow.">
@@ -13,9 +13,10 @@
     <link rel="apple-touch-icon" href="{{ url_for('static', path='icon-180x180.png') }}">
     <link rel="manifest" href="{{ url_for('static', path='manifest.webmanifest') }}">
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-    <link rel="stylesheet" href="{{ url_for('static', path='style.css') }}?v=2.1.0">
+    <link rel="stylesheet" href="{{ url_for('static', path='style.css') }}?v=2.2.0">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js" defer></script>
-    <script src="{{ url_for('static', path='app.js') }}?v=2.1.0" defer></script>
+    <script src="{{ url_for('static', path='app.js') }}?v=2.2.0" defer></script>
+    <script>if(localStorage.getItem("theme")==="light"){document.documentElement.setAttribute("data-theme","light");document.getElementById("themeColorMeta")&&(document.getElementById("themeColorMeta").content="#f0f4f8")}</script>
 </head>
 <body>
     <div class="app-shell">
@@ -42,6 +43,13 @@
 
             <button id="installApp" class="install-btn" hidden>Install App</button>
 
+            <div class="sidebar-divider"></div>
+
+            <button id="themeToggle" class="theme-toggle-btn" type="button">
+                <span id="themeIcon">☀</span>
+                <span id="themeLabel">Light</span>
+            </button>
+
             <form action="/logout" method="post" class="logout-form" data-exit="true">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
                 <button type="button" class="logout-button" data-exit="true">Sign Out</button>
@@ -53,25 +61,6 @@
         <main class="page" id="page" role="main">
             {% block content %}{% endblock %}
         </main>
-
-        <nav class="mobile-nav" id="mobileNav" aria-label="Mobile navigation">
-            <div class="mobile-nav-inner">
-                {% for item in nav_items %}
-                    <a
-                        href="{{ item.path }}"
-                        class="mobile-nav-link{% if active_page == item.name %} active{% endif %}"
-                        title="{{ item.name }}"
-                    >
-                        <span class="nav-icon" aria-hidden="true">{{ item.icon }}</span>
-                        <span class="mobile-nav-label">{{ item.name }}</span>
-                    </a>
-                {% endfor %}
-                <form action="/logout" method="post" class="mobile-logout-form" data-exit="true">
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-                    <button type="button" class="mobile-logout-button" data-exit="true" aria-label="Sign Out">&#x23fb;</button>
-                </form>
-            </div>
-        </nav>
     </div>
 </body>
 </html>

@@ -3,19 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#06101a">
+    <meta name="theme-color" content="#06101a" id="themeColorMeta">
     <meta name="description" content="Sign in to your ExpenseFlow workspace to track and manage expenses.">
     <title>Sign In | ExpenseFlow</title>
     <link rel="icon" href="{{ url_for('static', path='images/calculator.png') }}" type="image/png">
     <link rel="manifest" href="{{ url_for('static', path='manifest.webmanifest') }}">
-    <link rel="stylesheet" href="{{ url_for('static', path='style.css') }}?v=2.1.0">
-    <link rel="stylesheet" href="{{ url_for('static', path='landing-build/landing-galaxy.css') }}">
-    <script src="{{ url_for('static', path='app.js') }}?v=2.1.0" defer></script>
-    <script type="module" src="{{ url_for('static', path='landing-build/landing-galaxy.js') }}"></script>
+    <link rel="stylesheet" href="{{ url_for('static', path='style.css') }}?v=2.2.0">
+    <script src="{{ url_for('static', path='app.js') }}?v=2.2.0" defer></script>
+    <script>if(localStorage.getItem("theme")==="light"){document.documentElement.setAttribute("data-theme","light");document.getElementById("themeColorMeta")&&(document.getElementById("themeColorMeta").content="#f0f4f8")}</script>
 </head>
 <body class="login-page">
-    <div id="landing-galaxy-root" aria-hidden="true"></div>
-    <main class="login-shell" style="position: relative; z-index: 1;">
+    <main class="login-shell">
         <section class="login-copy">
             <a href="/" class="landing-brand">ExpenseFlow</a>
             <p class="landing-kicker">Secure workspace</p>
@@ -33,7 +31,7 @@
                 <input type="hidden" name="next_url" value="{{ next_url }}">
                 <label>
                     <span>Email</span>
-                    <input type="email" name="email" placeholder="Your email address" autocomplete="email" required>
+                    <input type="email" name="email" value="{{ email or '' }}" placeholder="Your email address" autocomplete="email" required>
                 </label>
                 <label>
                     <span>Password</span>
@@ -43,6 +41,9 @@
             </form>
             <p style="margin-top: 1.5rem; text-align: center; color: var(--muted);">
                 Don't have an account? <a href="/register" class="text-link">Register now</a>
+            </p>
+            <p style="margin-top: 0.5rem; text-align: center;">
+                <button id="themeToggle" class="theme-toggle-link" type="button" data-theme-toggle>Toggle theme</button>
             </p>
         </section>
     </main>
