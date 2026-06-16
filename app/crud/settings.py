@@ -1,4 +1,4 @@
-from app.db.database import supabase
+from app.db.database import get_supabase
 from app.exceptions import DatabaseError
 import logging
 
@@ -26,9 +26,9 @@ def delete_user_account(user_id: str) -> None:
         for table in tables_to_clear:
             logger.info(f"Deleting data from table {table} for user {user_id}")
             if table == "users":
-                supabase.table(table).delete().eq("id", user_id).execute()
+                get_supabase().table(table).delete().eq("id", user_id).execute()
             else:
-                supabase.table(table).delete().eq("user_id", user_id).execute()
+                get_supabase().table(table).delete().eq("user_id", user_id).execute()
     except Exception as e:
         logger.error(f"Error deleting account for user {user_id}: {e}")
         raise DatabaseError(f"Failed to permanently delete account", original_exception=e)

@@ -17,7 +17,7 @@
             border-radius: 0 8px 8px 0;
             font-size: 0.95rem;
             line-height: 1.5;
-            color: #f8fafc;
+            color: var(--text);
         }
     </style>
     <section class="page-header">
@@ -70,7 +70,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             let chartData = {};
             try {
-                chartData = {{ summary.chart_data | tojson | safe }};
+                chartData = {{ (summary.chart_data if summary else {}) | tojson | safe }};
             } catch (e) {
                 console.error("Failed to parse chart data", e);
                 return;

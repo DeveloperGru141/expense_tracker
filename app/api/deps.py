@@ -1,5 +1,5 @@
 from fastapi import Request
-from app.db.database import supabase
+from app.db.database import supabase, set_auth
 from app.exceptions import AuthError
 
 def get_authenticated_user_id(request: Request) -> str | None:
@@ -11,7 +11,7 @@ def get_authenticated_user_id(request: Request) -> str | None:
         auth_response = supabase.auth.get_user(token)
         if not auth_response or not auth_response.user:
             return None
-        supabase.postgrest.auth(token)
+        set_auth(token)
         return auth_response.user.id
     except Exception:
         return None

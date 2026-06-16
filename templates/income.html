@@ -102,6 +102,7 @@
                                 <td>
                                     <form action="/income/{{ inc.id }}/delete" method="post">
                                         <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                                        <input type="hidden" name="next_url" value="/income">
                                         <button type="submit" class="delete-button">Delete</button>
                                     </form>
                                 </td>

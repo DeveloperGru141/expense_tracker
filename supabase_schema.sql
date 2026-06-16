@@ -65,6 +65,7 @@ create table if not exists recurring_expenses (
     start_date date not null,
     next_occurrence date not null,
     notes text default '',
+    created_at timestamp with time zone default timezone('utc'::text, now()) not null,
     updated_at timestamp with time zone default timezone('utc'::text, now())
 );
 
@@ -105,6 +106,7 @@ create table if not exists recurring_income (
     start_date date not null,
     next_occurrence date not null,
     notes text default '',
+    created_at timestamp with time zone default timezone('utc'::text, now()) not null,
     updated_at timestamp with time zone default timezone('utc'::text, now())
 );
 

@@ -4,7 +4,7 @@ from app.db.database import supabase
 from app.api.deps import get_authenticated_user_id
 from app.core.config import templates
 from app.core.limiter import limiter
-from app.core.security import get_csrf_token, set_csrf_cookie
+from app.core.security import get_csrf_token, set_csrf_cookie, require_csrf
 import logging
 
 logger = logging.getLogger(__name__)
@@ -36,7 +36,9 @@ async def register(
     email: str = Form(...),
     password: str = Form(...),
     confirm_password: str = Form(...),
+    csrf_token: str = Form(...),
 ):
+    require_csrf(request, csrf_token)
     email = email.strip().lower()[:MAX_EMAIL_LENGTH]
     password = password[:MAX_PASSWORD_LENGTH]
 
@@ -145,8 +147,10 @@ async def login(
     request: Request,
     email: str = Form(...),
     password: str = Form(...),
+    csrf_token: str = Form(...),
     next_url: str = Form("/dashboard"),
 ):
+    require_csrf(request, csrf_token)
     email = email.strip().lower()[:MAX_EMAIL_LENGTH]
     password = password[:MAX_PASSWORD_LENGTH]
 

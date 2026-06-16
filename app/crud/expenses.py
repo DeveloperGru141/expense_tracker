@@ -1,15 +1,13 @@
 from typing import Any
-from app.db.database import supabase
+from app.db.database import get_supabase
 from app.exceptions import DatabaseError
 
 def fetch_expenses(user_id: str, search: str = "") -> list[dict[str, Any]]:
     try:
-        query = supabase.table("expenses").select("*").eq("user_id", user_id)
+        query = get_supabase().table("expenses").select("*").eq("user_id", user_id)
 
         if search:
-            query = query.ilike("title", f"%{search}%")
-            query = query.ilike("category", f"%{search}%")
-            query = query.ilike("notes", f"%{search}%")
+            query = query.or_(f"title.ilike.%{search}%,category.ilike.%{search}%,notes.ilike.%{search}%")
 
         response = query.order("expense_date", desc=True).execute()
         return response.data
@@ -18,7 +16,7 @@ def fetch_expenses(user_id: str, search: str = "") -> list[dict[str, Any]]:
 
 def create_expense(user_id: str, data: dict[str, Any]) -> str:
     try:
-        response = supabase.table("expenses").insert({
+        response = get_supabase().table("expenses").insert({
             "user_id": user_id,
             "title": data["title"],
             "amount": data["amount"],
@@ -33,10 +31,10 @@ def create_expense(user_id: str, data: dict[str, Any]) -> str:
 
 def delete_expense(user_id: str, expense_id: str) -> str | None:
     try:
-        response = supabase.table("expenses").select("receipt_image").eq("id", expense_id).eq("user_id", user_id).execute()
+        response = get_supabase().table("expenses").select("receipt_image").eq("id", expense_id).eq("user_id", user_id).execute()
         receipt_image = response.data[0]["receipt_image"] if response.data and len(response.data) > 0 else None
         
-        supabase.table("expenses").delete().eq("id", expense_id).eq("user_id", user_id).execute()
+        get_supabase().table("expenses").delete().eq("id", expense_id).eq("user_id", user_id).execute()
         return receipt_image
     except Exception as e:
         raise DatabaseError("Error deleting expense", original_exception=e)

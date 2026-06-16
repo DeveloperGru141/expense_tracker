@@ -1,10 +1,10 @@
 from typing import Any
-from app.db.database import supabase
+from app.db.database import get_supabase
 from app.exceptions import DatabaseError
 
 def fetch_income(user_id: str, search: str = "") -> list[dict[str, Any]]:
     try:
-        query = supabase.table("income").select("*").eq("user_id", user_id)
+        query = get_supabase().table("income").select("*").eq("user_id", user_id)
         
         if search:
             query = query.ilike("title", f"%{search}%")
@@ -16,7 +16,7 @@ def fetch_income(user_id: str, search: str = "") -> list[dict[str, Any]]:
 
 def create_income(user_id: str, data: dict[str, Any]) -> str:
     try:
-        response = supabase.table("income").insert({
+        response = get_supabase().table("income").insert({
             "user_id": user_id,
             "title": data["title"],
             "amount": data["amount"],
@@ -30,7 +30,7 @@ def create_income(user_id: str, data: dict[str, Any]) -> str:
 
 def delete_income(user_id: str, income_id: str) -> None:
     try:
-        supabase.table("income").delete().eq("id", income_id).eq("user_id", user_id).execute()
+        get_supabase().table("income").delete().eq("id", income_id).eq("user_id", user_id).execute()
     except Exception as e:
         raise DatabaseError("Error deleting income", original_exception=e)
 

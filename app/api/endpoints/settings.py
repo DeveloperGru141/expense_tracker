@@ -2,7 +2,7 @@ from fastapi import APIRouter, Request, Form, HTTPException
 from fastapi.responses import RedirectResponse
 from app.api.deps import require_user
 from app.api.utils import render_page
-from app.db.database import supabase
+from app.db.database import get_supabase
 from app.crud.analytics import build_summary
 from app.crud.expenses import fetch_expenses
 from app.crud.income import fetch_income
@@ -41,11 +41,13 @@ def settings_page(request: Request, saved: int = 0, cleared: int = 0):
 @limiter.limit("10/minute")
 def update_settings(
     request: Request,
+    csrf_token: str = Form(...),
     currency_code: str = Form("NGN"),
     monthly_budget: str = Form(""),
     budget_alert: str = Form("80"),
     display_name: str = Form(""),
 ):
+    require_csrf(request, csrf_token)
     try:
         user_id = require_user(request)
 
@@ -58,7 +60,7 @@ def update_settings(
             currency_code = "NGN"
 
         try:
-            response = supabase.table("users").select("username").eq("id", user_id).execute()
+            response = get_supabase().table("users").select("username").eq("id", user_id).execute()
         except Exception as e:
             raise DatabaseError("Failed to fetch user data", original_exception=e)
 
@@ -74,7 +76,7 @@ def update_settings(
         logger.info(f"Updating settings for user {user_id}: {values}")
         for key, value in values.items():
             try:
-                supabase.table("settings").upsert({"user_id": user_id, "key": key, "value": value}).execute()
+                get_supabase().table("settings").upsert({"user_id": user_id, "key": key, "value": value}).execute()
             except Exception as e:
                 raise DatabaseError(f"Failed to update setting: {key}", original_exception=e)
 

@@ -2,7 +2,7 @@ import logging
 from typing import Any
 from fastapi import Request
 from app.core.config import templates, NAV_ITEMS
-from app.db.database import supabase
+from app.db.database import get_supabase
 from app.core.security import get_csrf_token, set_csrf_cookie
 from app.crud.categories import fetch_categories
 from app.crud.expenses import fetch_expenses
@@ -22,7 +22,7 @@ def get_settings(user_id: str) -> dict[str, str]:
         "display_name": "New User",
     }
     try:
-        response = supabase.table("settings").select("key, value").eq("user_id", user_id).execute()
+        response = get_supabase().table("settings").select("key, value").eq("user_id", user_id).execute()
         saved = {row["key"]: row["value"] for row in (response.data or [])}
         return {**defaults, **saved}
     except Exception as e:
@@ -31,7 +31,8 @@ def get_settings(user_id: str) -> dict[str, str]:
 
 def enrich_settings(settings: dict[str, str]) -> dict[str, str]:
     currency_code = settings.get("currency_code", "NGN")
-    settings["currency_symbol"] = "$" if currency_code == "USD" else "\u20a6"
+    symbol_map = {"USD": "$", "NGN": "\u20a6", "EUR": "\u20ac", "GBP": "\u00a3"}
+    settings["currency_symbol"] = symbol_map.get(currency_code, currency_code)
     return settings
 
 def get_budget_status(total_spent: float, settings: dict[str, str]) -> dict[str, Any]:
@@ -56,7 +57,7 @@ def get_budget_status(total_spent: float, settings: dict[str, str]) -> dict[str,
         return {"configured": False}
 
 def validate_redirect_url(url: str) -> str:
-    if not url.startswith("/"):
+    if not url.startswith("/") or url.startswith("//"):
         return "/dashboard"
     return url
 

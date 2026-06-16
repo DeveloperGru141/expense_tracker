@@ -1,9 +1,6 @@
 const CACHE_NAME = "expense-flow-v1";
 const STATIC_CACHE = "expense-flow-static-v1";
 const CORE_ASSETS = [
-  "/",
-  "/login",
-  "/register",
   "/static/style.css",
   "/static/app.js",
   "/static/manifest.webmanifest"

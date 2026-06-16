@@ -123,21 +123,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // 8. Chart responsiveness - resize canvas on orientation change
-    let resizeTimer;
-    window.addEventListener("resize", () => {
-        clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(() => {
-            document.querySelectorAll("canvas").forEach(canvas => {
-                const parent = canvas.parentElement;
-                if (parent) {
-                    const rect = parent.getBoundingClientRect();
-                    canvas.style.width = rect.width + "px";
-                    canvas.style.height = "auto";
-                }
-            });
-        }, 250);
-    });
+    // 8. Chart.js handles its own responsive sizing; no manual resize needed
 
     // 9. Register service worker for PWA
     if ("serviceWorker" in navigator) {
@@ -203,20 +189,23 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // 13. Two-step exit confirmation
-    document.querySelectorAll("button[data-exit]").forEach(btn => {
-        btn.addEventListener("click", function () {
-            const exitIntent = sessionStorage.getItem("exitIntent");
-            if (exitIntent) {
-                sessionStorage.removeItem("exitIntent");
-                const form = this.closest("form[data-exit]");
-                if (form) form.submit();
-            } else {
-                sessionStorage.setItem("exitIntent", "true");
-                if (location.pathname !== "/dashboard") {
-                    location.href = "/dashboard";
+    // 13. Two-step exit confirmation (scoped to specific form)
+    const exitForm = document.querySelector("form.logout-form");
+    if (exitForm) {
+        const exitBtn = exitForm.querySelector("button[data-exit]");
+        if (exitBtn) {
+            exitBtn.addEventListener("click", function () {
+                const exitIntent = sessionStorage.getItem("exitIntent");
+                if (exitIntent) {
+                    sessionStorage.removeItem("exitIntent");
+                    exitForm.submit();
+                } else {
+                    sessionStorage.setItem("exitIntent", "true");
+                    if (location.pathname !== "/dashboard") {
+                        location.href = "/dashboard";
+                    }
                 }
-            }
-        });
-    });
+            });
+        }
+    }
 });

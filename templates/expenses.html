@@ -42,7 +42,17 @@
                 </label>
                 <label>
                     <span>Category</span>
-                    <input type="text" name="category" placeholder="e.g. Food, Transport, Housing" required>
+                    <input type="text" name="category" placeholder="e.g. Food, Transport, Housing" required list="expense-categories">
+                    <datalist id="expense-categories">
+                        <option value="Food">
+                        <option value="Transport">
+                        <option value="Utilities">
+                        <option value="Shopping">
+                        <option value="Entertainment">
+                        <option value="Health">
+                        <option value="Housing">
+                        <option value="Other">
+                    </datalist>
                 </label>
                 <label>
                     <span>Date</span>

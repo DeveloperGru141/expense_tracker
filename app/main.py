@@ -13,7 +13,7 @@ from app.core.config import BASE_DIR, templates
 from app.core.security import get_csrf_token, set_csrf_cookie
 from app.api.endpoints import auth, expenses, income, analytics, settings, recurring
 from app.core.limiter import limiter
-from app.db.database import supabase
+from app.db.database import get_supabase
 from app.exceptions import AppError, DatabaseError, AuthError
 
 logging.basicConfig(
@@ -67,7 +67,7 @@ async def global_exception_handler(request: Request, exc: Exception):
 def health_check():
     db_ok = False
     try:
-        supabase.table("users").select("id").limit(1).execute()
+        get_supabase().table("users").select("id").limit(1).execute()
         db_ok = True
     except Exception:
         pass

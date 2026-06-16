@@ -7,7 +7,7 @@ from app.core.security import require_csrf
 from app.crud.expenses import fetch_expenses
 from app.crud.analytics import build_summary
 from app.crud.recurring import process_recurring_expenses, fetch_recurring_expenses, fetch_recurring_income
-from app.db.database import supabase
+from app.db.database import get_supabase
 from app.exceptions import AuthError, DatabaseError
 from app.core.limiter import limiter
 import logging
@@ -99,7 +99,7 @@ def create_recurring(
         }
 
         logger.info(f"Creating recurring {type} for user {user_id}: {title}")
-        supabase.table(table).insert(recurring_data).execute()
+        get_supabase().table(table).insert(recurring_data).execute()
 
         return RedirectResponse(url="/recurring", status_code=303)
     except (AuthError, HTTPException):
@@ -126,7 +126,7 @@ def delete_recurring(
         type = type.strip().lower()
         table = "recurring_expenses" if type == "expense" else "recurring_income"
         try:
-            supabase.table(table).delete().eq("id", recurring_id).eq("user_id", user_id).execute()
+            get_supabase().table(table).delete().eq("id", recurring_id).eq("user_id", user_id).execute()
         except Exception as e:
             raise DatabaseError(f"Failed to delete recurring {type}", original_exception=e)
 

@@ -25,7 +25,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             let chartData = {};
             try {
-                chartData = {{ summary.chart_data | tojson | safe }};
+                chartData = {{ (summary.chart_data if summary else {}) | tojson | safe }};
             } catch (e) {
                 console.error("Failed to parse chart data", e);
                 return;

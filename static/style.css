@@ -251,7 +251,7 @@ h1, h2, h3, h4, h5, h6 {
     display: block;
     font-size: 1.35rem;
     color: var(--text);
-    font-weight: 650;
+    font-weight: 600;
 }
 
 .hero-metrics span {
@@ -370,6 +370,30 @@ h1, h2, h3, h4, h5, h6 {
     margin: 0 0 0.35rem;
     color: rgba(226, 232, 240, 0.7);
     font-size: 0.85rem;
+}
+
+[data-theme="light"] .mock-window,
+[data-theme="light"] .stack-card,
+[data-theme="light"] .tablet-card,
+[data-theme="light"] .notification-card {
+    background: rgba(255, 255, 255, 0.96);
+}
+
+[data-theme="light"] .top-card strong,
+[data-theme="light"] .notification-card strong {
+    color: #0f172a;
+}
+
+[data-theme="light"] .notification-card span {
+    color: rgba(71, 85, 105, 0.62);
+}
+
+[data-theme="light"] .top-card {
+    background: rgba(248, 250, 252, 0.96);
+}
+
+[data-theme="light"] .side-card {
+    background: rgba(248, 250, 252, 0.96);
 }
 
 .hero-float-card strong {
@@ -852,9 +876,11 @@ h1, h2, h3, h4, h5, h6 {
     z-index: 150;
     opacity: 0;
     transition: opacity 300ms ease;
+    pointer-events: none;
 }
 
 .sidebar-overlay.open {
+    display: block;
     opacity: 1;
     pointer-events: auto;
 }
@@ -1031,6 +1057,10 @@ h1, h2, h3, h4, h5, h6 {
     margin-bottom: 1rem;
     border-radius: 18px;
     background: rgba(148, 163, 184, 0.10);
+}
+
+[data-theme="light"] .card-illustration {
+    background: rgba(71, 85, 105, 0.06);
 }
 
 .stat-card span,
