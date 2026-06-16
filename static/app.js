@@ -189,21 +189,25 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // 13. Two-step exit confirmation (scoped to specific form)
+    // 13. Two-step exit: first click → dashboard, second click → sign out
     const exitForm = document.querySelector("form.logout-form");
     if (exitForm) {
         const exitBtn = exitForm.querySelector("button[data-exit]");
         if (exitBtn) {
-            exitBtn.addEventListener("click", function () {
+            exitBtn.addEventListener("click", function (e) {
                 const exitIntent = sessionStorage.getItem("exitIntent");
                 if (exitIntent) {
                     sessionStorage.removeItem("exitIntent");
                     exitForm.submit();
+                    return;
+                }
+                e.preventDefault();
+                sessionStorage.setItem("exitIntent", "true");
+                if (location.pathname !== "/dashboard") {
+                    location.href = "/dashboard";
                 } else {
-                    sessionStorage.setItem("exitIntent", "true");
-                    if (location.pathname !== "/dashboard") {
-                        location.href = "/dashboard";
-                    }
+                    exitBtn.textContent = "Confirm Sign Out?";
+                    setTimeout(() => { exitBtn.textContent = "Sign Out"; }, 3000);
                 }
             });
         }
