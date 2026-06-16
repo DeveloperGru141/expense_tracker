@@ -3,6 +3,7 @@
 {% block title %}AI Insights | Expense Tracker{% endblock %}
 
 {% block content %}
+    <!-- Inline insight styles -->
     <style>
         .insight-list {
             list-style: none;
@@ -20,6 +21,7 @@
             color: var(--text);
         }
     </style>
+    <!-- Page header -->
     <section class="page-header">
         <div class="page-header-main">
             <div>
@@ -27,16 +29,20 @@
                 <h2 class="page-title">See the most important spending signals faster.</h2>
             </div>
         </div>
+        <!-- Categories analyzed pill -->
         <article class="card summary-pill">
             <span>Categories analyzed</span>
             <strong>{{ analytics|length }}</strong>
         </article>
     </section>
 
+    <!-- Content grid: insights + chart -->
     <section class="content-grid">
+        <!-- Intelligent observations card -->
         <article class="card ai-insight-card">
             <h3>Intelligent Observations</h3>
             {% if insights %}
+                <!-- Insights list -->
                 <ul class="insight-list">
                     {% for insight in insights %}
                         <li>{{ insight }}</li>
@@ -47,12 +53,14 @@
             {% endif %}
         </article>
         
+        <!-- Category distribution chart -->
         <article class="card chart-card">
             <h3>Category Distribution</h3>
             <canvas id="aiCategoryChart"></canvas>
         </article>
     </section>
 
+    <!-- Analytics cards grid -->
     <section class="analytics-grid" style="margin-top: 2rem;">
         {% for item in analytics %}
             <article class="card analytics-card">
@@ -66,6 +74,7 @@
         {% endfor %}
     </section>
 
+    <!-- Polar area chart initialization script -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             let chartData = {};

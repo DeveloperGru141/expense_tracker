@@ -4,12 +4,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const overlay = document.getElementById("sidebarOverlay");
     const toggleBtn = document.getElementById("sidebarToggle");
 
+    // Open the sidebar and show the backdrop overlay
     function openSidebar() {
         sidebar.classList.add("open");
         overlay.classList.add("open");
         document.body.style.overflow = "hidden";
     }
 
+    // Close the sidebar and hide the backdrop overlay
     function closeSidebar() {
         sidebar.classList.remove("open");
         overlay.classList.remove("open");
@@ -17,6 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     if (toggleBtn && sidebar && overlay) {
+        // Toggle sidebar open/closed when hamburger button is clicked
         toggleBtn.addEventListener("click", (e) => {
             e.stopPropagation();
             if (sidebar.classList.contains("open")) {
@@ -26,8 +29,10 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
 
+        // Close sidebar when clicking outside (on the overlay backdrop)
         overlay.addEventListener("click", closeSidebar);
 
+        // Close sidebar when Escape key is pressed
         document.addEventListener("keydown", (e) => {
             if (e.key === "Escape" && sidebar.classList.contains("open")) {
                 closeSidebar();
@@ -54,7 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // 3. Animate progress bars on load
+    // 3. Animate progress bars on load (delayed for visual effect)
     const progressFills = document.querySelectorAll(".progress-fill");
     setTimeout(() => {
         progressFills.forEach(fill => {
@@ -69,7 +74,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }, 150);
 
-    // 4. Auto-fade settings save flash banner
+    // 4. Auto-fade settings save flash banner after 3 seconds
     const flashBanner = document.querySelector(".flash-banner");
     if (flashBanner) {
         setTimeout(() => {
@@ -82,7 +87,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }, 3000);
     }
 
-    // 5. Form validation
+    // 5. Form validation — highlight missing required fields on submit
     document.querySelectorAll("form.expense-form, form.filter-form").forEach(form => {
         form.addEventListener("submit", (e) => {
             const inputs = form.querySelectorAll("input[required], select[required], textarea[required]");
@@ -125,8 +130,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // 8. Chart.js handles its own responsive sizing; no manual resize needed
 
-    // 9. Register service worker for PWA
+    // 9. Register service worker for PWA (offline support)
     if ("serviceWorker" in navigator) {
+        // Register the service worker after the page loads
         window.addEventListener("load", () => {
             navigator.serviceWorker.register("/sw.js").catch(() => {});
         });
@@ -136,12 +142,14 @@ document.addEventListener("DOMContentLoaded", () => {
     let deferredPrompt = null;
     const installBtns = [document.getElementById("installApp"), document.getElementById("installAppMobile")].filter(Boolean);
 
+    // Intercept the browser install prompt to show a custom install button
     window.addEventListener("beforeinstallprompt", (e) => {
         e.preventDefault();
         deferredPrompt = e;
         installBtns.forEach(btn => btn.hidden = false);
     });
 
+    // Trigger the deferred PWA install prompt on custom button click
     installBtns.forEach(btn => {
         btn.addEventListener("click", async () => {
             if (!deferredPrompt) return;
@@ -152,6 +160,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
+    // Hide install buttons once the app has been installed
     window.addEventListener("appinstalled", () => {
         deferredPrompt = null;
         installBtns.forEach(btn => btn.hidden = true);
@@ -168,10 +177,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const themeLabel = document.getElementById("themeLabel");
     const themeColorMeta = document.getElementById("themeColorMeta");
 
+    // Read the stored theme from localStorage, default to "dark"
     function getTheme() {
         return localStorage.getItem("theme") || "dark";
     }
 
+    // Apply theme to the document and persist the choice
     function setTheme(theme) {
         document.documentElement.setAttribute("data-theme", theme);
         localStorage.setItem("theme", theme);
@@ -182,6 +193,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     setTheme(getTheme());
 
+    // Toggle between dark and light themes on button click
     document.querySelectorAll("[data-theme-toggle]").forEach(btn => {
         btn.addEventListener("click", () => {
             const current = getTheme();
@@ -194,6 +206,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (exitForm) {
         const exitBtn = exitForm.querySelector("button[data-exit]");
         if (exitBtn) {
+            // First click navigates to dashboard, second click confirms sign-out
             exitBtn.addEventListener("click", function (e) {
                 const exitIntent = sessionStorage.getItem("exitIntent");
                 if (exitIntent) {

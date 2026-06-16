@@ -22,6 +22,7 @@ MAX_TITLE_LENGTH = 200
 MAX_NOTES_LENGTH = 1000
 MAX_SEARCH_LENGTH = 100
 
+# Show the expenses listing page with optional search.
 @router.get("/expenses")
 def expenses_page(request: Request, q: str = ""):
     try:
@@ -50,6 +51,7 @@ def expenses_page(request: Request, q: str = ""):
         logger.exception(f"Unexpected error loading expenses: {e}")
         raise HTTPException(status_code=500, detail="Internal server error")
 
+# Handle adding a new expense with optional receipt upload.
 @router.post("/expenses")
 @limiter.limit("10/minute")
 async def add_expense(
@@ -132,6 +134,7 @@ async def add_expense(
         logger.exception(f"Unexpected error adding expense: {e}")
         raise HTTPException(status_code=500, detail="Failed to add expense")
 
+# Delete an expense and its associated receipt.
 @router.post("/expenses/{expense_id}/delete")
 def remove_expense(
     request: Request,

@@ -3,6 +3,7 @@
 {% block title %}Income | Expense Tracker{% endblock %}
 
 {% block content %}
+    <!-- Page header -->
     <section class="page-header">
         <div class="page-header-main">
             <div>
@@ -10,13 +11,16 @@
                 <h2 class="page-title">Manage your income streams.</h2>
             </div>
         </div>
+        <!-- Total income summary pill -->
         <article class="card summary-pill">
             <span>Total Income</span>
             <strong>{{ settings.currency_symbol }}{{ '%.2f'|format(summary.total_income) }}</strong>
         </article>
     </section>
 
+    <!-- Content grid: form + summary -->
     <section class="content-grid">
+        <!-- Add income form -->
         <section class="card form-card">
             <h3>Add Income</h3>
             <form action="/income" method="post" class="expense-form">
@@ -52,8 +56,10 @@
             </form>
         </section>
 
+        <!-- Financial summary card -->
         <section class="card overview-card">
             <h3>Summary</h3>
+            <!-- Stat grid -->
             <div class="stat-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 1rem; margin-top: 0.75rem;">
                 <div>
                     <span style="color: var(--muted); font-size: 0.85rem;">Total Income</span>
@@ -71,14 +77,17 @@
         </section>
     </section>
 
+    <!-- Income history table -->
     <section class="card table-card">
         <div class="section-heading" style="flex-wrap: wrap; gap: 1rem;">
             <h3>Income History</h3>
+            <!-- Search form -->
             <form action="/income" method="get" class="search-form" style="flex: 1; min-width: 250px;">
                 <input type="text" name="q" placeholder="Search by title, category, or notes..." value="{{ search_query }}">
             </form>
         </div>
         {% if income_list %}
+            <!-- Income table -->
             <div class="table-wrap">
                 <table>
                     <thead>

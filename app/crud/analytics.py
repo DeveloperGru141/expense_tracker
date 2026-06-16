@@ -1,6 +1,7 @@
 from typing import Any
 from collections import defaultdict
 
+# Build a summary of totals, categories, and daily trends.
 def build_summary(expenses: list[dict[str, Any]], categories: list[dict[str, Any]] = None, income: list[dict[str, Any]] = None) -> dict[str, Any]:
     total_spent = sum(item["amount"] for item in expenses)
     total_income = sum(item["amount"] for item in income) if income else 0.0
@@ -66,6 +67,7 @@ def build_summary(expenses: list[dict[str, Any]], categories: list[dict[str, Any
         }
     }
 
+# Build category breakdown and spending insights.
 def build_analytics(expenses: list[dict[str, Any]], summary: dict[str, Any]) -> dict[str, Any]:
     total = summary["total"] or 0.0
     category_data = []
@@ -96,6 +98,7 @@ def build_analytics(expenses: list[dict[str, Any]], summary: dict[str, Any]) -> 
         "insights": insights
     }
 
+# Build monthly report data from expenses and income.
 def build_reports(expenses: list[dict[str, Any]], income: list[dict[str, Any]] = None) -> list[dict[str, Any]]:
     monthly_data: dict[str, dict[str, float]] = defaultdict(lambda: {"spent": 0.0, "income": 0.0})
     for item in expenses:

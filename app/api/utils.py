@@ -14,6 +14,7 @@ logger = logging.getLogger(__name__)
 
 SETTINGS_CACHE: dict[str, dict[str, str] | None] = {}
 
+# Fetch user settings from the database with default fallbacks.
 def get_settings(user_id: str) -> dict[str, str]:
     defaults = {
         "currency_code": "NGN",
@@ -29,12 +30,14 @@ def get_settings(user_id: str) -> dict[str, str]:
         logger.warning(f"Failed to fetch settings for user {user_id}: {e}")
         return defaults
 
+# Add the currency symbol to the settings dict.
 def enrich_settings(settings: dict[str, str]) -> dict[str, str]:
     currency_code = settings.get("currency_code", "NGN")
     symbol_map = {"USD": "$", "NGN": "\u20a6"}
     settings["currency_symbol"] = symbol_map.get(currency_code, currency_code)
     return settings
 
+# Calculate budget usage status and alert threshold.
 def get_budget_status(total_spent: float, settings: dict[str, str]) -> dict[str, Any]:
     budget_str = settings.get("monthly_budget", "")
     if not budget_str:
@@ -56,11 +59,13 @@ def get_budget_status(total_spent: float, settings: dict[str, str]) -> dict[str,
     except ValueError:
         return {"configured": False}
 
+# Validate and sanitize a redirect URL to prevent open redirects.
 def validate_redirect_url(url: str) -> str:
     if not url.startswith("/") or url.startswith("//"):
         return "/dashboard"
     return url
 
+# Render a template page with shared context, settings, and budget data.
 def render_page(
     request: Request,
     template_name: str,

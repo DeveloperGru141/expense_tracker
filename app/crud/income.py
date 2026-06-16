@@ -2,6 +2,7 @@ from typing import Any
 from app.db.database import get_supabase
 from app.exceptions import DatabaseError
 
+# Fetch all income records for a user, optionally filtered by search.
 def fetch_income(user_id: str, search: str = "") -> list[dict[str, Any]]:
     try:
         query = get_supabase().table("income").select("*").eq("user_id", user_id)
@@ -14,6 +15,7 @@ def fetch_income(user_id: str, search: str = "") -> list[dict[str, Any]]:
     except Exception as e:
         raise DatabaseError("Error fetching income", original_exception=e)
 
+# Create a new income record for a user.
 def create_income(user_id: str, data: dict[str, Any]) -> str:
     try:
         response = get_supabase().table("income").insert({
@@ -28,12 +30,14 @@ def create_income(user_id: str, data: dict[str, Any]) -> str:
     except Exception as e:
         raise DatabaseError("Error creating income", original_exception=e)
 
+# Delete an income record for a user.
 def delete_income(user_id: str, income_id: str) -> None:
     try:
         get_supabase().table("income").delete().eq("id", income_id).eq("user_id", user_id).execute()
     except Exception as e:
         raise DatabaseError("Error deleting income", original_exception=e)
 
+# Filter an income list by date range and category.
 def filter_income(
     income_list: list[dict[str, Any]],
     date_from: str = "",

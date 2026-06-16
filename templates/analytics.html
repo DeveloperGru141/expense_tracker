@@ -3,6 +3,7 @@
 {% block title %}Analytics | Expense Tracker{% endblock %}
 
 {% block content %}
+    <!-- Page header -->
     <section class="page-header">
         <div class="page-header-main">
             <div>
@@ -10,17 +11,20 @@
                 <h2 class="page-title">Understand where your money is going.</h2>
             </div>
         </div>
+        <!-- Tracked categories pill -->
         <article class="card summary-pill">
             <span>Tracked categories</span>
             <strong>{{ analytics|length }}</strong>
         </article>
     </section>
 
+    <!-- Category comparison bar chart -->
     <section class="card chart-card" style="margin-bottom: 2rem;">
         <h3>Category Comparison</h3>
         <canvas id="analyticsBarChart" height="100"></canvas>
     </section>
 
+    <!-- Bar chart initialization script -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             let chartData = {};
@@ -62,6 +66,7 @@
         });
     </script>
 
+    <!-- Analytics cards grid -->
     <section class="analytics-grid">
         {% if analytics %}
             {% for item in analytics %}

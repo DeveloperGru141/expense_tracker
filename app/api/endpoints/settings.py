@@ -16,6 +16,7 @@ router = APIRouter()
 
 MAX_DISPLAY_NAME_LENGTH = 100
 
+# Show the settings page.
 @router.get("/settings")
 def settings_page(request: Request, saved: int = 0, cleared: int = 0):
     try:
@@ -37,6 +38,7 @@ def settings_page(request: Request, saved: int = 0, cleared: int = 0):
         logger.error(f"Error loading settings: {e}")
         raise HTTPException(status_code=500, detail="Internal server error")
 
+# Handle updating user settings.
 @router.post("/settings")
 @limiter.limit("10/minute")
 def update_settings(
@@ -90,6 +92,7 @@ def update_settings(
         logger.exception(f"Unexpected error updating settings: {e}")
         raise HTTPException(status_code=500, detail="Failed to update settings")
 
+# Permanently delete the user's account and all data.
 @router.post("/settings/delete-account")
 @limiter.limit("3/minute")
 def delete_account(
@@ -120,6 +123,7 @@ def delete_account(
         logger.exception(f"Unexpected error deleting account: {e}")
         raise HTTPException(status_code=500, detail="Failed to delete account")
 
+# Update the budget limit for a specific category.
 @router.post("/categories/{category_id}/budget")
 @limiter.limit("10/minute")
 def update_cat_budget(

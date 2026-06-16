@@ -1,19 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Meta tags -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#06101a" id="themeColorMeta">
     <meta name="description" content="Create your ExpenseFlow account to start tracking expenses and managing budgets.">
     <title>Register | ExpenseFlow</title>
+    <!-- Favicon and manifest -->
     <link rel="icon" href="{{ url_for('static', path='images/calculator.png') }}" type="image/png">
     <link rel="manifest" href="{{ url_for('static', path='manifest.webmanifest') }}">
+    <!-- Stylesheet -->
     <link rel="stylesheet" href="{{ url_for('static', path='style.css') }}?v=2.3.0">
+    <!-- App scripts -->
     <script src="{{ url_for('static', path='app.js') }}?v=2.3.0" defer></script>
+    <!-- Theme restoration script -->
     <script>if(localStorage.getItem("theme")==="light"){document.documentElement.setAttribute("data-theme","light");document.getElementById("themeColorMeta")&&(document.getElementById("themeColorMeta").content="#eef2f7")}</script>
 </head>
 <body class="login-page">
+    <!-- Register shell -->
     <main class="login-shell">
+        <!-- Branding section -->
         <section class="login-copy">
             <div class="login-brand-block">
                 <div class="login-brand-icon">
@@ -26,11 +33,14 @@
             <p class="landing-subtext">Join modern teams who track, analyze, and master their financial operations with ease.</p>
         </section>
 
+        <!-- Registration form panel -->
         <section class="login-panel">
             <h2>Get Started</h2>
             {% if error %}
+                <!-- Error message -->
                 <p class="form-error">{{ error }}</p>
             {% endif %}
+            <!-- Register form -->
             <form action="/register" method="post" class="expense-form">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
                 <label>
@@ -47,9 +57,11 @@
                 </label>
                 <button type="submit">Create Account</button>
             </form>
+            <!-- Login link -->
             <p style="margin-top: 1.5rem; text-align: center; color: var(--muted);">
                 Already have an account? <a href="/login" class="text-link">Sign In</a>
             </p>
+            <!-- Theme toggle -->
             <p style="margin-top: 0.5rem; text-align: center;">
                 <button id="themeToggle" class="theme-toggle-link" type="button" data-theme-toggle>Toggle theme</button>
             </p>

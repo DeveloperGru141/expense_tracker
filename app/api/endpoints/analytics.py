@@ -20,6 +20,7 @@ import logging
 logger = logging.getLogger(__name__)
 router = APIRouter()
 
+# Show the dashboard page with summary and recent expenses.
 @router.get("/dashboard")
 def dashboard(request: Request):
     try:
@@ -55,6 +56,7 @@ def dashboard(request: Request):
         logger.exception(f"Unexpected error loading dashboard: {e}")
         raise HTTPException(status_code=500, detail="Internal server error")
 
+# Show the analytics page with category breakdown.
 @router.get("/analytics")
 def analytics_page(request: Request):
     try:
@@ -84,6 +86,7 @@ def analytics_page(request: Request):
         logger.exception(f"Unexpected error loading analytics: {e}")
         raise HTTPException(status_code=500, detail="Internal server error")
 
+# Show the AI insights page with spending analysis.
 @router.get("/ai-insights")
 def ai_insights_page(request: Request):
     try:
@@ -114,6 +117,7 @@ def ai_insights_page(request: Request):
         logger.exception(f"Unexpected error loading AI insights: {e}")
         raise HTTPException(status_code=500, detail="Internal server error")
 
+# Show the reports page with filterable data.
 @router.get("/reports")
 def reports_page(
     request: Request,
@@ -156,6 +160,7 @@ def reports_page(
         logger.exception(f"Unexpected error loading reports: {e}")
         raise HTTPException(status_code=500, detail="Internal server error")
 
+# Export reports as CSV, Excel, or PDF.
 @router.get("/reports/export")
 def export_reports(
     request: Request,

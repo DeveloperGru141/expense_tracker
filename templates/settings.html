@@ -3,6 +3,7 @@
 {% block title %}Settings | ExpenseFlow{% endblock %}
 
 {% block content %}
+    <!-- Page header -->
     <section class="page-header">
         <div class="page-header-main">
             <div>
@@ -10,12 +11,14 @@
                 <h2 class="page-title">Configure the direction of your tracker.</h2>
             </div>
         </div>
+        <!-- Currency pill -->
         <article class="card summary-pill">
             <span>Current currency</span>
             <strong>{{ settings.currency_code }}</strong>
         </article>
     </section>
 
+    <!-- Flash messages -->
     {% if saved %}
         <section class="flash-banner">Settings saved successfully.</section>
     {% endif %}
@@ -24,7 +27,9 @@
         <section class="flash-banner flash-banner--danger">Your account data has been successfully deleted.</section>
     {% endif %}
 
+    <!-- Content grid: preferences + category budgets -->
     <section class="content-grid">
+        <!-- Preferences form -->
         <section class="card form-card">
             <h3>Preferences</h3>
             <form action="/settings" method="post" class="expense-form">
@@ -52,11 +57,13 @@
             </form>
         </section>
 
+        <!-- Category budgets table -->
         <section class="card table-card">
             <div class="section-heading">
                 <h3>Category Budgets</h3>
                 <span class="muted-text">Set monthly limits</span>
             </div>
+            <!-- Budget limits table -->
             <div class="table-wrap">
                 <table>
                     <thead>
@@ -90,6 +97,7 @@
         </section>
     </section>
 
+    <!-- Account deletion section -->
     <section class="del-section">
         <div class="del-header">
             <div class="del-icon">&#9888;</div>

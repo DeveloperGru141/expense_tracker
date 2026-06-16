@@ -14,6 +14,7 @@ MAX_EMAIL_LENGTH = 254
 MIN_PASSWORD_LENGTH = 8
 MAX_PASSWORD_LENGTH = 128
 
+# Show the registration page.
 @router.get("/register")
 def register_page(request: Request):
     if get_authenticated_user_id(request):
@@ -29,6 +30,7 @@ def register_page(request: Request):
     set_csrf_cookie(response, csrf_token, is_secure=is_secure)
     return response
 
+# Handle user registration form submission.
 @router.post("/register")
 @limiter.limit("5/minute")
 async def register(
@@ -124,6 +126,7 @@ async def register(
 
     return RedirectResponse(url="/login?registered=1", status_code=303)
 
+# Show the login page.
 @router.get("/login")
 def login_page(request: Request, next: str = "/dashboard", registered: int = 0):
     if get_authenticated_user_id(request):
@@ -141,6 +144,7 @@ def login_page(request: Request, next: str = "/dashboard", registered: int = 0):
     set_csrf_cookie(response, csrf_token, is_secure=is_secure)
     return response
 
+# Handle login form submission and set auth cookie.
 @router.post("/login")
 @limiter.limit("5/minute")
 async def login(
@@ -203,6 +207,7 @@ async def login(
         set_csrf_cookie(response, csrf_token, is_secure=is_secure)
         return response
 
+# Log out the user by deleting the auth cookie.
 @router.post("/logout")
 def logout(request: Request):
     response = RedirectResponse(url="/login", status_code=303)

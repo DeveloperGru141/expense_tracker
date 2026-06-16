@@ -17,6 +17,7 @@ MAX_TITLE_LENGTH = 200
 MAX_NOTES_LENGTH = 1000
 MAX_SEARCH_LENGTH = 100
 
+# Show the income listing page with optional search.
 @router.get("/income")
 def income_page(request: Request, q: str = ""):
     try:
@@ -42,6 +43,7 @@ def income_page(request: Request, q: str = ""):
         logger.error(f"Unexpected error loading income page: {e}")
         raise HTTPException(status_code=500, detail="Internal server error")
 
+# Handle adding a new income entry.
 @router.post("/income")
 @limiter.limit("10/minute")
 def add_income(
@@ -90,6 +92,7 @@ def add_income(
         logger.exception(f"Error adding income: {e}")
         raise HTTPException(status_code=500, detail="Failed to add income")
 
+# Delete an income entry.
 @router.post("/income/{income_id}/delete")
 @limiter.limit("10/minute")
 def remove_income(

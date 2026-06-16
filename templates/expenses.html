@@ -3,6 +3,7 @@
 {% block title %}Expenses | Expense Tracker{% endblock %}
 
 {% block content %}
+    <!-- Page header -->
     <section class="page-header">
         <div class="page-header-main">
             <div>
@@ -10,12 +11,14 @@
                 <h2 class="page-title">Add and manage your expenses.</h2>
             </div>
         </div>
+        <!-- Total summary pill -->
         <article class="card summary-pill">
             <span>Total recorded</span>
             <strong>{{ settings.currency_symbol }}{{ '%.2f'|format(summary.total) }}</strong>
         </article>
     </section>
 
+    <!-- Budget alert banner -->
     {% if budget_status and budget_status.configured and budget_status.is_alert %}
         <div class="budget-alert-banner">
             <div class="alert-icon">Warning</div>
@@ -26,7 +29,9 @@
         </div>
     {% endif %}
 
+    <!-- Content grid: form + category snapshot -->
     <section class="content-grid">
+        <!-- Add expense form -->
         <section class="card form-card">
             <h3>Add Expense</h3>
             <form action="/expenses" method="post" class="expense-form" enctype="multipart/form-data">
@@ -70,6 +75,7 @@
             </form>
         </section>
 
+        <!-- Category snapshot card -->
         <section class="card overview-card">
             <h3>Category Snapshot</h3>
             {% if summary.categories %}
@@ -87,15 +93,18 @@
         </section>
     </section>
 
+    <!-- All expenses table -->
     <section class="card table-card">
         <div class="section-heading" style="flex-wrap: wrap; gap: 1rem;">
             <h3>All Expenses</h3>
+            <!-- Search form -->
             <form action="/expenses" method="get" class="search-form" style="flex: 1; min-width: 250px;">
                 <input type="text" name="q" placeholder="Search by title, category, or notes..." value="{{ search_query }}">
             </form>
             <span class="muted-text">{{ summary.count }} total entries</span>
         </div>
         {% if expenses %}
+            <!-- Expenses table -->
             <div class="table-wrap">
                 <table>
                     <thead>

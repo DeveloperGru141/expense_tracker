@@ -2,6 +2,7 @@ from fastapi import Request
 from app.db.database import supabase, set_auth
 from app.exceptions import AuthError
 
+# Extract and return the authenticated user ID from the request cookie.
 def get_authenticated_user_id(request: Request) -> str | None:
     token = request.cookies.get("supabase_auth_token")
     if not token:
@@ -16,6 +17,7 @@ def get_authenticated_user_id(request: Request) -> str | None:
     except Exception:
         return None
 
+# Require an authenticated user or raise AuthError.
 def require_user(request: Request) -> str:
     user_id = get_authenticated_user_id(request)
     if user_id is None:

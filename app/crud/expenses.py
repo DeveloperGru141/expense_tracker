@@ -2,6 +2,7 @@ from typing import Any
 from app.db.database import get_supabase
 from app.exceptions import DatabaseError
 
+# Fetch all expenses for a user, optionally filtered by search.
 def fetch_expenses(user_id: str, search: str = "") -> list[dict[str, Any]]:
     try:
         query = get_supabase().table("expenses").select("*").eq("user_id", user_id)
@@ -14,6 +15,7 @@ def fetch_expenses(user_id: str, search: str = "") -> list[dict[str, Any]]:
     except Exception as e:
         raise DatabaseError("Error fetching expenses", original_exception=e)
 
+# Create a new expense record for a user.
 def create_expense(user_id: str, data: dict[str, Any]) -> str:
     try:
         response = get_supabase().table("expenses").insert({
@@ -29,6 +31,7 @@ def create_expense(user_id: str, data: dict[str, Any]) -> str:
     except Exception as e:
         raise DatabaseError("Error creating expense", original_exception=e)
 
+# Delete an expense and return its receipt path if any.
 def delete_expense(user_id: str, expense_id: str) -> str | None:
     try:
         response = get_supabase().table("expenses").select("receipt_image").eq("id", expense_id).eq("user_id", user_id).execute()
@@ -39,6 +42,7 @@ def delete_expense(user_id: str, expense_id: str) -> str | None:
     except Exception as e:
         raise DatabaseError("Error deleting expense", original_exception=e)
 
+# Filter an expense list by date range and category.
 def filter_expenses(
     expenses: list[dict[str, Any]],
     date_from: str = "",

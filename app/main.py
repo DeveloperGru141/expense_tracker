@@ -26,6 +26,7 @@ logger = logging.getLogger(__name__)
 
 CORS_ORIGINS = [o for o in os.getenv("CORS_ORIGINS", "").split(",") if o] or ["http://localhost:8000"]
 
+# Application lifespan handler for startup/shutdown events.
 @asynccontextmanager
 async def lifespan(_: FastAPI):
     yield
@@ -44,25 +45,30 @@ app.add_middleware(
 
 app.mount("/static", StaticFiles(directory=BASE_DIR / "static"), name="static")
 
+# Handle database errors with a 500 response.
 @app.exception_handler(DatabaseError)
 async def database_error_handler(request: Request, exc: DatabaseError):
     logger.error(f"Database error: {exc}")
     return JSONResponse(status_code=500, content={"detail": "A database error occurred."})
 
+# Redirect unauthenticated users to login.
 @app.exception_handler(AuthError)
 async def auth_error_handler(request: Request, exc: AuthError):
     return RedirectResponse(url="/login", status_code=303)
 
+# Handle generic application errors with a 500 response.
 @app.exception_handler(AppError)
 async def app_error_handler(request: Request, exc: AppError):
     logger.error(f"Application error: {exc}")
     return JSONResponse(status_code=500, content={"detail": "An internal error occurred."})
 
+# Catch-all handler for unhandled exceptions.
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
     logger.exception(f"Unhandled exception: {exc}")
     return JSONResponse(status_code=500, content={"detail": "Internal server error."})
 
+# Health check endpoint returning service and database status.
 @app.get("/health")
 def health_check():
     db_ok = False
@@ -73,14 +79,17 @@ def health_check():
         pass
     return {"status": "healthy" if db_ok else "degraded", "database": "connected" if db_ok else "unreachable", "service": "expense-tracker"}
 
+# Serve the favicon image.
 @app.get("/favicon.ico")
 def favicon():
     return FileResponse(BASE_DIR / "static" / "images" / "calculator.png", media_type="image/png")
 
+# Serve the service worker JavaScript file.
 @app.get("/sw.js")
 def service_worker(request: Request):
     return FileResponse(BASE_DIR / "static" / "sw.js", media_type="application/javascript")
 
+# Render the landing page with CSRF protection.
 @app.get("/")
 @limiter.limit("20/minute")
 def landing_page(request: Request):

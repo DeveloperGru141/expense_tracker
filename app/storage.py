@@ -6,6 +6,7 @@ logger = logging.getLogger(__name__)
 BUCKET_NAME = "receipts"
 SIGNED_URL_EXPIRY = 86400
 
+# Upload a receipt file to Supabase storage.
 def upload_receipt(user_id: str, filename: str, content: bytes, content_type: str = "image/jpeg") -> str | None:
     path = f"{user_id}/{filename}"
     try:
@@ -20,6 +21,7 @@ def upload_receipt(user_id: str, filename: str, content: bytes, content_type: st
         logger.warning(f"Failed to upload receipt to storage: {e}")
         return None
 
+# Generate a signed URL for a receipt file.
 def get_receipt_url(path: str) -> str | None:
     if not path:
         return None
@@ -32,6 +34,7 @@ def get_receipt_url(path: str) -> str | None:
         logger.warning(f"Failed to generate signed URL for {path}: {e}")
         return None
 
+# Delete a receipt file from storage.
 def delete_receipt(path: str) -> bool:
     if not path:
         return True
@@ -43,6 +46,7 @@ def delete_receipt(path: str) -> bool:
         logger.warning(f"Failed to delete receipt from storage: {e}")
         return False
 
+# Add receipt URL to expense dict if receipt exists.
 def enrich_expense_with_receipt(expense: dict) -> dict:
     if expense.get("receipt_image"):
         expense["receipt_url"] = get_receipt_url(expense["receipt_image"])

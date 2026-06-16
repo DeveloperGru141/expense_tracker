@@ -3,6 +3,7 @@
 {% block title %}Dashboard | Expense Flow{% endblock %}
 
 {% block content %}
+    <!-- Hero / summary section -->
     <section class="hero">
         <div>
             <p class="eyebrow">Dashboard</p>
@@ -11,6 +12,7 @@
                 See your spending totals, recent activity, and the category driving the most expenses.
             </p>
         </div>
+        <!-- Summary stat cards -->
         <div class="summary-grid">
             <article class="card stat-card">
                 <span>Total Spent</span>
@@ -31,6 +33,7 @@
         </div>
     </section>
 
+    <!-- Budget alert banner -->
     {% if budget_status and budget_status.configured and budget_status.is_alert %}
         <div class="budget-alert-banner">
             <div class="alert-icon">Warning</div>
@@ -41,7 +44,9 @@
         </div>
     {% endif %}
 
+    <!-- Charts grid -->
     <section class="content-grid">
+        <!-- Spending trend chart -->
         <section class="card chart-card">
             <h3>Spending Trend (Last 30 Days)</h3>
             {% if summary.chart_data.labels %}
@@ -51,6 +56,7 @@
             {% endif %}
         </section>
 
+        <!-- Category breakdown chart -->
         <section class="card chart-card">
             <h3>Category Breakdown</h3>
             {% if summary.chart_data.category_labels %}
@@ -61,7 +67,9 @@
         </section>
     </section>
 
+    <!-- Budget and category grid -->
     <section class="content-grid">
+        <!-- Budget progress card -->
         <section class="card overview-card">
             <h3>Budget Progress</h3>
             {% if summary.category_progress %}
@@ -87,6 +95,7 @@
             {% endif %}
         </section>
 
+        <!-- Category focus card -->
         <section class="card notes-card">
             <h3>Category Focus</h3>
             <div class="illustrated-card">
@@ -103,6 +112,7 @@
         </section>
     </section>
 
+    <!-- Chart initialization script -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Safe JSON parsing
@@ -179,12 +189,14 @@
         });
     </script>
 
+    <!-- Recent expenses table -->
     <section class="card table-card">
         <div class="section-heading">
             <h3>Recent Expenses</h3>
             <a href="/expenses" class="text-link">Manage all expenses</a>
         </div>
         {% if expenses %}
+            <!-- Expenses table -->
             <div class="table-wrap">
                 <table>
                     <thead>

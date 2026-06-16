@@ -16,10 +16,12 @@ supabase: Client = create_client(url, key)
 
 _local = threading.local()
 
+# Set the auth token for the current thread's Supabase client.
 def set_auth(token: str):
     _local.token = token
     supabase.postgrest.auth(token)
 
+# Return the Supabase client, applying thread-local auth if set.
 def get_supabase() -> Any:
     token = getattr(_local, "token", None)
     if token:

@@ -3,6 +3,7 @@
 {% block title %}Reports | Expense Tracker{% endblock %}
 
 {% block content %}
+    <!-- Page header -->
     <section class="page-header">
         <div class="page-header-main">
             <div>
@@ -10,6 +11,7 @@
                 <h2 class="page-title">Detailed Financial Summary</h2>
             </div>
         </div>
+        <!-- Export actions -->
         <div class="export-actions">
             <a href="/reports/export?format=csv&date_from={{ filters.date_from | urlencode }}&date_to={{ filters.date_to | urlencode }}&category={{ filters.category | urlencode }}" class="button secondary">CSV</a>
             <a href="/reports/export?format=excel&date_from={{ filters.date_from | urlencode }}&date_to={{ filters.date_to | urlencode }}&category={{ filters.category | urlencode }}" class="button secondary">Excel</a>
@@ -17,7 +19,9 @@
         </div>
     </section>
 
+    <!-- Filter card -->
     <section class="card filter-card">
+        <!-- Filter form -->
         <form action="/reports" method="get" class="filter-form">
             <label>
                 <span>From</span>
@@ -41,6 +45,7 @@
     </section>
 
     {% if summary %}
+    <!-- Filtered summary stats -->
     <section class="summary-grid" style="margin-bottom: 1rem;">
         <article class="card stat-card">
             <span>Total (Filtered)</span>
@@ -61,9 +66,11 @@
     </section>
     {% endif %}
 
+    <!-- Monthly performance table -->
     <section class="card table-card">
         <h3>Monthly Performance</h3>
         {% if reports %}
+            <!-- Reports table -->
             <div class="table-wrap">
                 <table>
                     <thead>

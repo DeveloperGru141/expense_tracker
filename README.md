@@ -90,18 +90,21 @@ The application utilizes a PostgreSQL database managed via Supabase.
 - **Account Deletion**: `delete_account` now also removes the auth user from Supabase Auth, not just local data.
 - **Error Handling**: Added `try/except` with `(AuthError, HTTPException): raise` to all endpoint handlers. `get_settings()` and `render_page()` have fallback error handling.
 - **Global Rate Limiting**: SlowAPI rate limiter (5–10 req/min per endpoint) with proxy-aware IP detection.
+- **RLS Revocation**: Revoked public `EXECUTE` on `handle_new_user()` SECURITY DEFINER function to prevent RPC abuse.
 
 ### UI Improvements
 - **Back Button Removal** (`763afb7`): Removed back buttons from all 7 templates and associated CSS — no longer needed after auth redirect fix.
 - **Light Mode Theme**: Full light theme with CSS custom properties, toggle persists in localStorage, smooth transitions.
 - **Form Persistence**: Expense and income input values persist across page navigations.
 - **Landing Page Fixes**: Fixed favicon reference (`svg` → `png`), updated `theme-color` meta tag, cache-busting query param `v2.3.0`.
+- **Two-Step Exit Fix** (`4efa90e`): First click on "Sign Out" always routes to `/dashboard`; second click signs out. Shows "Confirm Sign Out?" text on dashboard with 3s timeout reset.
 
 ### Architecture
 - **Environment Configuration**: Added `.env` file management, `python-dotenv` integration, and updated configuration to load secrets securely.
 - **Production Readiness**: Hardened `.gitignore` to exclude sensitive environment files, local database artifacts, and OS/IDE clutter.
 - **Income Feature Integration**: Added `income` and `recurring_income` management, integrated into dashboard summary and financial reporting.
 - **Database Optimization**: Optimized recurring transaction logic in `app/crud/recurring.py` to run once per day per user, reducing database overhead.
+- **Full Codebase Documentation**: Added inline comments to every function in all Python backend files (`app/`), SQL schema files, JavaScript (`static/app.js`), and all 12 HTML templates.
 
 ## Run Locally
 

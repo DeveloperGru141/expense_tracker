@@ -4,6 +4,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+# Permanently delete a user and all associated data.
 def delete_user_account(user_id: str) -> None:
     """
     Permanently deletes all data associated with the user, including the user profile.

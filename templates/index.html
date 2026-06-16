@@ -1,22 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Meta tags -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#06101a" id="themeColorMeta">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Expense flow | Smart Spending, Clearer Decisions</title>
+    <!-- Favicon and manifest -->
     <link rel="icon" href="{{ url_for('static', path='images/calculator.png') }}" type="image/png">
     <link rel="manifest" href="{{ url_for('static', path='manifest.webmanifest') }}">
+    <!-- Stylesheet -->
     <link rel="stylesheet" href="{{ url_for('static', path='style.css') }}?v=2.3.0">
+    <!-- App scripts -->
     <script src="{{ url_for('static', path='app.js') }}?v=2.3.0" defer></script>
+    <!-- Theme restoration script -->
     <script>if(localStorage.getItem("theme")==="light"){document.documentElement.setAttribute("data-theme","light");document.getElementById("themeColorMeta")&&(document.getElementById("themeColorMeta").content="#eef2f7")}</script>
 </head>
 <body class="landing-page">
+    <!-- Landing shell -->
     <div class="landing-shell">
+        <!-- Top navigation bar -->
         <header class="landing-topbar">
             <a href="/" class="landing-brand">ExpenseFlow</a>
+            <!-- Landing navigation -->
             <nav class="landing-nav" aria-label="Landing">
                 <a href="#features">Features</a>
                 <a href="#benefits">Benefits</a>
@@ -28,6 +36,7 @@
         </header>
 
         <main>
+            <!-- Hero section -->
             <section class="landing-hero">
                 <div class="hero-copy">
                     <p class="landing-kicker">Professional expense intelligence</p>
@@ -39,6 +48,7 @@
                         <a href="/login" class="button button-dark">Get Started</a>
                         <a href="/login?next=/expenses" class="button button-light">View Expenses</a>
                     </div>
+                    <!-- Hero metrics stats -->
                     <div class="hero-metrics">
                         <article>
                             <strong>&#8358;12.4M</strong>
@@ -55,6 +65,7 @@
                     </div>
                 </div>
 
+                <!-- Hero visual stage -->
                 <div class="hero-stage" aria-hidden="true">
                     <div class="glow-orb orb-one"></div>
                     <div class="glow-orb orb-two"></div>
@@ -95,6 +106,7 @@
                 </div>
             </section>
 
+            <!-- Logo strip / social proof -->
             <section class="logo-strip" id="proof">
                 <p>Trusted by fast-moving teams who need cleaner expense visibility.</p>
                 <div class="logo-grid">
@@ -106,6 +118,7 @@
                 </div>
             </section>
 
+            <!-- Features section -->
             <section class="feature-section" id="features">
                 <div class="feature-visual amber">
                     <img
@@ -124,6 +137,7 @@
                 </div>
             </section>
 
+            <!-- Features section (reverse) -->
             <section class="feature-section reverse">
                 <div class="feature-copy">
                     <p class="landing-kicker">Reporting without friction</p>
@@ -142,6 +156,7 @@
                 </div>
             </section>
 
+            <!-- Features section (settings) -->
             <section class="feature-section">
                 <div class="feature-visual mint">
                     <img
@@ -160,6 +175,7 @@
                 </div>
             </section>
 
+            <!-- Benefits section -->
             <section class="benefits-section" id="benefits">
                 <div class="section-intro">
                     <p class="landing-kicker">Built for modern finance teams</p>
@@ -196,6 +212,7 @@
                 </div>
             </section>
 
+            <!-- Testimonials section -->
             <section class="testimonial-section" id="testimonials">
                 <div class="testimonial-portrait">
                     <img
@@ -213,6 +230,7 @@
                 </div>
             </section>
 
+            <!-- Closing CTA banner -->
             <section class="closing-banner">
                 <div>
                     <p class="landing-kicker">Ready to bring order to spending?</p>

@@ -19,6 +19,7 @@ MAX_TITLE_LENGTH = 200
 MAX_NOTES_LENGTH = 1000
 VALID_FREQUENCIES = {"daily", "weekly", "monthly", "yearly"}
 
+# Show the recurring transactions page.
 @router.get("/recurring")
 def recurring_page(request: Request):
     try:
@@ -47,6 +48,7 @@ def recurring_page(request: Request):
         logger.exception(f"Unexpected error loading recurring page: {e}")
         raise HTTPException(status_code=500, detail="Internal server error")
 
+# Create a new recurring expense or income entry.
 @router.post("/recurring")
 @limiter.limit("10/minute")
 def create_recurring(
@@ -111,6 +113,7 @@ def create_recurring(
         logger.exception(f"Unexpected error creating recurring transaction: {e}")
         raise HTTPException(status_code=500, detail="Failed to create recurring transaction")
 
+# Delete a recurring transaction.
 @router.post("/recurring/{recurring_id}/delete")
 @limiter.limit("10/minute")
 def delete_recurring(

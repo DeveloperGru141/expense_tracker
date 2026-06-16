@@ -3,6 +3,7 @@
 {% block title %}Recurring | Expense Tracker{% endblock %}
 
 {% block content %}
+    <!-- Page header -->
     <section class="page-header">
         <div class="page-header-main">
             <div>
@@ -13,7 +14,9 @@
         </div>
     </section>
 
+    <!-- Content grid: form + tables -->
     <section class="content-grid">
+        <!-- Add recurring form -->
         <section class="card form-card">
             <h3>Add Recurring Transaction</h3>
             <form action="/recurring" method="post" class="expense-form">
@@ -58,9 +61,11 @@
             </form>
         </section>
 
+        <!-- Recurring transactions tables -->
         <section class="card table-card">
             <h3>Active Recurring Transactions</h3>
             
+            <!-- Recurring expenses table -->
             <h4 style="margin-top: 1rem; display: flex; align-items: center; gap: 0.5rem;">&#x25BC; Expenses</h4>
             {% if recurrings %}
                 <div class="table-wrap">
@@ -99,6 +104,7 @@
                 <p class="empty-state">No recurring expenses set up yet.</p>
             {% endif %}
 
+            <!-- Recurring income table -->
             <h4 style="margin-top: 2rem; display: flex; align-items: center; gap: 0.5rem;">&#x25B2; Income</h4>
             {% if recurring_incomes %}
                 <div class="table-wrap">
@@ -139,6 +145,7 @@
         </section>
     </section>
 
+    <!-- Inline badge styles -->
     <style>
         .badge {
             display: inline-block;

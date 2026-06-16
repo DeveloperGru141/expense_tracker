@@ -4,6 +4,7 @@ from app.db.database import get_supabase
 from typing import Any
 from app.exceptions import DatabaseError
 
+# Process due recurring expenses and income for a user.
 def process_recurring_expenses(user_id: str) -> None:
     try:
         today = date.today()
@@ -63,12 +64,14 @@ def process_recurring_expenses(user_id: str) -> None:
     except Exception as e:
         raise DatabaseError("Error processing recurring expenses", original_exception=e)
 
+# Fetch all recurring expense templates for a user.
 def fetch_recurring_expenses(user_id: str) -> list[dict[str, Any]]:
     try:
         return get_supabase().table("recurring_expenses").select("*").eq("user_id", user_id).order("next_occurrence").execute().data
     except Exception as e:
         raise DatabaseError("Error fetching recurring expenses", original_exception=e)
 
+# Fetch all recurring income templates for a user.
 def fetch_recurring_income(user_id: str) -> list[dict[str, Any]]:
     try:
         return get_supabase().table("recurring_income").select("*").eq("user_id", user_id).order("next_occurrence").execute().data
