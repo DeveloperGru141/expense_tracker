@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+
 :root {
     --bg: #04080f;
     --panel: rgba(8, 15, 24, 0.82);
@@ -38,10 +40,11 @@ body {
     margin: 0;
     font-family: var(--font-body);
     font-size: 16px;
-    line-height: 1.6;
+    line-height: 1.65;
     color: var(--text);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
     background:
         radial-gradient(circle at 20% 15%, rgba(16, 185, 129, 0.06), transparent 30%),
         radial-gradient(circle at 80% 10%, rgba(37, 99, 235, 0.07), transparent 35%),
@@ -1945,8 +1948,8 @@ input:-webkit-autofill:focus {
     --bg: #eef2f7;
     --panel: rgba(255, 255, 255, 0.88);
     --panel-strong: rgba(255, 255, 255, 0.97);
-    --text: #0b1a2e;
-    --muted: rgba(71, 85, 105, 0.7);
+    --text: #0a1628;
+    --muted: rgba(51, 65, 85, 0.75);
     --accent: #0ea5a0;
     --accent-dark: #0d7a74;
     --accent-warm: #d97706;
