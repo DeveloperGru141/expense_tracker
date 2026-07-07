@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 350 280" fill="none">
+  <rect width="350" height="280" rx="24" fill="#04080f"/>
+  <rect x="70" y="45" width="210" height="195" rx="12" fill="rgba(13,148,136,0.06)" stroke="rgba(13,148,136,0.15)" stroke-width="1"/>
+  <rect x="90" y="65" width="170" height="8" rx="4" fill="rgba(13,148,136,0.2)"/>
+  <rect x="90" y="83" width="120" height="6" rx="3" fill="rgba(203,213,225,0.12)"/>
+  <rect x="90" y="97" width="140" height="6" rx="3" fill="rgba(203,213,225,0.1)"/>
+  <rect x="90" y="111" width="100" height="6" rx="3" fill="rgba(203,213,225,0.08)"/>
+  <line x1="90" y1="125" x2="260" y2="125" stroke="rgba(203,213,225,0.06)" stroke-width="1"/>
+  <rect x="90" y="135" width="170" height="40" rx="6" fill="rgba(99,102,242,0.08)" stroke="#6366f1" stroke-width="1" stroke-dasharray="3 3"/>
+  <text x="128" y="158" fill="#6366f1" font-size="20" font-weight="bold" font-family="system-ui">&#10515;</text>
+  <text x="148" y="153" fill="#6366f1" font-size="10" font-weight="600" font-family="system-ui">Download Report</text>
+  <text x="148" y="166" fill="rgba(203,213,225,0.35)" font-size="8" font-family="system-ui">CSV  |  Excel  |  PDF</text>
+  <line x1="90" y1="185" x2="260" y2="185" stroke="rgba(203,213,225,0.06)" stroke-width="1"/>
+  <rect x="90" y="195" width="170" height="30" rx="6" fill="rgba(13,148,136,0.1)" stroke="rgba(13,148,136,0.2)" stroke-width="1"/>
+  <text x="175" y="214" text-anchor="middle" fill="rgba(13,148,136,0.8)" font-size="9" font-weight="600" font-family="system-ui">&#x2705; Last export: 2 days ago</text>
+  <circle cx="310" cy="65" r="3" fill="#6366f1" opacity="0.5"/>
+  <circle cx="310" cy="73" r="3" fill="#10b981" opacity="0.5"/>
+  <circle cx="310" cy="81" r="3" fill="#ef4444" opacity="0.5"/>
+</svg>

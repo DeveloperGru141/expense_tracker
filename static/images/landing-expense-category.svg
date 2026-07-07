@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 350 280" fill="none">
+  <rect width="350" height="280" rx="24" fill="#04080f"/>
+  <circle cx="175" cy="130" r="75" fill="none" stroke="rgba(203,213,225,0.08)" stroke-width="1"/>
+  <path d="M175 130 L175 55 A75 75 0 0 1 290 185 Z" fill="#ef4444" opacity="0.35"/>
+  <path d="M175 130 L290 185 A75 75 0 0 1 175 205 Z" fill="#f59e0b" opacity="0.3"/>
+  <path d="M175 130 L175 205 A75 75 0 0 1 80 185 Z" fill="#3b82f6" opacity="0.25"/>
+  <path d="M175 130 L80 185 A75 75 0 0 1 60 100 Z" fill="#10b981" opacity="0.2"/>
+  <circle cx="175" cy="130" r="22" fill="rgba(4,8,15,0.9)" stroke="rgba(203,213,225,0.15)" stroke-width="1"/>
+  <text x="175" y="135" text-anchor="middle" fill="#f8fafc" font-size="16" font-weight="bold" font-family="system-ui">&#8358;</text>
+  <rect x="85" y="220" width="10" height="10" rx="3" fill="#ef4444" opacity="0.7"/>
+  <text x="100" y="229" fill="rgba(203,213,225,0.6)" font-size="10" font-family="system-ui">Food 42%</text>
+  <rect x="155" y="220" width="10" height="10" rx="3" fill="#f59e0b" opacity="0.7"/>
+  <text x="170" y="229" fill="rgba(203,213,225,0.6)" font-size="10" font-family="system-ui">Bills 28%</text>
+  <rect x="225" y="220" width="10" height="10" rx="3" fill="#3b82f6" opacity="0.7"/>
+  <text x="240" y="229" fill="rgba(203,213,225,0.6)" font-size="10" font-family="system-ui">Transport 18%</text>
+  <text x="175" y="265" text-anchor="middle" fill="rgba(203,213,225,0.35)" font-size="9" font-family="system-ui">Other 12%</text>
+  <text x="50" y="40" fill="rgba(203,213,225,0.5)" font-size="10" font-weight="600" font-family="system-ui">By Category</text>
+  <rect x="122" y="34" width="6" height="6" rx="2" fill="#6366f1" opacity="0.5"/>
+</svg>

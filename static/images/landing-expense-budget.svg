@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 350 280" fill="none">
+  <rect width="350" height="280" rx="24" fill="#04080f"/>
+  <rect x="50" y="40" width="250" height="200" rx="12" fill="rgba(13,148,136,0.06)" stroke="rgba(13,148,136,0.15)" stroke-width="1"/>
+  <text x="70" y="65" fill="rgba(203,213,225,0.6)" font-size="10" font-weight="600" font-family="system-ui">Budget Progress</text>
+  <text x="255" y="65" text-anchor="end" fill="rgba(203,213,225,0.4)" font-size="9" font-family="system-ui">&#8358;120k / &#8358;150k</text>
+  <rect x="70" y="80" width="210" height="8" rx="4" fill="rgba(203,213,225,0.08)"/>
+  <rect x="70" y="80" width="168" height="8" rx="4" fill="#6366f1" opacity="0.7"/>
+  <text x="70" y="105" fill="rgba(203,213,225,0.5)" font-size="9" font-family="system-ui">Monthly budget 80% used</text>
+  <line x1="70" y1="120" x2="280" y2="120" stroke="rgba(203,213,225,0.06)" stroke-width="1"/>
+  <rect x="70" y="135" width="10" height="10" rx="3" fill="#ef4444" opacity="0.6"/>
+  <text x="88" y="144" fill="rgba(203,213,225,0.65)" font-size="10" font-family="system-ui">Food</text>
+  <rect x="70" y="135" width="120" height="6" rx="3" fill="rgba(203,213,225,0.06)" style="margin-left:auto;display:block;position:relative;left:130px"/>
+  <rect x="200" y="135" width="60" height="6" rx="3" fill="#ef4444" opacity="0.6"/>
+  <text x="268" y="144" text-anchor="end" fill="#ef4444" font-size="9" font-weight="600" font-family="system-ui">92%</text>
+  <rect x="70" y="156" width="10" height="10" rx="3" fill="#f59e0b" opacity="0.6"/>
+  <text x="88" y="165" fill="rgba(203,213,225,0.65)" font-size="10" font-family="system-ui">Transport</text>
+  <rect x="200" y="156" width="50" height="6" rx="3" fill="#f59e0b" opacity="0.6"/>
+  <text x="268" y="165" text-anchor="end" fill="#f59e0b" font-size="9" font-weight="600" font-family="system-ui">68%</text>
+  <rect x="70" y="177" width="10" height="10" rx="3" fill="#3b82f6" opacity="0.6"/>
+  <text x="88" y="186" fill="rgba(203,213,225,0.65)" font-size="10" font-family="system-ui">Housing</text>
+  <rect x="200" y="177" width="30" height="6" rx="3" fill="#3b82f6" opacity="0.6"/>
+  <text x="268" y="186" text-anchor="end" fill="#3b82f6" font-size="9" font-weight="600" font-family="system-ui">35%</text>
+  <rect x="70" y="198" width="10" height="10" rx="3" fill="#10b981" opacity="0.6"/>
+  <text x="88" y="207" fill="rgba(203,213,225,0.65)" font-size="10" font-family="system-ui">Utilities</text>
+  <rect x="200" y="198" width="20" height="6" rx="3" fill="#10b981" opacity="0.6"/>
+  <text x="268" y="207" text-anchor="end" fill="#10b981" font-size="9" font-weight="600" font-family="system-ui">22%</text>
+  <rect x="280" y="34" width="6" height="6" rx="2" fill="#6366f1" opacity="0.5"/>
+</svg>

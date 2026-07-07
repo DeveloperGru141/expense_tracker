@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 350 280" fill="none">
+  <rect width="350" height="280" rx="24" fill="#04080f"/>
+  <rect x="40" y="50" width="270" height="190" rx="12" fill="rgba(13,148,136,0.06)" stroke="rgba(13,148,136,0.15)" stroke-width="1"/>
+  <text x="55" y="75" fill="rgba(203,213,225,0.6)" font-size="10" font-weight="600" font-family="system-ui">Expense Analytics</text>
+  <rect x="290" y="65" width="6" height="6" rx="2" fill="#6366f1" opacity="0.5"/>
+  <rect x="55" y="90" width="30" height="100" rx="4" fill="#ef4444" opacity="0.7"/>
+  <rect x="95" y="120" width="30" height="70" rx="4" fill="#f59e0b" opacity="0.7"/>
+  <rect x="135" y="70" width="30" height="120" rx="4" fill="#3b82f6" opacity="0.7"/>
+  <rect x="175" y="100" width="30" height="90" rx="4" fill="#10b981" opacity="0.7"/>
+  <rect x="215" y="80" width="30" height="110" rx="4" fill="#ec4899" opacity="0.7"/>
+  <rect x="255" y="130" width="30" height="60" rx="4" fill="#8b5cf6" opacity="0.7"/>
+  <line x1="45" y1="200" x2="290" y2="200" stroke="rgba(203,213,225,0.15)" stroke-width="1"/>
+  <rect x="55" y="90" width="30" height="100" rx="4" fill="none" stroke="#ef4444" stroke-width="1" opacity="0.4"/>
+  <rect x="95" y="120" width="30" height="70" rx="4" fill="none" stroke="#f59e0b" stroke-width="1" opacity="0.4"/>
+  <rect x="135" y="70" width="30" height="120" rx="4" fill="none" stroke="#3b82f6" stroke-width="1" opacity="0.4"/>
+  <rect x="175" y="100" width="30" height="90" rx="4" fill="none" stroke="#10b981" stroke-width="1" opacity="0.4"/>
+  <rect x="215" y="80" width="30" height="110" rx="4" fill="none" stroke="#ec4899" stroke-width="1" opacity="0.4"/>
+  <rect x="255" y="130" width="30" height="60" rx="4" fill="none" stroke="#8b5cf6" stroke-width="1" opacity="0.4"/>
+  <line x1="55" y1="100" x2="285" y2="100" stroke="rgba(203,213,225,0.04)" stroke-width="1" stroke-dasharray="3 3"/>
+  <line x1="55" y1="140" x2="285" y2="140" stroke="rgba(203,213,225,0.04)" stroke-width="1" stroke-dasharray="3 3"/>
+  <line x1="55" y1="180" x2="285" y2="180" stroke="rgba(203,213,225,0.04)" stroke-width="1" stroke-dasharray="3 3"/>
+  <rect x="55" y="212" width="60" height="18" rx="4" fill="rgba(99,102,242,0.15)"/>
+  <text x="85" y="224" text-anchor="middle" fill="#6366f1" font-size="8" font-weight="600" font-family="system-ui">+38% vs last month</text>
+</svg>
