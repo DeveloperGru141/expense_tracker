@@ -1,228 +1,160 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // 1. Sidebar toggle for tablet/mobile
-    const sidebar = document.getElementById("sidebar");
-    const overlay = document.getElementById("sidebarOverlay");
-    const toggleBtn = document.getElementById("sidebarToggle");
+  const sidebar = document.getElementById("sidebar");
+  const overlay = document.getElementById("sidebarOverlay");
+  const toggleBtn = document.getElementById("sidebarToggle");
 
-    // Open the sidebar and show the backdrop overlay
-    function openSidebar() {
-        sidebar.classList.add("open");
-        overlay.classList.add("open");
-        document.body.style.overflow = "hidden";
-    }
+  function openSidebar() {
+    sidebar && sidebar.classList.add("open");
+    overlay && overlay.classList.add("open");
+    document.body.style.overflow = "hidden";
+  }
 
-    // Close the sidebar and hide the backdrop overlay
-    function closeSidebar() {
-        sidebar.classList.remove("open");
-        overlay.classList.remove("open");
-        document.body.style.overflow = "";
-    }
+  function closeSidebar() {
+    sidebar && sidebar.classList.remove("open");
+    overlay && overlay.classList.remove("open");
+    document.body.style.overflow = "";
+  }
 
-    if (toggleBtn && sidebar && overlay) {
-        // Toggle sidebar open/closed when hamburger button is clicked
-        toggleBtn.addEventListener("click", (e) => {
-            e.stopPropagation();
-            if (sidebar.classList.contains("open")) {
-                closeSidebar();
-            } else {
-                openSidebar();
-            }
-        });
-
-        // Close sidebar when clicking outside (on the overlay backdrop)
-        overlay.addEventListener("click", closeSidebar);
-
-        // Close sidebar when Escape key is pressed
-        document.addEventListener("keydown", (e) => {
-            if (e.key === "Escape" && sidebar.classList.contains("open")) {
-                closeSidebar();
-            }
-        });
-    }
-
-    // 2. Set data-label attributes on table cells for mobile card layout
-    document.querySelectorAll(".table-wrap table").forEach(table => {
-        const headers = [];
-        table.querySelectorAll("thead th").forEach(th => {
-            headers.push(th.textContent.trim());
-        });
-        if (headers.length === 0) return;
-
-        const rows = table.querySelectorAll("tbody tr");
-        rows.forEach(row => {
-            const cells = row.querySelectorAll("td");
-            cells.forEach((td, idx) => {
-                if (idx < headers.length) {
-                    td.setAttribute("data-label", headers[idx]);
-                }
-            });
-        });
+  if (toggleBtn && sidebar && overlay) {
+    toggleBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      sidebar.classList.contains("open") ? closeSidebar() : openSidebar();
     });
+    overlay.addEventListener("click", closeSidebar);
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && sidebar.classList.contains("open")) closeSidebar();
+    });
+  }
 
-    // 3. Animate progress bars on load (delayed for visual effect)
-    const progressFills = document.querySelectorAll(".progress-fill");
+  document.querySelectorAll(".table-wrap table").forEach(table => {
+    const headers = [];
+    table.querySelectorAll("thead th").forEach(th => headers.push(th.textContent.trim()));
+    if (!headers.length) return;
+    table.querySelectorAll("tbody tr").forEach(row => {
+      row.querySelectorAll("td").forEach((td, i) => {
+        if (i < headers.length) td.setAttribute("data-label", headers[i]);
+      });
+    });
+  });
+
+  const progressFills = document.querySelectorAll(".progress-fill");
+  setTimeout(() => {
+    progressFills.forEach(fill => {
+      const w = fill.getAttribute("data-fill-width");
+      if (w) {
+        let pct = parseFloat(w);
+        if (isNaN(pct) || pct < 0) pct = 0;
+        if (pct > 100) pct = 100;
+        fill.style.width = pct + "%";
+      }
+    });
+  }, 150);
+
+  const flashBanner = document.querySelector(".flash-banner");
+  if (flashBanner) {
     setTimeout(() => {
-        progressFills.forEach(fill => {
-            const fillWidth = fill.getAttribute("data-fill-width");
-            if (fillWidth) {
-                let pct = parseFloat(fillWidth);
-                if (isNaN(pct)) pct = 0;
-                if (pct < 0) pct = 0;
-                if (pct > 100) pct = 100;
-                fill.style.width = `${pct}%`;
-            }
-        });
-    }, 150);
+      flashBanner.style.transition = "opacity 600ms ease, transform 600ms ease";
+      flashBanner.style.opacity = "0";
+      flashBanner.style.transform = "translateY(-10px)";
+      setTimeout(() => flashBanner.remove(), 600);
+    }, 3000);
+  }
 
-    // 4. Auto-fade settings save flash banner after 3 seconds
-    const flashBanner = document.querySelector(".flash-banner");
-    if (flashBanner) {
-        setTimeout(() => {
-            flashBanner.style.transition = "opacity 600ms ease, transform 600ms ease, margin 600ms ease";
-            flashBanner.style.opacity = "0";
-            flashBanner.style.transform = "translateY(-10px)";
-            setTimeout(() => {
-                flashBanner.remove();
-            }, 600);
-        }, 3000);
-    }
-
-    // 5. Form validation — highlight missing required fields on submit
-    document.querySelectorAll("form.expense-form, form.filter-form").forEach(form => {
-        form.addEventListener("submit", (e) => {
-            const inputs = form.querySelectorAll("input[required], select[required], textarea[required]");
-            let valid = true;
-            inputs.forEach(input => {
-                input.style.borderColor = "";
-                if (!input.value.trim()) {
-                    input.style.borderColor = "var(--danger, #b91c1c)";
-                    valid = false;
-                }
-            });
-            if (!valid) {
-                e.preventDefault();
-                const firstInvalid = form.querySelector("[style*='border-color']");
-                if (firstInvalid) firstInvalid.focus();
-            }
-        });
-    });
-
-    // 6. Confirm before delete (skip forms with existing onsubmit)
-    document.querySelectorAll("form:not([onsubmit])").forEach(form => {
-        const deleteBtn = form.querySelector(".delete-button");
-        if (deleteBtn) {
-            form.addEventListener("submit", (e) => {
-                if (!confirm("Are you sure you want to delete this item? This cannot be undone.")) {
-                    e.preventDefault();
-                }
-            });
+  document.querySelectorAll("form").forEach(form => {
+    form.addEventListener("submit", (e) => {
+      const inputs = form.querySelectorAll("input[required], select[required], textarea[required]");
+      let valid = true;
+      inputs.forEach(input => {
+        input.style.borderColor = "";
+        if (!input.value.trim()) {
+          input.style.borderColor = "var(--danger)";
+          valid = false;
         }
-    });
-
-    // 7. Active nav link -- highlight current page
-    const currentPath = window.location.pathname;
-    document.querySelectorAll(".nav-link").forEach(link => {
-        const href = link.getAttribute("href");
-        if (href && href !== "#" && currentPath.startsWith(href)) {
-            link.classList.add("active");
-        }
-    });
-
-    // 8. Chart.js handles its own responsive sizing; no manual resize needed
-
-    // 9. Register service worker for PWA (offline support)
-    if ("serviceWorker" in navigator) {
-        // Register the service worker after the page loads
-        window.addEventListener("load", () => {
-            navigator.serviceWorker.register("/sw.js").catch(() => {});
-        });
-    }
-
-    // 10. PWA install prompt
-    let deferredPrompt = null;
-    const installBtns = [document.getElementById("installApp"), document.getElementById("installAppMobile")].filter(Boolean);
-
-    // Intercept the browser install prompt to show a custom install button
-    window.addEventListener("beforeinstallprompt", (e) => {
+      });
+      if (!valid) {
         e.preventDefault();
-        deferredPrompt = e;
-        installBtns.forEach(btn => btn.hidden = false);
+        const first = form.querySelector("[style*='border-color']");
+        if (first) first.focus();
+      }
     });
+  });
 
-    // Trigger the deferred PWA install prompt on custom button click
-    installBtns.forEach(btn => {
-        btn.addEventListener("click", async () => {
-            if (!deferredPrompt) return;
-            deferredPrompt.prompt();
-            const result = await deferredPrompt.userChoice;
-            deferredPrompt = null;
-            installBtns.forEach(b => b.hidden = true);
-        });
+  const currentPath = window.location.pathname;
+  document.querySelectorAll("[data-nav]").forEach(link => {
+    const href = link.getAttribute("href");
+    if (href && href !== "#" && currentPath.startsWith(href)) link.classList.add("active");
+  });
+
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.register("/sw.js").catch(() => {});
     });
+  }
 
-    // Hide install buttons once the app has been installed
-    window.addEventListener("appinstalled", () => {
-        deferredPrompt = null;
-        installBtns.forEach(btn => btn.hidden = true);
+  let deferredPrompt = null;
+  const installBtn = document.getElementById("installApp");
+  window.addEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    if (installBtn) installBtn.hidden = false;
+  });
+  if (installBtn) {
+    installBtn.addEventListener("click", async () => {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      await deferredPrompt.userChoice;
+      deferredPrompt = null;
+      installBtn.hidden = true;
     });
+  }
+  window.addEventListener("appinstalled", () => {
+    deferredPrompt = null;
+    if (installBtn) installBtn.hidden = true;
+  });
 
-    // 11. Add touch class for mobile hover fix
-    if ("ontouchstart" in window) {
-        document.body.classList.add("touch-device");
-    }
+  if ("ontouchstart" in window) document.body.classList.add("touch-device");
 
-    // 12. Theme toggle
-    const themeToggle = document.getElementById("themeToggle");
-    const themeIcon = document.getElementById("themeIcon");
-    const themeLabel = document.getElementById("themeLabel");
-    const themeColorMeta = document.getElementById("themeColorMeta");
+  const themeToggle = document.getElementById("themeToggle");
+  const themeIcon = document.getElementById("themeIcon");
+  const themeLabel = document.getElementById("themeLabel");
+  const themeColorMeta = document.getElementById("themeColorMeta");
 
-    // Read the stored theme from localStorage, default to "dark"
-    function getTheme() {
-        return localStorage.getItem("theme") || "dark";
-    }
+  function getTheme() { return localStorage.getItem("theme") || "dark"; }
 
-    // Apply theme to the document and persist the choice
-    function setTheme(theme) {
-        document.documentElement.setAttribute("data-theme", theme);
-        localStorage.setItem("theme", theme);
-        if (themeIcon) themeIcon.textContent = theme === "dark" ? "\u2600" : "\u263E";
-        if (themeLabel) themeLabel.textContent = theme === "dark" ? "Light" : "Dark";
-        if (themeColorMeta) themeColorMeta.content = theme === "dark" ? "#06101a" : "#f0f4f8";
-    }
+  function setTheme(theme) {
+    document.documentElement.setAttribute("data-theme", theme);
+    localStorage.setItem("theme", theme);
+    if (themeIcon) themeIcon.textContent = theme === "dark" ? "\u2600" : "\u263E";
+    if (themeLabel) themeLabel.textContent = theme === "dark" ? "Light" : "Dark";
+    if (themeColorMeta) themeColorMeta.content = theme === "dark" ? "#06060e" : "#f4f4f9";
+  }
 
-    setTheme(getTheme());
+  setTheme(getTheme());
 
-    // Toggle between dark and light themes on button click
-    document.querySelectorAll("[data-theme-toggle]").forEach(btn => {
-        btn.addEventListener("click", () => {
-            const current = getTheme();
-            setTheme(current === "dark" ? "light" : "dark");
-        });
+  document.querySelectorAll("[data-theme-toggle]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      setTheme(getTheme() === "dark" ? "light" : "dark");
     });
+  });
 
-    // 13. Two-step exit: first click → dashboard, second click → sign out
-    const exitForm = document.querySelector("form.logout-form");
-    if (exitForm) {
-        const exitBtn = exitForm.querySelector("button[data-exit]");
-        if (exitBtn) {
-            // First click navigates to dashboard, second click confirms sign-out
-            exitBtn.addEventListener("click", function (e) {
-                const exitIntent = sessionStorage.getItem("exitIntent");
-                if (exitIntent) {
-                    sessionStorage.removeItem("exitIntent");
-                    exitForm.submit();
-                    return;
-                }
-                e.preventDefault();
-                sessionStorage.setItem("exitIntent", "true");
-                if (location.pathname !== "/dashboard") {
-                    location.href = "/dashboard";
-                } else {
-                    exitBtn.textContent = "Confirm Sign Out?";
-                    setTimeout(() => { exitBtn.textContent = "Sign Out"; }, 3000);
-                }
-            });
-        }
-    }
+  const logoutForm = document.getElementById("logoutForm");
+  const logoutBtn = document.getElementById("logoutBtn");
+  if (logoutForm && logoutBtn) {
+    logoutBtn.addEventListener("click", function (e) {
+      const exitIntent = sessionStorage.getItem("exitIntent");
+      if (exitIntent) {
+        sessionStorage.removeItem("exitIntent");
+        logoutForm.submit();
+        return;
+      }
+      e.preventDefault();
+      sessionStorage.setItem("exitIntent", "true");
+      if (location.pathname !== "/dashboard") {
+        location.href = "/dashboard";
+      } else {
+        logoutBtn.innerHTML = '<span class="nav-icon">&#10149;</span> Confirm?';
+        setTimeout(() => { logoutBtn.innerHTML = '<span class="nav-icon">&#10149;</span> Sign Out'; }, 3000);
+      }
+    });
+  }
 });

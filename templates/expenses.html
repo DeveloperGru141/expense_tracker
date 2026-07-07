@@ -1,152 +1,121 @@
 {% extends "base.html" %}
-
-{% block title %}Expenses | Expense Tracker{% endblock %}
-
+{% block title %}Expenses | FinFlow{% endblock %}
 {% block content %}
-    <!-- Page header -->
-    <section class="page-header">
-        <div class="page-header-main">
-            <div>
-                <p class="eyebrow">Expenses</p>
-                <h2 class="page-title">Add and manage your expenses.</h2>
-            </div>
-        </div>
-        <!-- Total summary pill -->
-        <article class="card summary-pill">
-            <span>Total recorded</span>
-            <strong>{{ settings.currency_symbol }}{{ '%.2f'|format(summary.total) }}</strong>
-        </article>
-    </section>
+<div class="page-header">
+  <div class="page-header-left">
+    <div class="page-eyebrow">Expenses</div>
+    <h1 class="page-title">Track your spending</h1>
+    <p class="page-subtitle">Add and manage your expenses</p>
+  </div>
+  <span class="header-pill">{{ settings.currency_symbol }}{{ '%.2f'|format(summary.total) }}</span>
+</div>
 
-    <!-- Budget alert banner -->
-    {% if budget_status and budget_status.configured and budget_status.is_alert %}
-        <div class="budget-alert-banner">
-            <div class="alert-icon">Warning</div>
-            <div class="alert-content">
-                <h3>Monthly Budget Threshold Exceeded</h3>
-                <p>You have spent <strong>{{ settings.currency_symbol }}{{ '%.2f'|format(summary.total) }}</strong>, which is <strong>{{ '%.1f'|format(budget_status.percentage) }}%</strong> of your monthly limit ({{ settings.currency_symbol }}{{ '%.2f'|format(budget_status.budget) }}).</p>
-            </div>
-        </div>
+{% if budget_status and budget_status.configured and budget_status.is_alert %}
+<div class="budget-alert">
+  <span class="budget-alert-icon">&#9888;</span>
+  <span class="budget-alert-text">You've spent <strong>{{ '%.1f'|format(budget_status.percentage) }}%</strong> of your monthly budget ({{ settings.currency_symbol }}{{ '%.2f'|format(budget_status.budget) }})</span>
+</div>
+{% endif %}
+
+<div class="content-grid">
+  <div class="card">
+    <div class="card-header"><div class="card-title">Add Expense</div></div>
+    <form action="/expenses" method="post" enctype="multipart/form-data">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+      <input type="hidden" name="next_url" value="/expenses">
+      <div class="form-group">
+        <label class="form-label" for="title">Title</label>
+        <input class="form-input" type="text" id="title" name="title" placeholder="Groceries" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="amount">Amount</label>
+        <input class="form-input" type="number" id="amount" name="amount" min="0" step="0.01" placeholder="45000" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="category">Category</label>
+        <input class="form-input" type="text" id="category" name="category" placeholder="e.g. Food, Transport" required list="expense-cats">
+        <datalist id="expense-cats">
+          <option value="Food"><option value="Transport"><option value="Utilities"><option value="Shopping"><option value="Entertainment"><option value="Health"><option value="Housing"><option value="Other">
+        </datalist>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="expense_date">Date</label>
+        <input class="form-input" type="date" id="expense_date" name="expense_date" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="receipt">Receipt (optional)</label>
+        <input class="form-input" type="file" id="receipt" name="receipt" accept="image/*">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="notes">Notes</label>
+        <textarea class="form-input" id="notes" name="notes" rows="3" placeholder="Optional details"></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary" style="width:100%">Save Expense</button>
+    </form>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="card-title">Category Snapshot</div></div>
+    {% if summary.categories %}
+    <div style="display:flex;flex-direction:column;gap:12px">
+      {% for category, total in summary.categories %}
+      <div style="display:flex;justify-content:space-between;padding:10px 14px;background:var(--card-bg-secondary);border-radius:var(--radius-md)">
+        <span style="color:var(--text-primary);font-weight:500">{{ category }}</span>
+        <span class="text-red">{{ settings.currency_symbol }}{{ '%.2f'|format(total) }}</span>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <p class="text-muted" style="text-align:center;padding:32px">No expenses yet.</p>
     {% endif %}
+  </div>
+</div>
 
-    <!-- Content grid: form + category snapshot -->
-    <section class="content-grid">
-        <!-- Add expense form -->
-        <section class="card form-card">
-            <h3>Add Expense</h3>
-            <form action="/expenses" method="post" class="expense-form" enctype="multipart/form-data">
-                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-                <input type="hidden" name="next_url" value="/expenses">
-                <label>
-                    <span>Title</span>
-                    <input type="text" name="title" placeholder="Groceries" required>
-                </label>
-                <label>
-                    <span>Amount</span>
-                    <input type="number" name="amount" min="0" step="0.01" placeholder="45000.00" required>
-                </label>
-                <label>
-                    <span>Category</span>
-                    <input type="text" name="category" placeholder="e.g. Food, Transport, Housing" required list="expense-categories">
-                    <datalist id="expense-categories">
-                        <option value="Food">
-                        <option value="Transport">
-                        <option value="Utilities">
-                        <option value="Shopping">
-                        <option value="Entertainment">
-                        <option value="Health">
-                        <option value="Housing">
-                        <option value="Other">
-                    </datalist>
-                </label>
-                <label>
-                    <span>Date</span>
-                    <input type="date" name="expense_date" required>
-                </label>
-                <label>
-                    <span>Receipt (Optional)</span>
-                    <input type="file" name="receipt" accept="image/*">
-                </label>
-                <label>
-                    <span>Notes</span>
-                    <textarea name="notes" rows="3" placeholder="Optional details"></textarea>
-                </label>
-                <button type="submit">Save Expense</button>
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">All Expenses</div>
+    <form action="/expenses" method="get" style="flex:1;max-width:300px">
+      <input class="form-input" type="text" name="q" placeholder="Search expenses..." value="{{ search_query }}" style="margin:0">
+    </form>
+    <span class="text-muted" style="font-size:13px">{{ summary.count }} entries</span>
+  </div>
+  {% if expenses %}
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Category</th>
+          <th>Date</th>
+          <th>Amount</th>
+          <th>Receipt</th>
+          <th>Notes</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for expense in expenses %}
+        <tr>
+          <td data-label="Title">{{ expense.title }}</td>
+          <td data-label="Category"><span class="badge badge-accent">{{ expense.category }}</span></td>
+          <td data-label="Date">{{ expense.expense_date }}</td>
+          <td data-label="Amount" class="text-red">{{ settings.currency_symbol }}{{ '%.2f'|format(expense.amount) }}</td>
+          <td data-label="Receipt">{% if expense.receipt_url %}<a href="{{ expense.receipt_url }}" target="_blank" rel="noopener" class="text-link">View</a>{% else %}<span class="text-muted">-</span>{% endif %}</td>
+          <td data-label="Notes">{{ expense.notes or '-' }}</td>
+          <td data-label="">
+            <form action="/expenses/{{ expense.id }}/delete" method="post" onsubmit="return confirm('Delete this expense?')">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+              <input type="hidden" name="next_url" value="/expenses">
+              <button type="submit" class="delete-btn" title="Delete">&#10005;</button>
             </form>
-        </section>
-
-        <!-- Category snapshot card -->
-        <section class="card overview-card">
-            <h3>Category Snapshot</h3>
-            {% if summary.categories %}
-                <ul class="category-list">
-                    {% for category, total in summary.categories %}
-                        <li>
-                            <span>{{ category }}</span>
-                            <strong>{{ settings.currency_symbol }}{{ '%.2f'|format(total) }}</strong>
-                        </li>
-                    {% endfor %}
-                </ul>
-            {% else %}
-                <p class="empty-state">No expenses yet. Start by adding one on this page.</p>
-            {% endif %}
-        </section>
-    </section>
-
-    <!-- All expenses table -->
-    <section class="card table-card">
-        <div class="section-heading" style="flex-wrap: wrap; gap: 1rem;">
-            <h3>All Expenses</h3>
-            <!-- Search form -->
-            <form action="/expenses" method="get" class="search-form" style="flex: 1; min-width: 250px;">
-                <input type="text" name="q" placeholder="Search by title, category, or notes..." value="{{ search_query }}">
-            </form>
-            <span class="muted-text">{{ summary.count }} total entries</span>
-        </div>
-        {% if expenses %}
-            <!-- Expenses table -->
-            <div class="table-wrap">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Title</th>
-                            <th>Category</th>
-                            <th>Date</th>
-                            <th>Amount</th>
-                            <th>Receipt</th>
-                            <th>Notes</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for expense in expenses %}
-                            <tr>
-                                <td>{{ expense.title }}</td>
-                                <td>{{ expense.category }}</td>
-                                <td>{{ expense.expense_date }}</td>
-                                <td>{{ settings.currency_symbol }}{{ '%.2f'|format(expense.amount) }}</td>
-                                <td>
-                                    {% if expense.receipt_url %}
-                                        <a href="{{ expense.receipt_url }}" target="_blank" rel="noopener" class="text-link">View</a>
-                                    {% else %}
-                                        -
-                                    {% endif %}
-                                </td>
-                                <td>{{ expense.notes or '-' }}</td>
-                                <td>
-                                    <form action="/expenses/{{ expense.id }}/delete" method="post">
-                                        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-                                        <input type="hidden" name="next_url" value="/expenses">
-                                        <button type="submit" class="delete-button">Delete</button>
-                                    </form>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        {% else %}
-            <p class="empty-state">No expenses have been recorded yet.</p>
-        {% endif %}
-    </section>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <p class="text-muted" style="text-align:center;padding:32px">No expenses recorded yet.</p>
+  {% endif %}
+</div>
 {% endblock %}

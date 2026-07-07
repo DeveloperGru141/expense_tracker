@@ -1,100 +1,79 @@
 {% extends "base.html" %}
-
-{% block title %}Reports | Expense Tracker{% endblock %}
-
+{% block title %}Reports | FinFlow{% endblock %}
 {% block content %}
-    <!-- Page header -->
-    <section class="page-header">
-        <div class="page-header-main">
-            <div>
-                <p class="eyebrow">Reports</p>
-                <h2 class="page-title">Detailed Financial Summary</h2>
-            </div>
-        </div>
-        <!-- Export actions -->
-        <div class="export-actions">
-            <a href="/reports/export?format=csv&date_from={{ filters.date_from | urlencode }}&date_to={{ filters.date_to | urlencode }}&category={{ filters.category | urlencode }}" class="button secondary">CSV</a>
-            <a href="/reports/export?format=excel&date_from={{ filters.date_from | urlencode }}&date_to={{ filters.date_to | urlencode }}&category={{ filters.category | urlencode }}" class="button secondary">Excel</a>
-            <a href="/reports/export?format=pdf&date_from={{ filters.date_from | urlencode }}&date_to={{ filters.date_to | urlencode }}&category={{ filters.category | urlencode }}" class="button secondary">PDF</a>
-        </div>
-    </section>
+<div class="page-header">
+  <div class="page-header-left">
+    <div class="page-eyebrow">Reports</div>
+    <h1 class="page-title">Financial summary</h1>
+    <p class="page-subtitle">Filter, analyze, and export your data</p>
+  </div>
+  <div style="display:flex;gap:8px">
+    <a href="/reports/export?format=csv&date_from={{ filters.date_from|urlencode }}&date_to={{ filters.date_to|urlencode }}&category={{ filters.category|urlencode }}" class="btn btn-secondary btn-sm">CSV</a>
+    <a href="/reports/export?format=excel&date_from={{ filters.date_from|urlencode }}&date_to={{ filters.date_to|urlencode }}&category={{ filters.category|urlencode }}" class="btn btn-secondary btn-sm">Excel</a>
+    <a href="/reports/export?format=pdf&date_from={{ filters.date_from|urlencode }}&date_to={{ filters.date_to|urlencode }}&category={{ filters.category|urlencode }}" class="btn btn-secondary btn-sm">PDF</a>
+  </div>
+</div>
 
-    <!-- Filter card -->
-    <section class="card filter-card">
-        <!-- Filter form -->
-        <form action="/reports" method="get" class="filter-form">
-            <label>
-                <span>From</span>
-                <input type="date" name="date_from" value="{{ filters.date_from }}">
-            </label>
-            <label>
-                <span>To</span>
-                <input type="date" name="date_to" value="{{ filters.date_to }}">
-            </label>
-            <label>
-                <span>Category</span>
-                <select name="category">
-                    <option value="">All Categories</option>
-                    {% for cat in categories %}
-                        <option value="{{ cat.name }}" {% if filters.category == cat.name %}selected{% endif %}>{{ cat.name }}</option>
-                    {% endfor %}
-                </select>
-            </label>
-            <button type="submit">Filter</button>
-        </form>
-    </section>
+<div class="card mb-6">
+  <div class="card-header"><div class="card-title">Filters</div></div>
+  <form action="/reports" method="get" style="display:flex;flex-wrap:wrap;gap:12px;align-items:end">
+    <div class="form-group" style="flex:1;min-width:160px">
+      <label class="form-label" for="date_from">From</label>
+      <input class="form-input" type="date" id="date_from" name="date_from" value="{{ filters.date_from }}">
+    </div>
+    <div class="form-group" style="flex:1;min-width:160px">
+      <label class="form-label" for="date_to">To</label>
+      <input class="form-input" type="date" id="date_to" name="date_to" value="{{ filters.date_to }}">
+    </div>
+    <div class="form-group" style="flex:1;min-width:160px">
+      <label class="form-label" for="category">Category</label>
+      <select class="form-input" id="category" name="category">
+        <option value="">All Categories</option>
+        {% for cat in categories %}
+        <option value="{{ cat.name }}" {% if filters.category == cat.name %}selected{% endif %}>{{ cat.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Filter</button>
+  </form>
+</div>
 
-    {% if summary %}
-    <!-- Filtered summary stats -->
-    <section class="summary-grid" style="margin-bottom: 1rem;">
-        <article class="card stat-card">
-            <span>Total (Filtered)</span>
-            <strong style="color: var(--danger);">{{ settings.currency_symbol }}{{ '%.2f'|format(summary.total) }}</strong>
-        </article>
-        <article class="card stat-card">
-            <span>Income (Filtered)</span>
-            <strong style="color: var(--success);">{{ settings.currency_symbol }}{{ '%.2f'|format(summary.total_income) }}</strong>
-        </article>
-        <article class="card stat-card">
-            <span>Net Balance</span>
-            <strong>{{ settings.currency_symbol }}{{ '%.2f'|format(summary.balance) }}</strong>
-        </article>
-        <article class="card stat-card">
-            <span>Entries</span>
-            <strong>{{ summary.count }}</strong>
-        </article>
-    </section>
-    {% endif %}
+{% if summary %}
+<div class="stats-grid mb-6">
+  <div class="card stat-card"><div class="stat-label">Total Spent</div><div class="stat-value red">{{ settings.currency_symbol }}{{ '%.2f'|format(summary.total) }}</div></div>
+  <div class="card stat-card"><div class="stat-label">Total Income</div><div class="stat-value green">{{ settings.currency_symbol }}{{ '%.2f'|format(summary.total_income) }}</div></div>
+  <div class="card stat-card"><div class="stat-label">Net Balance</div><div class="stat-value accent">{{ settings.currency_symbol }}{{ '%.2f'|format(summary.balance) }}</div></div>
+  <div class="card stat-card"><div class="stat-label">Entries</div><div class="stat-value blue">{{ summary.count }}</div></div>
+</div>
+{% endif %}
 
-    <!-- Monthly performance table -->
-    <section class="card table-card">
-        <h3>Monthly Performance</h3>
-        {% if reports %}
-            <!-- Reports table -->
-            <div class="table-wrap">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Month</th>
-                            <th>Total Spent</th>
-                            <th>Total Income</th>
-                            <th>Net Balance</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for row in reports %}
-                            <tr>
-                                <td>{{ row.month }}</td>
-                                <td style="color: var(--danger, #ef4444);">{{ settings.currency_symbol }}{{ '%.2f'|format(row.spent) }}</td>
-                                <td style="color: var(--success, #10b981);">{{ settings.currency_symbol }}{{ '%.2f'|format(row.income) }}</td>
-                                <td style="font-weight: 600;">{{ settings.currency_symbol }}{{ '%.2f'|format(row.balance) }}</td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        {% else %}
-            <p class="empty-state">No data matches your filters.</p>
-        {% endif %}
-    </section>
+<div class="card">
+  <div class="card-header"><div class="card-title">Monthly Performance</div></div>
+  {% if reports %}
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Month</th>
+          <th>Total Spent</th>
+          <th>Total Income</th>
+          <th>Net Balance</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in reports %}
+        <tr>
+          <td data-label="Month">{{ row.month }}</td>
+          <td data-label="Spent" class="text-red">{{ settings.currency_symbol }}{{ '%.2f'|format(row.spent) }}</td>
+          <td data-label="Income" class="text-green">{{ settings.currency_symbol }}{{ '%.2f'|format(row.income) }}</td>
+          <td data-label="Balance" style="font-weight:600;color:var(--text-primary)">{{ settings.currency_symbol }}{{ '%.2f'|format(row.balance) }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <p class="text-muted" style="text-align:center;padding:32px">No data matches your filters.</p>
+  {% endif %}
+</div>
 {% endblock %}

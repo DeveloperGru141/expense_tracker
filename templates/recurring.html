@@ -1,164 +1,121 @@
 {% extends "base.html" %}
-
-{% block title %}Recurring | Expense Tracker{% endblock %}
-
+{% block title %}Recurring | FinFlow{% endblock %}
 {% block content %}
-    <!-- Page header -->
-    <section class="page-header">
-        <div class="page-header-main">
-            <div>
-                <p class="eyebrow">Recurring Transactions</p>
-                <h2 class="page-title">Automate your regular money flow.</h2>
-                <p class="subtext">Subscriptions, rent, salary, and bills that repeat on a regular schedule.</p>
-            </div>
-        </div>
-    </section>
+<div class="page-header">
+  <div class="page-header-left">
+    <div class="page-eyebrow">Recurring</div>
+    <h1 class="page-title">Recurring transactions</h1>
+    <p class="page-subtitle">Subscriptions, rent, salary &amp; bills on autopilot</p>
+  </div>
+</div>
 
-    <!-- Content grid: form + tables -->
-    <section class="content-grid">
-        <!-- Add recurring form -->
-        <section class="card form-card">
-            <h3>Add Recurring Transaction</h3>
-            <form action="/recurring" method="post" class="expense-form">
-                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-                <label>
-                    <span>Type</span>
-                    <select name="type" required>
-                        <option value="expense">Expense</option>
-                        <option value="income">Income</option>
-                    </select>
-                </label>
-                <label>
-                    <span>Title</span>
-                    <input type="text" name="title" placeholder="e.g. Netflix or Monthly Salary" required>
-                </label>
-                <label>
-                    <span>Amount</span>
-                    <input type="number" name="amount" min="0" step="0.01" placeholder="4500.00" required>
-                </label>
-                <label>
-                    <span>Category</span>
-                    <input type="text" name="category" placeholder="e.g. Groceries, Rent, Salary" required>
-                </label>
-                <label>
-                    <span>Frequency</span>
-                    <select name="frequency" required>
-                        <option value="daily">Daily</option>
-                        <option value="weekly">Weekly</option>
-                        <option value="monthly" selected>Monthly</option>
-                        <option value="yearly">Yearly</option>
-                    </select>
-                </label>
-                <label>
-                    <span>Next Date</span>
-                    <input type="date" name="start_date" required>
-                </label>
-                <label>
-                    <span>Notes</span>
-                    <textarea name="notes" rows="2" placeholder="Optional details"></textarea>
-                </label>
-                <button type="submit">Save Recurring</button>
-            </form>
-        </section>
+<div class="content-grid">
+  <div class="card">
+    <div class="card-header"><div class="card-title">Add Recurring</div></div>
+    <form action="/recurring" method="post">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+      <div class="form-group">
+        <label class="form-label" for="type">Type</label>
+        <select class="form-input" id="type" name="type" required>
+          <option value="expense">Expense</option>
+          <option value="income">Income</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="title">Title</label>
+        <input class="form-input" type="text" id="title" name="title" placeholder="e.g. Netflix" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="amount">Amount</label>
+        <input class="form-input" type="number" id="amount" name="amount" min="0" step="0.01" placeholder="4500" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="category">Category</label>
+        <input class="form-input" type="text" id="category" name="category" placeholder="e.g. Rent, Salary" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="frequency">Frequency</label>
+        <select class="form-input" id="frequency" name="frequency" required>
+          <option value="daily">Daily</option>
+          <option value="weekly">Weekly</option>
+          <option value="monthly" selected>Monthly</option>
+          <option value="yearly">Yearly</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="start_date">Next Date</label>
+        <input class="form-input" type="date" id="start_date" name="start_date" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="notes">Notes</label>
+        <textarea class="form-input" id="notes" name="notes" rows="2" placeholder="Optional details"></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary" style="width:100%">Save Recurring</button>
+    </form>
+  </div>
 
-        <!-- Recurring transactions tables -->
-        <section class="card table-card">
-            <h3>Active Recurring Transactions</h3>
-            
-            <!-- Recurring expenses table -->
-            <h4 style="margin-top: 1rem; display: flex; align-items: center; gap: 0.5rem;">&#x25BC; Expenses</h4>
-            {% if recurrings %}
-                <div class="table-wrap">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Title</th>
-                                <th>Category</th>
-                                <th>Frequency</th>
-                                <th>Next Date</th>
-                                <th>Amount</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for rec in recurrings %}
-                                <tr>
-                                    <td>{{ rec.title }}</td>
-                                    <td>{{ rec.category }}</td>
-                                    <td><span class="badge">{{ rec.frequency }}</span></td>
-                                    <td>{{ rec.next_occurrence }}</td>
-                                    <td>{{ settings.currency_symbol }}{{ '%.2f'|format(rec.amount) }}</td>
-                                    <td>
-                                        <form action="/recurring/{{ rec.id }}/delete" method="post">
-                                            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-                                            <input type="hidden" name="type" value="expense">
-                                            <button type="submit" class="delete-button">Remove</button>
-                                        </form>
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            {% else %}
-                <p class="empty-state">No recurring expenses set up yet.</p>
-            {% endif %}
+  <div>
+    <div class="card mb-4">
+      <div class="card-header"><div class="card-title">Expenses</div></div>
+      {% if recurrings %}
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Title</th><th>Category</th><th>Frequency</th><th>Next</th><th>Amount</th><th></th></tr></thead>
+          <tbody>
+            {% for rec in recurrings %}
+            <tr>
+              <td data-label="Title">{{ rec.title }}</td>
+              <td data-label="Category"><span class="badge badge-accent">{{ rec.category }}</span></td>
+              <td data-label="Frequency"><span class="badge">{{ rec.frequency }}</span></td>
+              <td data-label="Next">{{ rec.next_occurrence }}</td>
+              <td data-label="Amount" class="text-red">{{ settings.currency_symbol }}{{ '%.2f'|format(rec.amount) }}</td>
+              <td data-label="">
+                <form action="/recurring/{{ rec.id }}/delete" method="post" onsubmit="return confirm('Remove this recurring entry?')">
+                  <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                  <input type="hidden" name="type" value="expense">
+                  <button type="submit" class="delete-btn" title="Remove">&#10005;</button>
+                </form>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <p class="text-muted" style="text-align:center;padding:24px">No recurring expenses yet.</p>
+      {% endif %}
+    </div>
 
-            <!-- Recurring income table -->
-            <h4 style="margin-top: 2rem; display: flex; align-items: center; gap: 0.5rem;">&#x25B2; Income</h4>
-            {% if recurring_incomes %}
-                <div class="table-wrap">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Title</th>
-                                <th>Category</th>
-                                <th>Frequency</th>
-                                <th>Next Date</th>
-                                <th>Amount</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for rec in recurring_incomes %}
-                                <tr>
-                                    <td>{{ rec.title }}</td>
-                                    <td>{{ rec.category }}</td>
-                                    <td><span class="badge income">{{ rec.frequency }}</span></td>
-                                    <td>{{ rec.next_occurrence }}</td>
-                                    <td>{{ settings.currency_symbol }}{{ '%.2f'|format(rec.amount) }}</td>
-                                    <td>
-                                        <form action="/recurring/{{ rec.id }}/delete" method="post">
-                                            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-                                            <input type="hidden" name="type" value="income">
-                                            <button type="submit" class="delete-button">Remove</button>
-                                        </form>
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            {% else %}
-                <p class="empty-state">No recurring income set up yet.</p>
-            {% endif %}
-        </section>
-    </section>
-
-    <!-- Inline badge styles -->
-    <style>
-        .badge {
-            display: inline-block;
-            padding: 0.25rem 0.5rem;
-            border-radius: 999px;
-            background: rgba(148, 163, 184, 0.1);
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-        .badge.income {
-            background: rgba(16, 185, 129, 0.1);
-            color: #10b981;
-        }
-    </style>
+    <div class="card">
+      <div class="card-header"><div class="card-title">Income</div></div>
+      {% if recurring_incomes %}
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Title</th><th>Category</th><th>Frequency</th><th>Next</th><th>Amount</th><th></th></tr></thead>
+          <tbody>
+            {% for rec in recurring_incomes %}
+            <tr>
+              <td data-label="Title">{{ rec.title }}</td>
+              <td data-label="Category"><span class="badge badge-green">{{ rec.category }}</span></td>
+              <td data-label="Frequency"><span class="badge">{{ rec.frequency }}</span></td>
+              <td data-label="Next">{{ rec.next_occurrence }}</td>
+              <td data-label="Amount" class="text-green">{{ settings.currency_symbol }}{{ '%.2f'|format(rec.amount) }}</td>
+              <td data-label="">
+                <form action="/recurring/{{ rec.id }}/delete" method="post" onsubmit="return confirm('Remove this recurring entry?')">
+                  <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                  <input type="hidden" name="type" value="income">
+                  <button type="submit" class="delete-btn" title="Remove">&#10005;</button>
+                </form>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <p class="text-muted" style="text-align:center;padding:24px">No recurring income yet.</p>
+      {% endif %}
+    </div>
+  </div>
+</div>
 {% endblock %}

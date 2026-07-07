@@ -1,118 +1,96 @@
 {% extends "base.html" %}
-
-{% block title %}Settings | ExpenseFlow{% endblock %}
-
+{% block title %}Settings | FinFlow{% endblock %}
 {% block content %}
-    <!-- Page header -->
-    <section class="page-header">
-        <div class="page-header-main">
-            <div>
-                <p class="eyebrow">Settings</p>
-                <h2 class="page-title">Configure the direction of your tracker.</h2>
-            </div>
-        </div>
-        <!-- Currency pill -->
-        <article class="card summary-pill">
-            <span>Current currency</span>
-            <strong>{{ settings.currency_code }}</strong>
-        </article>
-    </section>
+<div class="page-header">
+  <div class="page-header-left">
+    <div class="page-eyebrow">Settings</div>
+    <h1 class="page-title">Preferences</h1>
+    <p class="page-subtitle">Configure your workspace</p>
+  </div>
+  <span class="header-pill">{{ settings.currency_code }}</span>
+</div>
 
-    <!-- Flash messages -->
-    {% if saved %}
-        <section class="flash-banner">Settings saved successfully.</section>
-    {% endif %}
+{% if saved %}
+<div class="flash-banner" style="margin-bottom:24px">Settings saved successfully.</div>
+{% endif %}
+{% if cleared %}
+<div class="flash-banner" style="margin-bottom:24px;border-left-color:var(--danger)">Your account data has been deleted.</div>
+{% endif %}
 
-    {% if cleared %}
-        <section class="flash-banner flash-banner--danger">Your account data has been successfully deleted.</section>
-    {% endif %}
+<div class="content-grid">
+  <div class="card">
+    <div class="card-header"><div class="card-title">Preferences</div></div>
+    <form action="/settings" method="post">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+      <div class="form-group">
+        <label class="form-label" for="display_name">Display name</label>
+        <input class="form-input" type="text" id="display_name" name="display_name" value="{{ settings.display_name }}" placeholder="Your name">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="currency_code">Currency</label>
+        <select class="form-input" id="currency_code" name="currency_code">
+          <option value="NGN"{% if settings.currency_code == 'NGN' %} selected{% endif %}>NGN</option>
+          <option value="USD"{% if settings.currency_code == 'USD' %} selected{% endif %}>USD</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="monthly_budget">Monthly budget</label>
+        <input class="form-input" type="number" id="monthly_budget" name="monthly_budget" min="0" step="0.01" value="{{ settings.monthly_budget }}" placeholder="250000">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="budget_alert">Alert threshold (%)</label>
+        <input class="form-input" type="number" id="budget_alert" name="budget_alert" min="1" max="100" value="{{ settings.budget_alert }}" placeholder="80">
+      </div>
+      <button type="submit" class="btn btn-primary">Save Settings</button>
+    </form>
+  </div>
 
-    <!-- Content grid: preferences + category budgets -->
-    <section class="content-grid">
-        <!-- Preferences form -->
-        <section class="card form-card">
-            <h3>Preferences</h3>
-            <form action="/settings" method="post" class="expense-form">
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">Category Budgets</div>
+      <span class="text-muted" style="font-size:13px">Set monthly limits</span>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Category</th><th>Limit</th><th></th></tr></thead>
+        <tbody>
+          {% for cat in categories %}
+          <tr>
+            <td data-label="Category"><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:{{ cat.color }};margin-right:8px;vertical-align:middle"></span>{{ cat.name }}</td>
+            <td data-label="Limit">
+              <form action="/categories/{{ cat.id }}/budget" method="post" style="display:flex;gap:6px;align-items:center">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-                <label>
-                    <span>Display name</span>
-                    <input type="text" name="display_name" value="{{ settings.display_name }}" placeholder="Your name">
-                </label>
-                <label>
-                    <span>Currency code</span>
-                    <select name="currency_code">
-                        <option value="NGN"{% if settings.currency_code == "NGN" %} selected{% endif %}>NGN</option>
-                        <option value="USD"{% if settings.currency_code == "USD" %} selected{% endif %}>USD</option>
-                    </select>
-                </label>
-                <label>
-                    <span>Monthly budget</span>
-                    <input type="number" name="monthly_budget" min="0" step="0.01" value="{{ settings.monthly_budget }}" placeholder="250000">
-                </label>
-                <label>
-                    <span>Alert threshold (%)</span>
-                    <input type="number" name="budget_alert" min="1" max="100" value="{{ settings.budget_alert }}" placeholder="80">
-                </label>
-                <button type="submit">Save Settings</button>
-            </form>
-        </section>
+                <input class="form-input" type="number" name="budget_limit" min="0" step="0.01" value="{{ cat.budget_limit or 0 }}" style="margin:0;width:120px">
+                <button type="submit" class="btn btn-primary btn-sm" title="Save">&#10003;</button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
 
-        <!-- Category budgets table -->
-        <section class="card table-card">
-            <div class="section-heading">
-                <h3>Category Budgets</h3>
-                <span class="muted-text">Set monthly limits</span>
-            </div>
-            <!-- Budget limits table -->
-            <div class="table-wrap">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Category</th>
-                            <th>Limit</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for cat in categories %}
-                            <tr>
-                                <td>
-                                    <div class="category-label">
-                                        <span class="category-dot" style="background: {{ cat.color }};"></span>
-                                        {{ cat.name }}
-                                    </div>
-                                </td>
-                                <td>
-                                    <form action="/categories/{{ cat.id }}/budget" method="post" class="budget-inline-form">
-                                        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-                                        <input type="number" name="budget_limit" min="0" step="0.01" value="{{ cat.budget_limit or 0 }}" class="budget-input">
-                                        <button type="submit" class="budget-save-btn">&#10003;</button>
-                                    </form>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </section>
-    </section>
-
-    <!-- Account deletion section -->
-    <section class="del-section">
-        <div class="del-header">
-            <div class="del-icon">&#9888;</div>
-            <h3 class="del-heading">Permanent deletion</h3>
-        </div>
-        <p class="del-subtext">Once confirmed, your profile, settings, and all financial data will be erased immediately. This action cannot be undone.</p>
-        <div class="del-action">
-            <div class="del-info">
-                <strong>Delete my account</strong>
-                <p>Removes your account and all associated data from the system. You will be logged out immediately.</p>
-            </div>
-            <form action="/settings/delete-account" method="post" onsubmit="return confirm('WARNING: This will permanently delete your ENTIRE account and all associated data. This action cannot be undone. Are you absolutely sure?');">
-                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-                <button type="submit" class="del-btn">Delete account</button>
-            </form>
-        </div>
-    </section>
+<div class="card" style="border-left:3px solid var(--danger);margin-top:24px">
+  <div class="card-header">
+    <div style="display:flex;align-items:center;gap:10px">
+      <span style="font-size:1.3rem">&#9888;</span>
+      <div>
+        <div class="card-title" style="color:var(--danger)">Danger Zone</div>
+        <p class="text-muted" style="margin:2px 0 0;font-size:13px">Permanent deletion — cannot be undone</p>
+      </div>
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+    <div>
+      <strong style="color:var(--text-primary)">Delete my account</strong>
+      <p class="text-muted" style="margin:4px 0 0;font-size:13px">Removes your account and all data permanently</p>
+    </div>
+    <form action="/settings/delete-account" method="post" onsubmit="return confirm('WARNING: This will permanently delete your ENTIRE account and all associated data. This action cannot be undone. Are you absolutely sure?')">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+      <button type="submit" class="btn" style="background:var(--danger);color:#fff;border:none;padding:10px 20px;border-radius:var(--radius-md);cursor:pointer">Delete Account</button>
+    </form>
+  </div>
+</div>
 {% endblock %}
