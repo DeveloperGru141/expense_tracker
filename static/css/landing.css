@@ -91,7 +91,7 @@
     content: '';
     position: absolute;
     inset: 0;
-    background: radial-gradient(ellipse 600px 400px at 70% 50%, rgba(20,184,166,0.04), transparent);
+    background: radial-gradient(ellipse 600px 400px at 70% 50%, rgba(14,165,233,0.04), transparent);
     pointer-events: none;
 }
 
@@ -118,7 +118,7 @@
     letter-spacing: -0.04em;
     line-height: 1.05;
     margin: 0;
-    background: linear-gradient(135deg, #fff 55%, rgba(20,184,166,0.5));
+    background: linear-gradient(135deg, #fff 55%, rgba(14,165,233,0.5));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -194,7 +194,7 @@
     height: 320px;
     top: 10%;
     right: 5%;
-    background: radial-gradient(circle, rgba(20,184,166,0.35), transparent);
+    background: radial-gradient(circle, rgba(14,165,233,0.35), transparent);
     animation: float 7s ease-in-out infinite;
 }
 
@@ -272,7 +272,7 @@
     right: -8px;
     z-index: 2;
     background: rgba(5, 8, 14, 0.85);
-    border: 1px solid rgba(20,184,166,0.15);
+    border: 1px solid rgba(14,165,233,0.15);
     border-radius: var(--radius-sm);
     padding: 14px 20px;
     backdrop-filter: blur(16px);
@@ -285,7 +285,7 @@
     position: absolute;
     inset: -1px;
     border-radius: inherit;
-    background: linear-gradient(135deg, rgba(20,184,166,0.2), transparent 50%);
+    background: linear-gradient(135deg, rgba(14,165,233,0.2), transparent 50%);
     z-index: -1;
 }
 
@@ -808,6 +808,117 @@
     }
 }
 
+@media (max-width: 400px) {
+    .landing-shell {
+        padding: 0 12px;
+    }
+
+    .landing-hero {
+        gap: 24px;
+        padding: 24px 0 32px;
+    }
+
+    .landing-title {
+        font-size: 22px;
+    }
+
+    .landing-subtext {
+        font-size: 13px;
+    }
+
+    .landing-topbar {
+        padding: 12px 0;
+    }
+
+    .landing-brand {
+        font-size: 17px;
+    }
+
+    .hero-metrics article {
+        flex: 1 1 100%;
+    }
+
+    .hero-metrics strong {
+        font-size: 16px;
+    }
+
+    .hero-panel-main {
+        min-height: 140px;
+    }
+
+    .hero-panel-left,
+    .hero-panel-right {
+        min-height: 110px;
+    }
+
+    .hero-collage {
+        gap: 8px;
+    }
+
+    .features-grid {
+        gap: 12px;
+        padding: 32px 0;
+    }
+
+    .feature-card-image img {
+        height: 140px;
+    }
+
+    .feature-card-body {
+        padding: 12px;
+        gap: 6px;
+    }
+
+    .feature-card-body h2 {
+        font-size: 15px;
+    }
+
+    .benefits-section {
+        padding: 32px 0;
+    }
+
+    .benefit-grid {
+        gap: 12px;
+    }
+
+    .landing-card-image {
+        height: 120px;
+    }
+
+    .benefit-card h3 {
+        font-size: 15px;
+        margin: 10px 12px 4px;
+    }
+
+    .benefit-card p {
+        margin: 0 12px 14px;
+    }
+
+    .testimonial-section {
+        padding: 32px 0;
+    }
+
+    .testimonial-portrait {
+        max-width: 120px;
+    }
+
+    .testimonial-image {
+        height: 160px;
+    }
+
+    .testimonial-copy blockquote {
+        font-size: 15px;
+    }
+
+    .closing-banner {
+        padding: 32px 0;
+    }
+
+    .closing-banner h2 {
+        font-size: 16px;
+    }
+}
+
 [data-theme="light"] .landing-brand,
 [data-theme="light"] .hero-metrics strong,
 [data-theme="light"] .hero-float-card strong,
@@ -819,7 +930,7 @@
 }
 
 [data-theme="light"] .landing-title {
-    background: linear-gradient(135deg, var(--text) 55%, rgba(13,148,136,0.6));
+    background: linear-gradient(135deg, var(--text) 55%, rgba(2,132,199,0.6));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
