@@ -1,5 +1,5 @@
 import os
-import threading
+from contextvars import ContextVar
 from typing import Any
 from dotenv import load_dotenv
 from supabase import create_client, Client
@@ -14,16 +14,16 @@ if not url or not key:
 
 supabase: Client = create_client(url, key)
 
-_local = threading.local()
+_auth_token: ContextVar[str | None] = ContextVar("auth_token", default=None)
 
-# Set the auth token for the current thread's Supabase client.
+
 def set_auth(token: str):
-    _local.token = token
+    _auth_token.set(token)
     supabase.postgrest.auth(token)
 
-# Return the Supabase client, applying thread-local auth if set.
+
 def get_supabase() -> Any:
-    token = getattr(_local, "token", None)
+    token = _auth_token.get()
     if token:
         supabase.postgrest.auth(token)
     return supabase

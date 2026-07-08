@@ -24,6 +24,7 @@ MAX_SEARCH_LENGTH = 100
 
 # Show the expenses listing page with optional search.
 @router.get("/expenses")
+@limiter.limit("30/minute")
 def expenses_page(request: Request, q: str = ""):
     try:
         user_id = require_user(request)

@@ -1,23 +1,10 @@
 import hashlib
 import hmac
 import secrets
-import bcrypt
 from fastapi import Request, HTTPException
 from app.core.config import SESSION_SECRET, AUTH_COOKIE, CSRF_COOKIE
 
-# Hash a password using bcrypt.
-def get_password_hash(password: str) -> str:
-    password_bytes = password.encode("utf-8")[:72]
-    hashed = bcrypt.hashpw(password_bytes, bcrypt.gensalt())
-    return hashed.decode("utf-8")
 
-# Verify a plain password against a bcrypt hash.
-def verify_password(plain_password: str, hashed_password: str) -> bool:
-    password_bytes = plain_password.encode("utf-8")[:72]
-    hashed_bytes = hashed_password.encode("utf-8")
-    return bcrypt.checkpw(password_bytes, hashed_bytes)
-
-# Sign a value with HMAC-SHA256 for tamper protection.
 def sign_value(value: str) -> str:
     signature = hmac.new(
         SESSION_SECRET.encode("utf-8"),

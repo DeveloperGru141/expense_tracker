@@ -19,6 +19,7 @@ MAX_SEARCH_LENGTH = 100
 
 # Show the income listing page with optional search.
 @router.get("/income")
+@limiter.limit("30/minute")
 def income_page(request: Request, q: str = ""):
     try:
         user_id = require_user(request)

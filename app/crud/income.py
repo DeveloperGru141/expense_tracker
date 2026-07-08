@@ -6,9 +6,9 @@ from app.exceptions import DatabaseError
 def fetch_income(user_id: str, search: str = "") -> list[dict[str, Any]]:
     try:
         query = get_supabase().table("income").select("*").eq("user_id", user_id)
-        
+
         if search:
-            query = query.ilike("title", f"%{search}%")
+            query = query.or_(f"title.ilike.%{search}%,category.ilike.%{search}%,notes.ilike.%{search}%")
             
         response = query.order("income_date", desc=True).execute()
         return response.data

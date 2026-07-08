@@ -5,6 +5,7 @@ from app.api.deps import get_authenticated_user_id
 from app.core.config import templates
 from app.core.limiter import limiter
 from app.core.security import get_csrf_token, set_csrf_cookie, require_csrf
+from app.api.utils import validate_redirect_url
 import logging
 
 logger = logging.getLogger(__name__)
@@ -42,7 +43,18 @@ async def register(
 ):
     require_csrf(request, csrf_token)
     email = email.strip().lower()[:MAX_EMAIL_LENGTH]
-    password = password[:MAX_PASSWORD_LENGTH]
+
+    if len(password) > MAX_PASSWORD_LENGTH:
+        csrf_token = get_csrf_token(request)
+        response = templates.TemplateResponse(
+            request=request,
+            name="register.html",
+            context={"request": request, "error": f"Password must not exceed {MAX_PASSWORD_LENGTH} characters.", "csrf_token": csrf_token, "email": email},
+            status_code=400,
+        )
+        is_secure = request.url.scheme == "https"
+        set_csrf_cookie(response, csrf_token, is_secure=is_secure)
+        return response
 
     if not email or "@" not in email:
         csrf_token = get_csrf_token(request)
@@ -156,7 +168,17 @@ async def login(
 ):
     require_csrf(request, csrf_token)
     email = email.strip().lower()[:MAX_EMAIL_LENGTH]
-    password = password[:MAX_PASSWORD_LENGTH]
+
+    if len(password) > MAX_PASSWORD_LENGTH:
+        csrf_token = get_csrf_token(request)
+        response = templates.TemplateResponse(
+            request=request,
+            name="login.html",
+            context={"request": request, "next_url": next_url, "error": f"Password must not exceed {MAX_PASSWORD_LENGTH} characters.", "csrf_token": csrf_token, "email": email},
+        )
+        is_secure = request.url.scheme == "https"
+        set_csrf_cookie(response, csrf_token, is_secure=is_secure)
+        return response
 
     if not email or not password:
         csrf_token = get_csrf_token(request)
@@ -185,7 +207,7 @@ async def login(
 
         token = auth_response.session.access_token
 
-        response = RedirectResponse(url=next_url, status_code=303)
+        response = RedirectResponse(url=validate_redirect_url(next_url[:500]), status_code=303)
         is_secure = request.url.scheme == "https"
         response.set_cookie(
             "supabase_auth_token",

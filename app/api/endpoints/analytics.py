@@ -7,6 +7,7 @@ from app.crud.recurring import process_recurring_expenses
 from app.crud.categories import fetch_categories
 from app.crud.income import fetch_income, filter_income
 from app.api.utils import get_settings
+from app.core.limiter import limiter
 from app.exceptions import AuthError, DatabaseError
 from app.storage import enrich_expense_with_receipt
 import csv
@@ -22,6 +23,7 @@ router = APIRouter()
 
 # Show the dashboard page with summary and recent expenses.
 @router.get("/dashboard")
+@limiter.limit("30/minute")
 def dashboard(request: Request):
     try:
         user_id = require_user(request)
@@ -58,6 +60,7 @@ def dashboard(request: Request):
 
 # Show the analytics page with category breakdown.
 @router.get("/analytics")
+@limiter.limit("30/minute")
 def analytics_page(request: Request):
     try:
         user_id = require_user(request)
@@ -88,6 +91,7 @@ def analytics_page(request: Request):
 
 # Show the AI insights page with spending analysis.
 @router.get("/ai-insights")
+@limiter.limit("30/minute")
 def ai_insights_page(request: Request):
     try:
         user_id = require_user(request)
@@ -119,6 +123,7 @@ def ai_insights_page(request: Request):
 
 # Show the reports page with filterable data.
 @router.get("/reports")
+@limiter.limit("30/minute")
 def reports_page(
     request: Request,
     date_from: str = "",
@@ -162,6 +167,7 @@ def reports_page(
 
 # Export reports as CSV, Excel, or PDF.
 @router.get("/reports/export")
+@limiter.limit("10/minute")
 def export_reports(
     request: Request,
     date_from: str = "",

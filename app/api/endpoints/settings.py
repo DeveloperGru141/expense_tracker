@@ -18,6 +18,7 @@ MAX_DISPLAY_NAME_LENGTH = 100
 
 # Show the settings page.
 @router.get("/settings")
+@limiter.limit("30/minute")
 def settings_page(request: Request, saved: int = 0, cleared: int = 0):
     try:
         user_id = require_user(request)

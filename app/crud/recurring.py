@@ -4,7 +4,21 @@ from app.db.database import get_supabase
 from typing import Any
 from app.exceptions import DatabaseError
 
-# Process due recurring expenses and income for a user.
+MAX_BACKFILL_OCCURRENCES = 93
+
+
+def _advance_date(next_date: date, frequency: str) -> date:
+    if frequency == "daily":
+        return next_date + timedelta(days=1)
+    elif frequency == "weekly":
+        return next_date + timedelta(weeks=1)
+    elif frequency == "monthly":
+        return next_date + relativedelta(months=1)
+    elif frequency == "yearly":
+        return next_date + relativedelta(years=1)
+    return next_date
+
+
 def process_recurring_expenses(user_id: str) -> None:
     try:
         today = date.today()
@@ -18,7 +32,8 @@ def process_recurring_expenses(user_id: str) -> None:
 
         for rec in recurrings:
             next_date = date.fromisoformat(rec["next_occurrence"])
-            while next_date <= today:
+            backfill_count = 0
+            while next_date <= today and backfill_count < MAX_BACKFILL_OCCURRENCES:
                 get_supabase().table("expenses").insert({
                     "user_id": user_id, 
                     "title": rec["title"], 
@@ -27,12 +42,9 @@ def process_recurring_expenses(user_id: str) -> None:
                     "expense_date": next_date.isoformat(), 
                     "notes": rec["notes"]
                 }).execute()
-                
-                if rec["frequency"] == "daily": next_date += timedelta(days=1)
-                elif rec["frequency"] == "weekly": next_date += timedelta(weeks=1)
-                elif rec["frequency"] == "monthly": next_date += relativedelta(months=1)
-                elif rec["frequency"] == "yearly": next_date += relativedelta(years=1)
-                else: break
+
+                next_date = _advance_date(next_date, rec["frequency"])
+                backfill_count += 1
 
             get_supabase().table("recurring_expenses").update({"next_occurrence": next_date.isoformat()}).eq("id", rec["id"]).execute()
             
@@ -41,7 +53,8 @@ def process_recurring_expenses(user_id: str) -> None:
 
         for rec in recurring_income:
             next_date = date.fromisoformat(rec["next_occurrence"])
-            while next_date <= today:
+            backfill_count = 0
+            while next_date <= today and backfill_count < MAX_BACKFILL_OCCURRENCES:
                 get_supabase().table("income").insert({
                     "user_id": user_id, 
                     "title": rec["title"], 
@@ -50,12 +63,9 @@ def process_recurring_expenses(user_id: str) -> None:
                     "income_date": next_date.isoformat(), 
                     "notes": rec["notes"]
                 }).execute()
-                
-                if rec["frequency"] == "daily": next_date += timedelta(days=1)
-                elif rec["frequency"] == "weekly": next_date += timedelta(weeks=1)
-                elif rec["frequency"] == "monthly": next_date += relativedelta(months=1)
-                elif rec["frequency"] == "yearly": next_date += relativedelta(years=1)
-                else: break
+
+                next_date = _advance_date(next_date, rec["frequency"])
+                backfill_count += 1
 
             get_supabase().table("recurring_income").update({"next_occurrence": next_date.isoformat()}).eq("id", rec["id"]).execute()
 

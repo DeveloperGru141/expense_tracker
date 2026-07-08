@@ -12,8 +12,6 @@ from app.exceptions import DatabaseError
 
 logger = logging.getLogger(__name__)
 
-SETTINGS_CACHE: dict[str, dict[str, str] | None] = {}
-
 # Fetch user settings from the database with default fallbacks.
 def get_settings(user_id: str) -> dict[str, str]:
     defaults = {

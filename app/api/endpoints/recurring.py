@@ -21,6 +21,7 @@ VALID_FREQUENCIES = {"daily", "weekly", "monthly", "yearly"}
 
 # Show the recurring transactions page.
 @router.get("/recurring")
+@limiter.limit("30/minute")
 def recurring_page(request: Request):
     try:
         user_id = require_user(request)
