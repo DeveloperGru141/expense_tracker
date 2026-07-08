@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#000000" id="themeColorMeta">
+    <meta name="theme-color" content="#02060e" id="themeColorMeta">
     <meta name="description" content="Sign in to your ExpenseFlow workspace to track and manage expenses.">
     <title>Sign In | ExpenseFlow</title>
     <link rel="icon" href="{{ url_for('static', path='images/calculator.png') }}" type="image/png">
@@ -14,32 +14,59 @@
     <script>if(localStorage.getItem("theme")==="light"){document.documentElement.setAttribute("data-theme","light");document.getElementById("themeColorMeta")&&(document.getElementById("themeColorMeta").content="#f0f4f8")}</script>
 </head>
 <body class="auth-page">
-    <main class="auth-card">
-        <div class="auth-logo">EF</div>
-        <h1>Welcome back</h1>
-        <p>Sign in to your expense command center.</p>
+    <main class="auth-split">
+        <div class="auth-form-panel">
+            <div class="auth-form-inner">
+                <div class="auth-logo">EF</div>
+                <h1>Welcome back</h1>
+                <p class="auth-subtitle">Sign in to your expense command center.</p>
 
-        {% if error %}
-            <div class="alert alert-error">{{ error }}</div>
-        {% endif %}
+                {% if error %}
+                    <div class="alert alert-error">{{ error }}</div>
+                {% endif %}
 
-        <form action="/login" method="post">
-            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-            <input type="hidden" name="next_url" value="{{ next_url }}">
-            <div class="form-group">
-                <label>Email</label>
-                <input type="email" name="email" class="form-input" value="{{ email or '' }}" placeholder="Your email address" autocomplete="email" required>
+                <form action="/login" method="post">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                    <input type="hidden" name="next_url" value="{{ next_url }}">
+                    <div class="form-group">
+                        <label for="login-email">Email</label>
+                        <input type="email" name="email" id="login-email" class="form-input" value="{{ email or '' }}" placeholder="Your email address" autocomplete="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">Password</label>
+                        <input type="password" name="password" id="login-password" class="form-input" placeholder="Your password" autocomplete="current-password" maxlength="72" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary auth-submit">Sign In</button>
+                </form>
+
+                <p class="auth-footer">
+                    Don't have an account? <a href="/register">Register now</a>
+                </p>
             </div>
-            <div class="form-group">
-                <label>Password</label>
-                <input type="password" name="password" class="form-input" placeholder="Your password" autocomplete="current-password" maxlength="72" required>
+        </div>
+        <div class="auth-visual-panel">
+            <div class="auth-visual-content">
+                <p class="auth-visual-kicker">Professional expense intelligence</p>
+                <div class="auth-visual-stats">
+                    <div class="auth-stat">
+                        <strong>&#8358;12.4M</strong>
+                        <span>Tracked spend</span>
+                    </div>
+                    <div class="auth-stat">
+                        <strong>98%</strong>
+                        <span>Clearer reporting</span>
+                    </div>
+                    <div class="auth-stat">
+                        <strong>24/7</strong>
+                        <span>Finance visibility</span>
+                    </div>
+                </div>
+                <blockquote class="auth-visual-quote">
+                    &#x201C;The interface feels calm, premium, and genuinely useful. We moved from chasing down expense details to actually understanding our spending.&#x201D;
+                    <footer>&mdash; Lebo M., Finance Operations Lead</footer>
+                </blockquote>
             </div>
-            <button type="submit" class="btn btn-primary" style="width:100%;padding:11px 20px;">Sign In</button>
-        </form>
-
-        <p class="auth-footer">
-            Don't have an account? <a href="/register">Register now</a>
-        </p>
+        </div>
     </main>
 </body>
 </html>
