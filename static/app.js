@@ -146,7 +146,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (themeIcon) themeIcon.innerHTML = theme === "dark" ? sunSvg : moonSvg;
         if (themeLabel) themeLabel.textContent = theme === "dark" ? "Light" : "Dark";
         const meta = document.getElementById("themeColorMeta");
-        if (meta) meta.content = theme === "dark" ? "#070b14" : "#f0f4f8";
+        if (meta) meta.content = theme === "dark" ? "#000000" : "#f0f4f8";
     }
 
     setTheme(getTheme());

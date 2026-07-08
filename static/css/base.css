@@ -1,11 +1,11 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
 
 :root {
-    --bg: #070b14;
-    --bg-gradient: linear-gradient(160deg, #070b14 0%, #0b1424 40%, #0a111f 100%);
-    --panel: rgba(15, 23, 42, 0.78);
-    --panel-solid: #0f172a;
-    --panel-strong: rgba(15, 23, 42, 0.94);
+    --bg: #000000;
+    --bg-gradient: linear-gradient(160deg, #000000 0%, #050a18 40%, #000810 100%);
+    --panel: rgba(8, 13, 26, 0.85);
+    --panel-solid: #080d1a;
+    --panel-strong: rgba(8, 13, 26, 0.95);
     --text: #f1f5f9;
     --text-secondary: #94a3b8;
     --muted: rgba(148, 163, 184, 0.55);
