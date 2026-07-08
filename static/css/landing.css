@@ -254,29 +254,14 @@
     overflow: hidden;
 }
 
-.hero-chart-canvas {
-    width: 100% !important;
-    height: 100% !important;
-    max-height: 200px;
-}
-
-.hero-chart-donut {
-    max-height: 130px;
-}
-
-.hero-chart-bar {
-    max-height: 130px;
-}
-
-.hero-collage-image {
+.hero-svg {
     width: 100%;
-    height: 110px;
-    object-fit: cover;
+    height: 100%;
     display: block;
     transition: transform 0.4s ease;
 }
 
-.hero-panel-bottom:hover .hero-collage-image {
+.hero-panel:hover .hero-svg {
     transform: scale(1.03);
 }
 
@@ -394,8 +379,9 @@
 .feature-section-image {
     width: 100%;
     height: 320px;
-    object-fit: cover;
+    object-fit: contain;
     display: block;
+    background: var(--panel);
 }
 
 .feature-copy {
@@ -461,8 +447,9 @@
 .landing-card-image {
     width: 100%;
     height: 160px;
-    object-fit: cover;
+    object-fit: contain;
     display: block;
+    background: var(--panel);
 }
 
 .benefit-card h3 {
@@ -496,8 +483,9 @@
 .testimonial-image {
     width: 100%;
     height: 360px;
-    object-fit: cover;
+    object-fit: contain;
     display: block;
+    background: var(--panel);
 }
 
 .testimonial-copy blockquote {
