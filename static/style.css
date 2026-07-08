@@ -514,22 +514,12 @@ h1, h2, h3, h4, h5, h6 {
     overflow: hidden;
 }
 
-.feature-visual.amber {
-    background:
-        radial-gradient(circle at top left, rgba(250, 204, 21, 0.28), transparent 28%),
-        linear-gradient(145deg, rgba(120, 53, 15, 0.88), rgba(234, 88, 12, 0.58));
-}
-
-.feature-visual.blue {
-    background:
-        radial-gradient(circle at top left, rgba(103, 232, 249, 0.24), transparent 24%),
-        linear-gradient(145deg, rgba(15, 23, 42, 0.92), rgba(37, 99, 235, 0.68));
-}
-
+.feature-visual.amber,
+.feature-visual.blue,
 .feature-visual.mint {
     background:
-        radial-gradient(circle at top left, rgba(110, 231, 183, 0.22), transparent 26%),
-        linear-gradient(145deg, rgba(6, 78, 59, 0.92), rgba(15, 118, 110, 0.72));
+        radial-gradient(circle at top left, rgba(148, 163, 184, 0.06), transparent 30%),
+        linear-gradient(145deg, rgba(8, 15, 24, 0.92), rgba(15, 23, 42, 0.85));
 }
 
 .feature-section-image {
@@ -2447,6 +2437,15 @@ input:-webkit-autofill:focus {
         radial-gradient(circle at top left, rgba(14, 165, 160, 0.12), transparent 22%),
         linear-gradient(135deg, rgba(255, 255, 255, 0.97), rgba(14, 165, 160, 0.85) 48%, rgba(37, 99, 235, 0.85));
     border-color: rgba(71, 85, 105, 0.06);
+}
+
+[data-theme="light"] .feature-visual.amber,
+[data-theme="light"] .feature-visual.blue,
+[data-theme="light"] .feature-visual.mint {
+    background:
+        radial-gradient(circle at top left, rgba(14, 165, 160, 0.05), transparent 30%),
+        linear-gradient(145deg, rgba(255, 255, 255, 0.95), rgba(248, 250, 252, 0.9));
+    border: 1px solid rgba(71, 85, 105, 0.08);
 }
 
 [data-theme="light"] .feature-copy p:not(.landing-kicker),
