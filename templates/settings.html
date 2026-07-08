@@ -8,9 +8,11 @@
             <h1>Settings</h1>
             <p>Configure your tracker preferences and budgets.</p>
         </div>
-        <div class="card" style="padding:12px 20px;display:flex;align-items:center;gap:12px;">
-            <span style="font-size:13px;color:var(--text-secondary);font-weight:500;">Currency</span>
-            <strong style="font-size:16px;">{{ settings.currency_code }}</strong>
+        <div class="page-header-actions">
+            <div class="summary-chip">
+                <span>Currency</span>
+                <strong>{{ settings.currency_code }}</strong>
+            </div>
         </div>
     </div>
 
@@ -21,10 +23,12 @@
         <div class="alert alert-error">Your account data has been successfully deleted.</div>
     {% endif %}
 
-    <div class="dashboard-grid">
+    <div class="content-grid content-grid-narrow-wide">
         <div class="card">
-            <h3>Preferences</h3>
-            <form action="/settings" method="post" style="margin-top:4px;">
+            <div class="content-section-header">
+                <h3>Preferences</h3>
+            </div>
+            <form action="/settings" method="post">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
                 <div class="form-group">
                     <label>Display name</label>
@@ -55,8 +59,10 @@
         </div>
 
         <div class="card">
-            <h3>Category Budgets</h3>
-            <p style="font-size:13px;color:var(--text-secondary);margin:0 0 12px;">Set monthly limits per category.</p>
+            <div class="content-section-header">
+                <h3>Category Budgets</h3>
+            </div>
+            <p class="text-body" style="margin:0 0 12px;">Set monthly limits per category.</p>
             {% if categories %}
                 <div class="table-container">
                     <table>
@@ -71,13 +77,13 @@
                             {% for cat in categories %}
                                 <tr>
                                     <td>
-                                        <div style="display:flex;align-items:center;gap:8px;">
-                                            <span style="width:8px;height:8px;border-radius:50%;background:{{ cat.color }};flex-shrink:0;"></span>
+                                        <span class="category-swatch">
+                                            <span class="category-dot" style="background:{{ cat.color }};"></span>
                                             {{ cat.name }}
-                                        </div>
+                                        </span>
                                     </td>
                                     <td>
-                                        <form action="/categories/{{ cat.id }}/budget" method="post" style="display:flex;align-items:center;gap:8px;">
+                                        <form action="/categories/{{ cat.id }}/budget" method="post" class="budget-input-form">
                                             <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
                                             <input type="number" name="budget_limit" min="0" step="0.01" value="{{ cat.budget_limit or 0 }}" class="form-input" style="width:120px;">
                                             <button type="submit" class="btn btn-primary btn-sm">Save</button>
@@ -100,21 +106,23 @@
         </div>
     </div>
 
-    <div class="card" style="margin-top:24px;border-color:rgba(239,68,68,0.15);">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-            <h3 style="margin:0;color:var(--danger);">Danger Zone</h3>
-        </div>
-        <p style="font-size:14px;color:var(--text-secondary);margin:0 0 16px;">Once confirmed, your profile, settings, and all financial data will be erased immediately. This action cannot be undone.</p>
-        <div style="display:flex;align-items:center;justify-content:space-between;padding:16px;background:rgba(239,68,68,0.04);border-radius:var(--radius-sm);border:1px solid rgba(239,68,68,0.1);flex-wrap:wrap;gap:12px;">
-            <div>
-                <strong style="display:block;margin-bottom:4px;">Delete my account</strong>
-                <span style="font-size:13px;color:var(--text-secondary);">Removes all data and logs you out immediately.</span>
+    <div class="content-section">
+        <div class="card danger-zone-card">
+            <div class="danger-zone-header">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                <h3>Danger Zone</h3>
             </div>
-            <form action="/settings/delete-account" method="post" onsubmit="return confirm('WARNING: This will permanently delete your ENTIRE account and all associated data. This action cannot be undone. Are you absolutely sure?');">
-                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-                <button type="submit" class="btn btn-danger">Delete Account</button>
-            </form>
+            <p class="text-body">Once confirmed, your profile, settings, and all financial data will be erased immediately. This action cannot be undone.</p>
+            <div class="danger-action">
+                <div>
+                    <strong style="display:block;margin-bottom:4px;">Delete my account</strong>
+                    <span class="text-muted">Removes all data and logs you out immediately.</span>
+                </div>
+                <form action="/settings/delete-account" method="post" onsubmit="return confirm('WARNING: This will permanently delete your ENTIRE account and all associated data. This action cannot be undone. Are you absolutely sure?');">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                    <button type="submit" class="btn btn-danger">Delete Account</button>
+                </form>
+            </div>
         </div>
     </div>
 {% endblock %}

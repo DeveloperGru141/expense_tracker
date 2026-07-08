@@ -59,11 +59,11 @@
         </div>
     {% endif %}
 
-    <div class="dashboard-grid">
+    <div class="content-grid content-grid-2">
         <div class="card">
-            <div class="chart-header">
+            <div class="content-section-header">
                 <h3>Spending Trend</h3>
-                <span style="font-size:12px;color:var(--muted);">Last 30 Days</span>
+                <span class="text-muted">Last 30 Days</span>
             </div>
             {% if summary.chart_data.labels %}
                 <div class="chart-container">
@@ -81,7 +81,7 @@
         </div>
 
         <div class="card">
-            <div class="chart-header">
+            <div class="content-section-header">
                 <h3>Category Breakdown</h3>
             </div>
             {% if summary.chart_data.category_labels %}
@@ -100,15 +100,17 @@
         </div>
 
         <div class="card">
-            <h3>Budget Progress</h3>
+            <div class="content-section-header">
+                <h3>Budget Progress</h3>
+            </div>
             {% if summary.category_progress %}
-                <div style="display:flex;flex-direction:column;gap:16px;">
+                <div class="budget-list">
                     {% for item in summary.category_progress %}
                         {% if item.limit > 0 %}
-                            <div>
-                                <div style="display:flex;justify-content:space-between;margin-bottom:6px;font-size:13px;">
-                                    <span style="color:var(--text);font-weight:500;">{{ item.name }}</span>
-                                    <strong style="color:{% if item.is_over %}var(--danger){% else %}var(--text-secondary){% endif %};font-size:12px;">
+                            <div class="budget-row">
+                                <div class="budget-row-header">
+                                    <span class="budget-row-name">{{ item.name }}</span>
+                                    <strong class="budget-row-amount {% if item.is_over %}budget-over{% endif %}">
                                         {{ settings.currency_symbol }}{{ '%.0f'|format(item.spent) }} / {{ '%.0f'|format(item.limit) }}
                                     </strong>
                                 </div>
@@ -130,13 +132,17 @@
             {% endif %}
         </div>
 
-        <div class="card" style="padding:0;overflow:hidden;">
-            <img src="https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=600&h=200&fit=crop&auto=format" alt="Expense tracking" style="width:100%;height:160px;object-fit:cover;display:block;">
-            <div style="padding:20px;">
-                <h3>Category Focus</h3>
-                <p style="color:var(--text-secondary);margin:0;font-size:14px;line-height:1.6;">
+        <div class="card focus-card">
+            <div class="focus-card-image">
+                <img src="https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=600&h=200&fit=crop&auto=format" alt="Expense tracking" loading="lazy">
+            </div>
+            <div class="focus-card-body">
+                <div class="content-section-header">
+                    <h3>Category Focus</h3>
+                </div>
+                <p class="text-body">
                     {% if summary.top_category != "None yet" %}
-                        Your highest spending is in <strong style="color:var(--text);font-weight:600;">{{ summary.top_category }}</strong>.
+                        Your highest spending is in <strong class="text-accent">{{ summary.top_category }}</strong>.
                         Consider reviewing these transactions to optimize your budget.
                     {% else %}
                         Start adding expenses to see your spending focus here.
@@ -146,53 +152,55 @@
         </div>
     </div>
 
-    <div class="card">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
-            <h3 style="margin:0;">Recent Expenses</h3>
-            <a href="/expenses" class="btn btn-ghost btn-sm">Manage all</a>
-        </div>
-        {% if expenses %}
-            <div class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Title</th>
-                            <th>Category</th>
-                            <th>Date</th>
-                            <th>Amount</th>
-                            <th>Notes</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for expense in expenses %}
+    <div class="content-section">
+        <div class="card">
+            <div class="content-section-header">
+                <h3>Recent Expenses</h3>
+                <a href="/expenses" class="btn btn-ghost btn-sm">Manage all</a>
+            </div>
+            {% if expenses %}
+                <div class="table-container">
+                    <table>
+                        <thead>
                             <tr>
-                                <td>{{ expense.title }}</td>
-                                <td><span class="category-badge">{{ expense.category }}</span></td>
-                                <td style="color:var(--text-secondary);font-size:13px;">{{ expense.expense_date }}</td>
-                                <td class="amount negative">{{ settings.currency_symbol }}{{ '%.2f'|format(expense.amount) }}</td>
-                                <td style="color:var(--muted);font-size:13px;">{{ expense.notes or '-' }}</td>
-                                <td>
-                                    <form action="/expenses/{{ expense.id }}/delete" method="post">
-                                        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-                                        <input type="hidden" name="next_url" value="/dashboard">
-                                        <button type="submit" class="btn btn-ghost btn-sm" style="color:var(--danger);">Delete</button>
-                                    </form>
-                                </td>
+                                <th>Title</th>
+                                <th>Category</th>
+                                <th>Date</th>
+                                <th>Amount</th>
+                                <th>Notes</th>
+                                <th></th>
                             </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        {% else %}
-            <div class="empty-state">
-                <div class="empty-state-icon">
-                    <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10H7v-2h10v2z"/></svg>
+                        </thead>
+                        <tbody>
+                            {% for expense in expenses %}
+                                <tr>
+                                    <td>{{ expense.title }}</td>
+                                    <td><span class="category-badge">{{ expense.category }}</span></td>
+                                    <td class="text-muted" style="font-size:13px;">{{ expense.expense_date }}</td>
+                                    <td class="amount negative">{{ settings.currency_symbol }}{{ '%.2f'|format(expense.amount) }}</td>
+                                    <td class="text-muted">{{ expense.notes or '-' }}</td>
+                                    <td>
+                                        <form action="/expenses/{{ expense.id }}/delete" method="post">
+                                            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                                            <input type="hidden" name="next_url" value="/dashboard">
+                                            <button type="submit" class="btn btn-ghost btn-sm" style="color:var(--danger);">Delete</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
-                <h3>No recent expenses</h3>
-                <p>Your saved expenses will appear here.</p>
-            </div>
-        {% endif %}
+            {% else %}
+                <div class="empty-state">
+                    <div class="empty-state-icon">
+                        <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10H7v-2h10v2z"/></svg>
+                    </div>
+                    <h3>No recent expenses</h3>
+                    <p>Your saved expenses will appear here.</p>
+                </div>
+            {% endif %}
+        </div>
     </div>
 
     <script>

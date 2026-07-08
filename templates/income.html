@@ -8,16 +8,20 @@
             <h1>Income</h1>
             <p>Manage your income streams.</p>
         </div>
-        <div class="card" style="padding:12px 20px;display:flex;align-items:center;gap:12px;">
-            <span style="font-size:13px;color:var(--text-secondary);font-weight:500;">Total Income</span>
-            <strong style="font-size:18px;color:var(--success);">{{ settings.currency_symbol }}{{ '%.2f'|format(summary.total_income) }}</strong>
+        <div class="page-header-actions">
+            <div class="summary-chip">
+                <span>Total Income</span>
+                <strong style="color:var(--success);">{{ settings.currency_symbol }}{{ '%.2f'|format(summary.total_income) }}</strong>
+            </div>
         </div>
     </div>
 
-    <div class="dashboard-grid">
+    <div class="content-grid content-grid-narrow-wide">
         <div class="card">
-            <h3>Add Income</h3>
-            <form action="/income" method="post" style="margin-top:4px;">
+            <div class="content-section-header">
+                <h3>Add Income</h3>
+            </div>
+            <form action="/income" method="post">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
                 <div class="form-row">
                     <div class="form-group">
@@ -55,72 +59,76 @@
         </div>
 
         <div class="card">
-            <h3>Financial Summary</h3>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:8px;">
-                <div style="padding:16px;background:rgba(16,185,129,0.05);border-radius:var(--radius-sm);border:1px solid rgba(16,185,129,0.1);">
-                    <span style="font-size:12px;color:var(--text-secondary);font-weight:500;">Total Income</span>
-                    <div style="font-size:22px;font-weight:800;color:var(--success);margin-top:4px;font-family:var(--font-mono);">{{ settings.currency_symbol }}{{ '%.2f'|format(summary.total_income) }}</div>
+            <div class="content-section-header">
+                <h3>Financial Summary</h3>
+            </div>
+            <div class="summary-cards">
+                <div class="summary-card summary-card-income">
+                    <span class="text-label">Total Income</span>
+                    <div class="summary-card-value positive">{{ settings.currency_symbol }}{{ '%.2f'|format(summary.total_income) }}</div>
                 </div>
-                <div style="padding:16px;background:rgba(239,68,68,0.05);border-radius:var(--radius-sm);border:1px solid rgba(239,68,68,0.1);">
-                    <span style="font-size:12px;color:var(--text-secondary);font-weight:500;">Total Expenses</span>
-                    <div style="font-size:22px;font-weight:800;color:var(--danger);margin-top:4px;font-family:var(--font-mono);">{{ settings.currency_symbol }}{{ '%.2f'|format(summary.total) }}</div>
+                <div class="summary-card summary-card-expense">
+                    <span class="text-label">Total Expenses</span>
+                    <div class="summary-card-value negative">{{ settings.currency_symbol }}{{ '%.2f'|format(summary.total) }}</div>
                 </div>
-                <div style="grid-column:1/-1;padding:16px;background:rgba(20,184,166,0.05);border-radius:var(--radius-sm);border:1px solid rgba(20,184,166,0.1);">
-                    <span style="font-size:12px;color:var(--text-secondary);font-weight:500;">Net Balance</span>
-                    <div style="font-size:26px;font-weight:800;margin-top:4px;font-family:var(--font-mono);">{{ settings.currency_symbol }}{{ '%.2f'|format(summary.balance) }}</div>
+                <div class="summary-card summary-card-balance">
+                    <span class="text-label">Net Balance</span>
+                    <div class="summary-card-value">{{ settings.currency_symbol }}{{ '%.2f'|format(summary.balance) }}</div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="card" style="margin-top:24px;">
-        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:16px;">
-            <h3 style="margin:0;">Income History</h3>
-            <form action="/income" method="get" style="flex:1;min-width:200px;max-width:320px;">
-                <input type="text" name="q" class="form-input" placeholder="Search by title, category, or notes..." value="{{ search_query }}">
-            </form>
-        </div>
-        {% if income_list %}
-            <div class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Title</th>
-                            <th>Category</th>
-                            <th>Date</th>
-                            <th>Amount</th>
-                            <th>Notes</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for inc in income_list %}
+    <div class="content-section">
+        <div class="card">
+            <div class="content-section-header">
+                <h3>Income History</h3>
+                <form action="/income" method="get" style="flex:1;min-width:200px;max-width:320px;">
+                    <input type="text" name="q" class="form-input" placeholder="Search by title, category, or notes..." value="{{ search_query }}">
+                </form>
+            </div>
+            {% if income_list %}
+                <div class="table-container">
+                    <table>
+                        <thead>
                             <tr>
-                                <td>{{ inc.title }}</td>
-                                <td><span class="category-badge">{{ inc.category }}</span></td>
-                                <td style="color:var(--text-secondary);font-size:13px;">{{ inc.income_date }}</td>
-                                <td class="amount positive">{{ settings.currency_symbol }}{{ '%.2f'|format(inc.amount) }}</td>
-                                <td style="color:var(--muted);font-size:13px;">{{ inc.notes or '-' }}</td>
-                                <td>
-                                    <form action="/income/{{ inc.id }}/delete" method="post">
-                                        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-                                        <input type="hidden" name="next_url" value="/income">
-                                        <button type="submit" class="btn btn-ghost btn-sm" style="color:var(--danger);">Delete</button>
-                                    </form>
-                                </td>
+                                <th>Title</th>
+                                <th>Category</th>
+                                <th>Date</th>
+                                <th>Amount</th>
+                                <th>Notes</th>
+                                <th></th>
                             </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        {% else %}
-            <div class="empty-state">
-                <div class="empty-state-icon">
-                    <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10H7v-2h10v2z"/></svg>
+                        </thead>
+                        <tbody>
+                            {% for inc in income_list %}
+                                <tr>
+                                    <td>{{ inc.title }}</td>
+                                    <td><span class="category-badge">{{ inc.category }}</span></td>
+                                    <td class="text-muted" style="font-size:13px;">{{ inc.income_date }}</td>
+                                    <td class="amount positive">{{ settings.currency_symbol }}{{ '%.2f'|format(inc.amount) }}</td>
+                                    <td class="text-muted">{{ inc.notes or '-' }}</td>
+                                    <td>
+                                        <form action="/income/{{ inc.id }}/delete" method="post">
+                                            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                                            <input type="hidden" name="next_url" value="/income">
+                                            <button type="submit" class="btn btn-ghost btn-sm" style="color:var(--danger);">Delete</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
-                <h3>No income records</h3>
-                <p>Add your first income entry above.</p>
-            </div>
-        {% endif %}
+            {% else %}
+                <div class="empty-state">
+                    <div class="empty-state-icon">
+                        <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10H7v-2h10v2z"/></svg>
+                    </div>
+                    <h3>No income records</h3>
+                    <p>Add your first income entry above.</p>
+                </div>
+            {% endif %}
+        </div>
     </div>
 {% endblock %}

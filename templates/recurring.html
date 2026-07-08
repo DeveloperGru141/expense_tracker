@@ -10,10 +10,12 @@
         </div>
     </div>
 
-    <div class="dashboard-grid">
+    <div class="content-grid content-grid-narrow-wide">
         <div class="card">
-            <h3>Add Recurring Transaction</h3>
-            <form action="/recurring" method="post" style="margin-top:4px;">
+            <div class="content-section-header">
+                <h3>Add Recurring Transaction</h3>
+            </div>
+            <form action="/recurring" method="post">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
                 <div class="form-row">
                     <div class="form-group">
@@ -69,13 +71,12 @@
         </div>
 
         <div class="card">
-            <h3>Active Recurring Transactions</h3>
-            <div style="display:flex;flex-direction:column;gap:20px;margin-top:8px;">
-                <div>
-                    <h4 style="font-size:13px;font-weight:600;color:var(--danger);margin:0 0 8px;display:flex;align-items:center;gap:6px;">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
-                        Expenses
-                    </h4>
+            <div class="content-section-header">
+                <h3>Active Recurring Transactions</h3>
+            </div>
+            <div class="recurring-lists">
+                <div class="recurring-group">
+                    <h4 class="recurring-group-title recurring-group-expense">Expenses</h4>
                     {% if recurrings %}
                         <div class="table-container">
                             <table>
@@ -94,8 +95,8 @@
                                         <tr>
                                             <td>{{ rec.title }}</td>
                                             <td><span class="category-badge">{{ rec.category }}</span></td>
-                                            <td><span style="display:inline-block;padding:2px 10px;border-radius:999px;background:rgba(148,163,184,0.08);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-secondary);">{{ rec.frequency }}</span></td>
-                                            <td style="color:var(--text-secondary);font-size:13px;">{{ rec.next_occurrence }}</td>
+                                            <td><span class="frequency-badge">{{ rec.frequency }}</span></td>
+                                            <td class="text-muted" style="font-size:13px;">{{ rec.next_occurrence }}</td>
                                             <td class="amount negative">{{ settings.currency_symbol }}{{ '%.2f'|format(rec.amount) }}</td>
                                             <td>
                                                 <form action="/recurring/{{ rec.id }}/delete" method="post">
@@ -110,15 +111,12 @@
                             </table>
                         </div>
                     {% else %}
-                        <p style="color:var(--muted);font-size:13px;">No recurring expenses set up yet.</p>
+                        <p class="text-muted">No recurring expenses set up yet.</p>
                     {% endif %}
                 </div>
 
-                <div>
-                    <h4 style="font-size:13px;font-weight:600;color:var(--success);margin:0 0 8px;display:flex;align-items:center;gap:6px;">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
-                        Income
-                    </h4>
+                <div class="recurring-group">
+                    <h4 class="recurring-group-title recurring-group-income">Income</h4>
                     {% if recurring_incomes %}
                         <div class="table-container">
                             <table>
@@ -137,8 +135,8 @@
                                         <tr>
                                             <td>{{ rec.title }}</td>
                                             <td><span class="category-badge">{{ rec.category }}</span></td>
-                                            <td><span style="display:inline-block;padding:2px 10px;border-radius:999px;background:rgba(16,185,129,0.1);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:var(--success);">{{ rec.frequency }}</span></td>
-                                            <td style="color:var(--text-secondary);font-size:13px;">{{ rec.next_occurrence }}</td>
+                                            <td><span class="frequency-badge frequency-badge-income">{{ rec.frequency }}</span></td>
+                                            <td class="text-muted" style="font-size:13px;">{{ rec.next_occurrence }}</td>
                                             <td class="amount positive">{{ settings.currency_symbol }}{{ '%.2f'|format(rec.amount) }}</td>
                                             <td>
                                                 <form action="/recurring/{{ rec.id }}/delete" method="post">
@@ -153,7 +151,7 @@
                             </table>
                         </div>
                     {% else %}
-                        <p style="color:var(--muted);font-size:13px;">No recurring income set up yet.</p>
+                        <p class="text-muted">No recurring income set up yet.</p>
                     {% endif %}
                 </div>
             </div>

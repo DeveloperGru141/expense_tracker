@@ -8,17 +8,21 @@
             <h1>AI Insights</h1>
             <p>See the most important spending signals faster.</p>
         </div>
-        <div class="card" style="padding:12px 20px;display:flex;align-items:center;gap:12px;">
-            <span style="font-size:13px;color:var(--text-secondary);font-weight:500;">Categories analyzed</span>
-            <strong style="font-size:18px;">{{ analytics|length }}</strong>
+        <div class="page-header-actions">
+            <div class="summary-chip">
+                <span>Categories analyzed</span>
+                <strong>{{ analytics|length }}</strong>
+            </div>
         </div>
     </div>
 
-    <div class="dashboard-grid">
+    <div class="content-grid content-grid-narrow-wide">
         <div class="card">
-            <h3>Intelligent Observations</h3>
+            <div class="content-section-header">
+                <h3>Intelligent Observations</h3>
+            </div>
             {% if insights %}
-                <div style="display:flex;flex-direction:column;gap:10px;margin-top:8px;">
+                <div class="insight-list">
                     {% for insight in insights %}
                         <div class="insight-card">
                             <div class="insight-icon">
@@ -42,7 +46,7 @@
         </div>
 
         <div class="card">
-            <div class="chart-header">
+            <div class="content-section-header">
                 <h3>Category Distribution</h3>
             </div>
             {% if summary and summary.chart_data and summary.chart_data.category_labels %}
@@ -61,20 +65,26 @@
         </div>
     </div>
 
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px;margin-top:24px;">
-        {% for item in analytics %}
-            <article class="card" style="padding:0;overflow:hidden;">
-                <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&h=200&fit=crop&auto=format" alt="Insight visualization" style="width:100%;height:140px;object-fit:cover;display:block;">
-                <div style="padding:20px;">
-                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
-                        <h3 style="margin:0;font-size:15px;">{{ item.category }}</h3>
-                        <strong style="font-size:18px;font-family:var(--font-mono);">{{ settings.currency_symbol }}{{ '%.2f'|format(item.amount) }}</strong>
-                    </div>
-                    <p style="margin:0;font-size:13px;color:var(--text-secondary);">Analyzed distribution for {{ item.category }}.</p>
-                </div>
-            </article>
-        {% endfor %}
-    </div>
+    {% if analytics %}
+        <div class="content-section">
+            <div class="content-grid content-grid-auto">
+                {% for item in analytics %}
+                    <article class="card insight-category-card">
+                        <div class="insight-category-image">
+                            <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&h=200&fit=crop&auto=format" alt="Insight visualization" loading="lazy">
+                        </div>
+                        <div class="insight-category-body">
+                            <div class="insight-category-header">
+                                <h3>{{ item.category }}</h3>
+                                <strong class="amount negative" style="font-size:18px;">{{ settings.currency_symbol }}{{ '%.2f'|format(item.amount) }}</strong>
+                            </div>
+                            <p class="text-body">Analyzed distribution for {{ item.category }}.</p>
+                        </div>
+                    </article>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {

@@ -8,9 +8,11 @@
             <h1>Expenses</h1>
             <p>Add and manage your expenses.</p>
         </div>
-        <div class="card" style="padding:12px 20px;display:flex;align-items:center;gap:12px;">
-            <span style="font-size:13px;color:var(--text-secondary);font-weight:500;">Total recorded</span>
-            <strong style="font-size:18px;">{{ settings.currency_symbol }}{{ '%.2f'|format(summary.total) }}</strong>
+        <div class="page-header-actions">
+            <div class="summary-chip">
+                <span>Total recorded</span>
+                <strong>{{ settings.currency_symbol }}{{ '%.2f'|format(summary.total) }}</strong>
+            </div>
         </div>
     </div>
 
@@ -21,10 +23,12 @@
         </div>
     {% endif %}
 
-    <div class="dashboard-grid">
+    <div class="content-grid content-grid-narrow-wide">
         <div class="card">
-            <h3>Add Expense</h3>
-            <form action="/expenses" method="post" enctype="multipart/form-data" style="margin-top:4px;">
+            <div class="content-section-header">
+                <h3>Add Expense</h3>
+            </div>
+            <form action="/expenses" method="post" enctype="multipart/form-data">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
                 <input type="hidden" name="next_url" value="/expenses">
                 <div class="form-row">
@@ -75,13 +79,18 @@
         </div>
 
         <div class="card">
-            <h3>Category Snapshot</h3>
+            <div class="content-section-header">
+                <h3>Category Snapshot</h3>
+            </div>
             {% if summary.categories %}
-                <div style="display:flex;flex-direction:column;gap:10px;margin-top:4px;">
+                <div class="category-snapshot">
                     {% for category, total in summary.categories %}
-                        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);">
-                            <span style="color:var(--text);font-size:14px;">{{ category }}</span>
-                            <strong style="font-size:15px;font-family:var(--font-mono);color:var(--danger);">{{ settings.currency_symbol }}{{ '%.2f'|format(total) }}</strong>
+                        <div class="category-snapshot-row">
+                            <span class="category-swatch">
+                                <span class="category-dot" style="background:var(--accent);"></span>
+                                {{ category }}
+                            </span>
+                            <strong class="amount negative">{{ settings.currency_symbol }}{{ '%.2f'|format(total) }}</strong>
                         </div>
                     {% endfor %}
                 </div>
@@ -97,63 +106,65 @@
         </div>
     </div>
 
-    <div class="card" style="margin-top:24px;">
-        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:16px;">
-            <h3 style="margin:0;">All Expenses</h3>
-            <form action="/expenses" method="get" style="flex:1;min-width:200px;max-width:320px;">
-                <input type="text" name="q" class="form-input" placeholder="Search by title, category, or notes..." value="{{ search_query }}">
-            </form>
-            <span style="font-size:13px;color:var(--muted);">{{ summary.count }} entries</span>
-        </div>
-        {% if expenses %}
-            <div class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Title</th>
-                            <th>Category</th>
-                            <th>Date</th>
-                            <th>Amount</th>
-                            <th>Receipt</th>
-                            <th>Notes</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for expense in expenses %}
+    <div class="content-section">
+        <div class="card">
+            <div class="content-section-header">
+                <h3>All Expenses</h3>
+                <form action="/expenses" method="get" style="flex:1;min-width:200px;max-width:320px;">
+                    <input type="text" name="q" class="form-input" placeholder="Search by title, category, or notes..." value="{{ search_query }}">
+                </form>
+                <span class="text-muted">{{ summary.count }} entries</span>
+            </div>
+            {% if expenses %}
+                <div class="table-container">
+                    <table>
+                        <thead>
                             <tr>
-                                <td>{{ expense.title }}</td>
-                                <td><span class="category-badge">{{ expense.category }}</span></td>
-                                <td style="color:var(--text-secondary);font-size:13px;">{{ expense.expense_date }}</td>
-                                <td class="amount negative">{{ settings.currency_symbol }}{{ '%.2f'|format(expense.amount) }}</td>
-                                <td>
-                                    {% if expense.receipt_url %}
-                                        <a href="{{ expense.receipt_url }}" target="_blank" rel="noopener" class="btn btn-ghost btn-sm">View</a>
-                                    {% else %}
-                                        <span style="color:var(--muted);">-</span>
-                                    {% endif %}
-                                </td>
-                                <td style="color:var(--muted);font-size:13px;">{{ expense.notes or '-' }}</td>
-                                <td>
-                                    <form action="/expenses/{{ expense.id }}/delete" method="post">
-                                        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-                                        <input type="hidden" name="next_url" value="/expenses">
-                                        <button type="submit" class="btn btn-ghost btn-sm" style="color:var(--danger);">Delete</button>
-                                    </form>
-                                </td>
+                                <th>Title</th>
+                                <th>Category</th>
+                                <th>Date</th>
+                                <th>Amount</th>
+                                <th>Receipt</th>
+                                <th>Notes</th>
+                                <th></th>
                             </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        {% else %}
-            <div class="empty-state">
-                <div class="empty-state-icon">
-                    <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10H7v-2h10v2z"/></svg>
+                        </thead>
+                        <tbody>
+                            {% for expense in expenses %}
+                                <tr>
+                                    <td>{{ expense.title }}</td>
+                                    <td><span class="category-badge">{{ expense.category }}</span></td>
+                                    <td class="text-muted" style="font-size:13px;">{{ expense.expense_date }}</td>
+                                    <td class="amount negative">{{ settings.currency_symbol }}{{ '%.2f'|format(expense.amount) }}</td>
+                                    <td>
+                                        {% if expense.receipt_url %}
+                                            <a href="{{ expense.receipt_url }}" target="_blank" rel="noopener" class="btn btn-ghost btn-sm">View</a>
+                                        {% else %}
+                                            <span class="text-muted">-</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-muted">{{ expense.notes or '-' }}</td>
+                                    <td>
+                                        <form action="/expenses/{{ expense.id }}/delete" method="post">
+                                            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                                            <input type="hidden" name="next_url" value="/expenses">
+                                            <button type="submit" class="btn btn-ghost btn-sm" style="color:var(--danger);">Delete</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
-                <h3>No expenses recorded</h3>
-                <p>Add your first expense above.</p>
-            </div>
-        {% endif %}
+            {% else %}
+                <div class="empty-state">
+                    <div class="empty-state-icon">
+                        <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10H7v-2h10v2z"/></svg>
+                    </div>
+                    <h3>No expenses recorded</h3>
+                    <p>Add your first expense above.</p>
+                </div>
+            {% endif %}
+        </div>
     </div>
 {% endblock %}

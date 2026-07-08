@@ -8,7 +8,7 @@
             <h1>Reports</h1>
             <p>Detailed financial summary with export options.</p>
         </div>
-        <div style="display:flex;gap:8px;">
+        <div class="page-header-actions">
             <a href="/reports/export?format=csv&date_from={{ filters.date_from | urlencode }}&date_to={{ filters.date_to | urlencode }}&category={{ filters.category | urlencode }}" class="btn btn-secondary btn-sm">CSV</a>
             <a href="/reports/export?format=excel&date_from={{ filters.date_from | urlencode }}&date_to={{ filters.date_to | urlencode }}&category={{ filters.category | urlencode }}" class="btn btn-secondary btn-sm">Excel</a>
             <a href="/reports/export?format=pdf&date_from={{ filters.date_from | urlencode }}&date_to={{ filters.date_to | urlencode }}&category={{ filters.category | urlencode }}" class="btn btn-secondary btn-sm">PDF</a>
@@ -17,17 +17,17 @@
 
     <div class="filter-bar">
         <form action="/reports" method="get" style="display:flex;align-items:end;gap:12px;flex-wrap:wrap;width:100%;">
-            <div style="display:flex;flex-direction:column;gap:4px;">
-                <label style="font-size:12px;font-weight:600;color:var(--text-secondary);">From</label>
-                <input type="date" name="date_from" class="form-input" value="{{ filters.date_from }}" style="width:auto;min-width:140px;">
+            <div class="filter-field">
+                <label class="text-label">From</label>
+                <input type="date" name="date_from" class="form-input" value="{{ filters.date_from }}">
             </div>
-            <div style="display:flex;flex-direction:column;gap:4px;">
-                <label style="font-size:12px;font-weight:600;color:var(--text-secondary);">To</label>
-                <input type="date" name="date_to" class="form-input" value="{{ filters.date_to }}" style="width:auto;min-width:140px;">
+            <div class="filter-field">
+                <label class="text-label">To</label>
+                <input type="date" name="date_to" class="form-input" value="{{ filters.date_to }}">
             </div>
-            <div style="display:flex;flex-direction:column;gap:4px;">
-                <label style="font-size:12px;font-weight:600;color:var(--text-secondary);">Category</label>
-                <select name="category" class="form-select" style="width:auto;min-width:150px;">
+            <div class="filter-field">
+                <label class="text-label">Category</label>
+                <select name="category" class="form-select">
                     <option value="">All Categories</option>
                     {% for cat in categories %}
                         <option value="{{ cat.name }}" {% if filters.category == cat.name %}selected{% endif %}>{{ cat.name }}</option>
@@ -79,39 +79,43 @@
         </div>
     {% endif %}
 
-    <div class="card">
-        <h3>Monthly Performance</h3>
-        {% if reports %}
-            <div class="table-container" style="margin-top:12px;">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Month</th>
-                            <th>Total Spent</th>
-                            <th>Total Income</th>
-                            <th>Net Balance</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for row in reports %}
+    <div class="content-section">
+        <div class="card">
+            <div class="content-section-header">
+                <h3>Monthly Performance</h3>
+            </div>
+            {% if reports %}
+                <div class="table-container" style="margin-top:12px;">
+                    <table>
+                        <thead>
                             <tr>
-                                <td style="font-weight:600;">{{ row.month }}</td>
-                                <td class="amount negative">{{ settings.currency_symbol }}{{ '%.2f'|format(row.spent) }}</td>
-                                <td class="amount positive">{{ settings.currency_symbol }}{{ '%.2f'|format(row.income) }}</td>
-                                <td class="amount">{{ settings.currency_symbol }}{{ '%.2f'|format(row.balance) }}</td>
+                                <th>Month</th>
+                                <th>Total Spent</th>
+                                <th>Total Income</th>
+                                <th>Net Balance</th>
                             </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        {% else %}
-            <div class="empty-state">
-                <div class="empty-state-icon">
-                    <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10H7v-2h10v2z"/></svg>
+                        </thead>
+                        <tbody>
+                            {% for row in reports %}
+                                <tr>
+                                    <td style="font-weight:600;">{{ row.month }}</td>
+                                    <td class="amount negative">{{ settings.currency_symbol }}{{ '%.2f'|format(row.spent) }}</td>
+                                    <td class="amount positive">{{ settings.currency_symbol }}{{ '%.2f'|format(row.income) }}</td>
+                                    <td class="amount">{{ settings.currency_symbol }}{{ '%.2f'|format(row.balance) }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
-                <h3>No data found</h3>
-                <p>No data matches your filters. Try adjusting the date range.</p>
-            </div>
-        {% endif %}
+            {% else %}
+                <div class="empty-state">
+                    <div class="empty-state-icon">
+                        <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10H7v-2h10v2z"/></svg>
+                    </div>
+                    <h3>No data found</h3>
+                    <p>No data matches your filters. Try adjusting the date range.</p>
+                </div>
+            {% endif %}
+        </div>
     </div>
 {% endblock %}
