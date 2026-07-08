@@ -46,7 +46,12 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label>Category</label>
-                        <input type="text" name="category" class="form-input" placeholder="e.g. Groceries, Rent, Salary" required>
+                        <select name="category" class="form-select" required>
+                            <option value="">Select category...</option>
+                            {% for cat in categories %}
+                                <option value="{{ cat.name }}">{{ cat.name }}</option>
+                            {% endfor %}
+                        </select>
                     </div>
                     <div class="form-group">
                         <label>Next Date</label>

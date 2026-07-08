@@ -13,10 +13,6 @@ venv/
 .pytest_cache/
 expenses.db
 
-# Node
-node_modules/
-dist/
-
 # Vercel
 .vercel/
 
@@ -33,15 +29,3 @@ Desktop.ini
 
 # Logs
 *.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# Build artifacts (uncomment if Vite build is run locally)
-# static/landing-build/
-
-# Dev scripts
-scripts/
-update_css.py
-
-.vercel

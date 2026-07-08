@@ -138,6 +138,13 @@
     margin-top: 4px;
 }
 
+.hero-cta-primary {
+    padding: 14px 32px;
+    font-size: 16px;
+    border-radius: var(--radius);
+    min-width: 200px;
+}
+
 .hero-metrics {
     display: flex;
     margin-top: 12px;
@@ -673,8 +680,8 @@
     .hero-actions .button {
         width: 100%;
         justify-content: center;
-        padding: 8px 16px;
-        font-size: 13px;
+        padding: 14px 16px;
+        font-size: 15px;
     }
 
     .hero-metrics {
@@ -877,6 +884,11 @@
 
     .hero-actions {
         gap: 6px;
+    }
+
+    .hero-actions .button {
+        padding: 12px 14px;
+        font-size: 14px;
     }
 
     .hero-metrics article {
