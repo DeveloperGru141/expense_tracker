@@ -592,7 +592,165 @@
         flex-direction: column;
         text-align: center;
     }
+}
 
+@media (max-width: 600px) {
+    .landing-shell {
+        padding: 0 16px;
+    }
+
+    .landing-hero {
+        gap: 32px;
+        padding: 32px 0 40px;
+    }
+
+    .landing-title {
+        font-size: 26px;
+    }
+
+    .landing-subtext {
+        font-size: 14px;
+    }
+
+    .hero-actions {
+        flex-direction: column;
+    }
+
+    .hero-actions .button {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .hero-metrics {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .hero-metrics article {
+        padding: 8px 12px;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+        flex: 1 1 40%;
+    }
+
+    .hero-metrics article:last-child {
+        border-bottom: none;
+    }
+
+    .hero-metrics strong {
+        font-size: 18px;
+    }
+
+    .hero-stage {
+        min-height: auto;
+    }
+
+    .hero-collage {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+    }
+
+    .hero-panel-main {
+        grid-row: auto;
+        min-height: 180px;
+    }
+
+    .hero-panel-left,
+    .hero-panel-right {
+        min-height: 140px;
+    }
+
+    .hero-panel-bottom {
+        grid-column: 1;
+    }
+
+    .orb-one,
+    .orb-two {
+        display: none;
+    }
+
+    .hero-float-card {
+        position: static;
+        margin-top: 12px;
+        animation: none;
+    }
+
+    .features-grid {
+        gap: 16px;
+        padding: 48px 0;
+    }
+
+    .feature-card-image img {
+        height: 160px;
+    }
+
+    .feature-card-body {
+        padding: 16px;
+    }
+
+    .feature-card-body h2 {
+        font-size: 17px;
+    }
+
+    .benefits-section {
+        padding: 48px 0;
+    }
+
+    .section-intro h2 {
+        font-size: 22px;
+    }
+
+    .benefit-grid {
+        gap: 16px;
+    }
+
+    .landing-card-image {
+        height: 140px;
+    }
+
+    .testimonial-section {
+        gap: 24px;
+        padding: 48px 0;
+    }
+
+    .testimonial-portrait {
+        max-width: 200px;
+        margin: 0 auto;
+    }
+
+    .testimonial-image {
+        height: 220px;
+    }
+
+    .testimonial-copy blockquote {
+        font-size: 17px;
+    }
+
+    .closing-banner {
+        padding: 40px 0;
+    }
+
+    .closing-banner h2 {
+        font-size: 20px;
+    }
+
+    .closing-actions {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .closing-actions .button {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .logo-grid {
+        gap: 20px;
+    }
+
+    .logo-grid span {
+        font-size: 14px;
+    }
 }
 
 [data-theme="light"] .landing-brand,
