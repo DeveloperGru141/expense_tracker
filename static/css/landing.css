@@ -338,18 +338,11 @@
     margin: 0 0 20px;
 }
 
-.logo-track {
-    overflow: hidden;
-    display: flex;
-    mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
-    -webkit-mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
-}
-
 .logo-grid {
     display: flex;
-    gap: 48px;
-    flex-shrink: 0;
-    animation: logoScroll 30s linear infinite;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
 }
 
 .logo-grid span {
@@ -358,20 +351,6 @@
     color: var(--text-secondary);
     letter-spacing: -0.02em;
     opacity: 0.5;
-    white-space: nowrap;
-}
-
-.logo-track:hover .logo-grid {
-    animation-play-state: paused;
-}
-
-@keyframes logoScroll {
-    from {
-        transform: translateX(0);
-    }
-    to {
-        transform: translateX(-50%);
-    }
 }
 
 .features-grid {
@@ -771,11 +750,6 @@
 
     .logo-grid span {
         font-size: 14px;
-    }
-
-    .logo-track {
-        mask-image: linear-gradient(to right, transparent, black 4%, black 96%, transparent);
-        -webkit-mask-image: linear-gradient(to right, transparent, black 4%, black 96%, transparent);
     }
 }
 
