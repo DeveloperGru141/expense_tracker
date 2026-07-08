@@ -18,7 +18,7 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label>Type</label>
-                        <select name="type" class="form-select" required>
+                        <select name="txn_type" class="form-select" required>
                             <option value="expense">Expense</option>
                             <option value="income">Income</option>
                         </select>
@@ -95,7 +95,7 @@
                                             <td>
                                                 <form action="/recurring/{{ rec.id }}/delete" method="post">
                                                     <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-                                                    <input type="hidden" name="type" value="expense">
+                                                    <input type="hidden" name="txn_type" value="expense">
                                                     <button type="submit" class="btn btn-ghost btn-sm" style="color:var(--danger);">Remove</button>
                                                 </form>
                                             </td>
@@ -138,7 +138,7 @@
                                             <td>
                                                 <form action="/recurring/{{ rec.id }}/delete" method="post">
                                                     <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-                                                    <input type="hidden" name="type" value="income">
+                                                    <input type="hidden" name="txn_type" value="income">
                                                     <button type="submit" class="btn btn-ghost btn-sm" style="color:var(--danger);">Remove</button>
                                                 </form>
                                             </td>

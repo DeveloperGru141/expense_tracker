@@ -54,13 +54,25 @@ def update_settings(
     try:
         user_id = require_user(request)
 
+        # Validate all values before touching the database
         display_name = display_name.strip()[:MAX_DISPLAY_NAME_LENGTH]
-        currency_code = currency_code.strip().upper()[:3] or "NGN"
-        monthly_budget = monthly_budget.strip()[:20]
-        budget_alert = budget_alert.strip()[:5]
 
+        currency_code = currency_code.strip().upper()[:3] or "NGN"
         if currency_code not in ("NGN", "USD", "EUR", "GBP"):
             currency_code = "NGN"
+
+        try:
+            monthly_budget_val = float(monthly_budget.strip()) if monthly_budget.strip() else 0.0
+            if monthly_budget_val < 0:
+                monthly_budget_val = 0.0
+        except ValueError:
+            monthly_budget_val = 0.0
+
+        try:
+            budget_alert_val = int(budget_alert.strip()) if budget_alert.strip() else 80
+            budget_alert_val = max(0, min(100, budget_alert_val))
+        except ValueError:
+            budget_alert_val = 80
 
         try:
             response = get_supabase().table("users").select("username").eq("id", user_id).execute()
@@ -70,9 +82,9 @@ def update_settings(
         username = response.data[0]["username"] if response.data else "User"
 
         values = {
-            "currency_code": currency_code or "NGN",
-            "monthly_budget": monthly_budget,
-            "budget_alert": budget_alert or "80",
+            "currency_code": currency_code,
+            "monthly_budget": str(monthly_budget_val),
+            "budget_alert": str(budget_alert_val),
             "display_name": display_name or username,
         }
 

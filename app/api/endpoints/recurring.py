@@ -60,7 +60,7 @@ def create_recurring(
     frequency: str = Form(...),
     start_date: str = Form(...),
     notes: str = Form(""),
-    type: str = Form("expense"),
+    txn_type: str = Form("expense"),
     csrf_token: str = Form(...),
 ):
     try:
@@ -71,7 +71,7 @@ def create_recurring(
         notes = notes.strip()[:MAX_NOTES_LENGTH]
         category = category.strip()[:100]
         frequency = frequency.strip().lower()
-        type = type.strip().lower()
+        txn_type = txn_type.strip().lower()
 
         if not title:
             raise HTTPException(status_code=422, detail="Title is required")
@@ -81,7 +81,7 @@ def create_recurring(
             raise HTTPException(status_code=422, detail="Category is required")
         if frequency not in VALID_FREQUENCIES:
             raise HTTPException(status_code=422, detail=f"Invalid frequency. Must be one of: {', '.join(sorted(VALID_FREQUENCIES))}")
-        if type not in ("expense", "income"):
+        if txn_type not in ("expense", "income"):
             raise HTTPException(status_code=422, detail="Type must be 'expense' or 'income'")
 
         try:
@@ -89,7 +89,7 @@ def create_recurring(
         except ValueError:
             raise HTTPException(status_code=422, detail="Invalid date format")
 
-        table = "recurring_expenses" if type == "expense" else "recurring_income"
+        table = "recurring_expenses" if txn_type == "expense" else "recurring_income"
         recurring_data = {
             "user_id": user_id,
             "title": title,
@@ -101,7 +101,7 @@ def create_recurring(
             "notes": notes
         }
 
-        logger.info(f"Creating recurring {type} for user {user_id}: {title}")
+        logger.info(f"Creating recurring {txn_type} for user {user_id}: {title}")
         get_supabase().table(table).insert(recurring_data).execute()
 
         return RedirectResponse(url="/recurring", status_code=303)
@@ -120,19 +120,19 @@ def create_recurring(
 def delete_recurring(
     request: Request,
     recurring_id: str,
-    type: str = Form("expense"),
+    txn_type: str = Form("expense"),
     csrf_token: str = Form(...),
 ):
     try:
         user_id = require_user(request)
         require_csrf(request, csrf_token)
 
-        type = type.strip().lower()
-        table = "recurring_expenses" if type == "expense" else "recurring_income"
+        txn_type = txn_type.strip().lower()
+        table = "recurring_expenses" if txn_type == "expense" else "recurring_income"
         try:
             get_supabase().table(table).delete().eq("id", recurring_id).eq("user_id", user_id).execute()
         except Exception as e:
-            raise DatabaseError(f"Failed to delete recurring {type}", original_exception=e)
+            raise DatabaseError(f"Failed to delete recurring {txn_type}", original_exception=e)
 
         return RedirectResponse(url="/recurring", status_code=303)
     except (AuthError, HTTPException):
