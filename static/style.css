@@ -320,6 +320,7 @@ h1, h2, h3, h4, h5, h6 {
     right: 0;
     width: min(100%, 360px);
     min-height: 260px;
+    padding: 0.75rem;
 }
 
 .hero-panel-left {
@@ -328,6 +329,7 @@ h1, h2, h3, h4, h5, h6 {
     width: 180px;
     min-height: 180px;
     transform: rotate(-7deg);
+    padding: 0.5rem;
 }
 
 .hero-panel-right {
@@ -336,6 +338,26 @@ h1, h2, h3, h4, h5, h6 {
     width: 180px;
     min-height: 180px;
     transform: rotate(8deg);
+    padding: 0.5rem;
+}
+
+.hero-chart-canvas {
+    width: 100% !important;
+    height: 100% !important;
+    max-height: 100%;
+    display: block;
+}
+
+.hero-chart-donut {
+    max-width: 140px;
+    max-height: 140px;
+    margin: auto;
+}
+
+.hero-chart-bar {
+    max-width: 150px;
+    max-height: 140px;
+    margin: auto;
 }
 
 .hero-panel-bottom {
@@ -798,6 +820,17 @@ h1, h2, h3, h4, h5, h6 {
     font-size: 0.85rem;
 }
 
+@keyframes navSlideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-16px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
 .sidebar-nav {
     display: grid;
     gap: 0.25rem;
@@ -818,7 +851,18 @@ h1, h2, h3, h4, h5, h6 {
     font-weight: 500;
     user-select: none;
     -webkit-tap-highlight-color: transparent;
+    opacity: 0;
+    animation: navSlideIn 0.35s ease forwards;
 }
+
+.nav-link:nth-child(1) { animation-delay: 0.02s; }
+.nav-link:nth-child(2) { animation-delay: 0.06s; }
+.nav-link:nth-child(3) { animation-delay: 0.10s; }
+.nav-link:nth-child(4) { animation-delay: 0.14s; }
+.nav-link:nth-child(5) { animation-delay: 0.18s; }
+.nav-link:nth-child(6) { animation-delay: 0.22s; }
+.nav-link:nth-child(7) { animation-delay: 0.26s; }
+.nav-link:nth-child(8) { animation-delay: 0.30s; }
 
 .nav-link:hover {
     color: #ffffff;
@@ -860,11 +904,24 @@ h1, h2, h3, h4, h5, h6 {
     justify-content: center;
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    transition: transform var(--transition), background var(--transition);
+    transition: transform var(--transition), background var(--transition), box-shadow var(--transition), border-color var(--transition);
 }
 
 .sidebar-toggle:hover {
     background: rgba(8, 15, 24, 0.98);
+    border-color: rgba(13, 148, 136, 0.4);
+    box-shadow: 0 0 20px rgba(13, 148, 136, 0.15);
+    transform: scale(1.08);
+}
+
+.sidebar-toggle:hover::before {
+    transform: rotate(90deg);
+}
+
+.sidebar-toggle::before {
+    content: '\2630';
+    display: inline-block;
+    transition: transform 0.3s ease;
 }
 
 .sidebar-toggle:active {
