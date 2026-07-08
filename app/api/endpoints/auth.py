@@ -210,6 +210,6 @@ async def login(
 # Log out the user by deleting the auth cookie.
 @router.post("/logout")
 def logout(request: Request):
-    response = RedirectResponse(url="/login", status_code=303)
+    response = RedirectResponse(url="/", status_code=303)
     response.delete_cookie("supabase_auth_token")
     return response

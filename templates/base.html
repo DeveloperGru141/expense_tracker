@@ -23,6 +23,8 @@
     <script src="{{ url_for('static', path='app.js') }}?v=2.3.0" defer></script>
     <!-- Theme restoration script -->
     <script>if(localStorage.getItem("theme")==="light"){document.documentElement.setAttribute("data-theme","light");document.getElementById("themeColorMeta")&&(document.getElementById("themeColorMeta").content="#eef2f7")}</script>
+    <!-- Back from app goes to landing page, not login -->
+    <script>history.replaceState(null, "", "/");history.pushState(null, "", location.href);</script>
 </head>
 <body>
     <!-- App shell -->
