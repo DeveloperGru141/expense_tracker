@@ -563,8 +563,7 @@
 
 @media (max-width: 900px) {
     .landing-hero {
-        grid-template-columns: 1fr;
-        gap: 48px;
+        gap: 40px;
         padding: 48px 0 60px;
     }
 
@@ -621,45 +620,54 @@
     }
 
     .landing-hero {
-        gap: 32px;
-        padding: 32px 0 40px;
+        gap: 24px;
+        padding: 24px 0 32px;
     }
 
     .landing-title {
-        font-size: 26px;
+        font-size: 22px;
     }
 
     .landing-subtext {
-        font-size: 14px;
+        font-size: 13px;
+        max-width: none;
+    }
+
+    .hero-copy {
+        gap: 12px;
     }
 
     .hero-actions {
         flex-direction: column;
+        gap: 8px;
     }
 
     .hero-actions .button {
         width: 100%;
         justify-content: center;
+        padding: 8px 16px;
+        font-size: 13px;
     }
 
     .hero-metrics {
         flex-wrap: wrap;
-        gap: 8px;
+        gap: 4px;
+        padding-top: 12px;
+        margin-top: 8px;
     }
 
     .hero-metrics article {
-        padding: 8px 12px;
+        padding: 4px 10px;
         border-right: none;
-        border-bottom: 1px solid var(--border);
-        flex: 1 1 40%;
-    }
-
-    .hero-metrics article:last-child {
-        border-bottom: none;
+        flex: 1 1 auto;
     }
 
     .hero-metrics strong {
-        font-size: 18px;
+        font-size: 15px;
+    }
+
+    .hero-metrics span {
+        font-size: 10px;
     }
 
     .hero-stage {
@@ -667,22 +675,16 @@
     }
 
     .hero-collage {
-        grid-template-columns: 1fr;
-        grid-template-rows: auto;
+        gap: 6px;
     }
 
     .hero-panel-main {
-        grid-row: auto;
-        min-height: 180px;
+        min-height: 18vw;
     }
 
     .hero-panel-left,
     .hero-panel-right {
-        min-height: 140px;
-    }
-
-    .hero-panel-bottom {
-        grid-column: 1;
+        min-height: 12vw;
     }
 
     .orb-one,
@@ -691,9 +693,17 @@
     }
 
     .hero-float-card {
-        position: static;
-        margin-top: 12px;
-        animation: none;
+        bottom: -4px;
+        right: -4px;
+        padding: 8px 14px;
+    }
+
+    .hero-float-card p {
+        font-size: 8px;
+    }
+
+    .hero-float-card strong {
+        font-size: 12px;
     }
 
     .features-grid {
@@ -814,50 +824,75 @@
     }
 
     .landing-hero {
-        gap: 24px;
-        padding: 24px 0 32px;
+        gap: 16px;
+        padding: 16px 0 24px;
     }
 
     .landing-title {
-        font-size: 22px;
+        font-size: 18px;
     }
 
     .landing-subtext {
-        font-size: 13px;
+        font-size: 12px;
     }
 
-    .landing-topbar {
-        padding: 12px 0;
+    .hero-copy {
+        gap: 8px;
     }
 
-    .landing-brand {
-        font-size: 17px;
+    .hero-actions {
+        gap: 6px;
     }
 
     .hero-metrics article {
-        flex: 1 1 100%;
+        padding: 2px 6px;
     }
 
     .hero-metrics strong {
-        font-size: 16px;
+        font-size: 13px;
+    }
+
+    .hero-metrics span {
+        font-size: 9px;
+    }
+
+    .hero-collage {
+        gap: 4px;
     }
 
     .hero-panel-main {
-        min-height: 140px;
+        min-height: 22vw;
     }
 
     .hero-panel-left,
     .hero-panel-right {
-        min-height: 110px;
+        min-height: 14vw;
     }
 
-    .hero-collage {
-        gap: 8px;
+    .hero-float-card {
+        padding: 6px 10px;
+    }
+
+    .hero-float-card strong {
+        font-size: 10px;
+    }
+
+    .landing-topbar {
+        padding: 10px 0;
+    }
+
+    .landing-brand {
+        font-size: 15px;
+    }
+
+    .topbar-cta {
+        padding: 6px 14px;
+        font-size: 12px;
     }
 
     .features-grid {
         gap: 12px;
-        padding: 32px 0;
+        padding: 24px 0;
     }
 
     .feature-card-image img {
