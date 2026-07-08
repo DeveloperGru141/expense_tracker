@@ -101,14 +101,34 @@
     .content-grid-narrow-wide {
         grid-template-columns: 1fr;
     }
+
+    .content-grid-auto {
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    }
 }
 
 @media (max-width: 600px) {
     .content-grid {
-        gap: 16px;
+        gap: 14px;
     }
     .content-section {
-        margin-bottom: 20px;
+        margin-bottom: 18px;
+    }
+
+    .content-grid-auto {
+        grid-template-columns: 1fr;
+    }
+
+    .content-section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .content-section-header form {
+        max-width: none !important;
+        width: 100%;
+        flex: none !important;
     }
 }
 
@@ -1815,6 +1835,15 @@ tbody tr:last-child td {
         font-size: 13px;
     }
 
+    .page-header-actions {
+        width: 100%;
+    }
+
+    .page-header-actions .btn {
+        flex: 1;
+        justify-content: center;
+    }
+
     .stats-grid {
         grid-template-columns: repeat(2, 1fr);
         gap: 10px;
@@ -1887,6 +1916,10 @@ tbody tr:last-child td {
         grid-column: 1;
     }
 
+    .summary-card-value {
+        font-size: 20px;
+    }
+
     .danger-action {
         flex-direction: column;
         align-items: stretch;
@@ -1894,6 +1927,12 @@ tbody tr:last-child td {
 
     .budget-input-form {
         flex-wrap: wrap;
+        width: 100%;
+    }
+
+    .budget-input-form .form-input {
+        flex: 1;
+        min-width: 80px;
     }
 
     .auth-split {
@@ -1967,8 +2006,17 @@ tbody tr:last-child td {
         font-size: 9px;
     }
 
-    .card[style*="overflow:hidden"] img {
+    .card[style*="overflow:hidden"] img,
+    .focus-card-image img,
+    .analytics-card-image img,
+    .insight-category-image img {
         height: 120px !important;
+    }
+
+    .focus-card-body,
+    .analytics-card-body,
+    .insight-category-body {
+        padding: 16px;
     }
 
     .insight-card {
@@ -2163,6 +2211,67 @@ tbody tr:last-child td {
 
     .filter-bar {
         padding: 10px;
+    }
+
+    .focus-card-image img,
+    .analytics-card-image img,
+    .insight-category-image img {
+        height: 100px !important;
+    }
+
+    .focus-card-body,
+    .analytics-card-body,
+    .insight-category-body {
+        padding: 12px;
+    }
+
+    .summary-chip {
+        padding: 6px 12px;
+        font-size: 11px;
+    }
+
+    .summary-chip strong {
+        font-size: 13px;
+    }
+
+    .page-header-actions {
+        width: 100%;
+        flex-wrap: wrap;
+    }
+
+    .page-header-actions .btn,
+    .page-header-actions .summary-chip {
+        flex: 1;
+        justify-content: center;
+    }
+
+    .page-header-actions .summary-chip {
+        min-width: 0;
+    }
+
+    .summary-card-value {
+        font-size: 18px;
+    }
+
+    .analytics-card-header h3,
+    .insight-category-header h3 {
+        font-size: 14px;
+    }
+
+    .budget-row-name {
+        font-size: 13px;
+    }
+
+    .recurring-group-title {
+        font-size: 12px;
+    }
+
+    .category-snapshot-row {
+        padding: 8px 0;
+    }
+
+    .category-snapshot-row strong {
+        font-size: 14px;
     }
 }
 
