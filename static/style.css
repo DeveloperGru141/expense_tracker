@@ -509,14 +509,9 @@ h1, h2, h3, h4, h5, h6 {
 .feature-visual {
     position: relative;
     min-height: 360px;
-    padding: 2rem;
+    padding: 2.5rem;
     border-radius: 32px;
     overflow: hidden;
-}
-
-.feature-visual.amber,
-.feature-visual.blue,
-.feature-visual.mint {
     background:
         radial-gradient(circle at top left, rgba(148, 163, 184, 0.06), transparent 30%),
         linear-gradient(145deg, rgba(8, 15, 24, 0.92), rgba(15, 23, 42, 0.85));
@@ -2439,11 +2434,9 @@ input:-webkit-autofill:focus {
     border-color: rgba(71, 85, 105, 0.06);
 }
 
-[data-theme="light"] .feature-visual.amber,
-[data-theme="light"] .feature-visual.blue,
-[data-theme="light"] .feature-visual.mint {
+[data-theme="light"] .feature-visual {
     background:
-        radial-gradient(circle at top left, rgba(14, 165, 160, 0.05), transparent 30%),
+        radial-gradient(circle at top left, rgba(14, 165, 160, 0.04), transparent 30%),
         linear-gradient(145deg, rgba(255, 255, 255, 0.95), rgba(248, 250, 252, 0.9));
     border: 1px solid rgba(71, 85, 105, 0.08);
 }
