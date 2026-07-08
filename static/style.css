@@ -13,7 +13,7 @@
     height: 100vh;
     display: flex;
     flex-direction: column;
-    background: linear-gradient(180deg, rgba(4, 8, 18, 0.97), rgba(0, 2, 8, 0.99));
+    background: linear-gradient(180deg, rgba(2, 4, 10, 0.98), rgba(0, 0, 4, 0.99));
     backdrop-filter: blur(20px);
     border-right: 1px solid var(--border);
     z-index: 100;

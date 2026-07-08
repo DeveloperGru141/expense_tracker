@@ -2,10 +2,10 @@
 
 :root {
     --bg: #000000;
-    --bg-gradient: linear-gradient(160deg, #000000 0%, #050a18 40%, #000810 100%);
-    --panel: rgba(8, 13, 26, 0.85);
-    --panel-solid: #080d1a;
-    --panel-strong: rgba(8, 13, 26, 0.95);
+    --bg-gradient: linear-gradient(160deg, #000000 0%, #020408 50%, #000000 100%);
+    --panel: rgba(5, 8, 14, 0.88);
+    --panel-solid: #05070c;
+    --panel-strong: rgba(5, 8, 14, 0.96);
     --text: #f1f5f9;
     --text-secondary: #94a3b8;
     --muted: rgba(148, 163, 184, 0.55);
