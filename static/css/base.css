@@ -2,7 +2,7 @@
 
 :root {
     --bg: #000000;
-    --bg-gradient: linear-gradient(160deg, #040a16 0%, #000000 100%);
+    --bg-gradient: linear-gradient(160deg, #02060e 0%, #000000 100%);
     --panel: rgba(4, 7, 13, 0.88);
     --panel-solid: #04070c;
     --panel-strong: rgba(4, 7, 13, 0.96);
