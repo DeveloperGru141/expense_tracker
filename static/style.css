@@ -799,19 +799,19 @@ h1, h2, h3, h4, h5, h6 {
     text-transform: uppercase;
     letter-spacing: 0.14em;
     font-size: 0.7rem;
-    color: rgba(148, 163, 184, 0.6);
+    color: #64748b;
 }
 
 .sidebar-title {
     margin: 0.35rem 0 0;
     font-size: 1.6rem;
     line-height: 1.05;
-    color: #f1f5f9;
+    color: #ffffff;
 }
 
 .sidebar-copy {
     margin: 0.75rem 0 0;
-    color: rgba(148, 163, 184, 0.6);
+    color: #64748b;
     line-height: 1.55;
     font-size: 0.85rem;
 }
@@ -839,7 +839,7 @@ h1, h2, h3, h4, h5, h6 {
     width: 100%;
     padding: 0.65rem 0.9rem;
     border-radius: var(--radius-sm);
-    color: rgba(241, 245, 249, 0.7);
+    color: #94a3b8;
     text-decoration: none;
     background: transparent;
     transition: all 0.18s ease;
@@ -998,7 +998,7 @@ h1, h2, h3, h4, h5, h6 {
     border-radius: var(--radius-sm);
     background: transparent;
     border: none;
-    color: rgba(148, 163, 184, 0.75);
+    color: #94a3b8;
     font-size: 0.9rem;
     cursor: pointer;
     transition: all 0.18s ease;
@@ -1513,7 +1513,7 @@ th {
     padding: 0.6rem 1rem;
     margin-bottom: 0.5rem;
     border-radius: 14px;
-    color: rgba(148, 163, 184, 0.75);
+    color: #94a3b8;
     background: rgba(99, 102, 241, 0.1);
     border: 1px solid rgba(99, 102, 241, 0.2);
     font-size: 0.85rem;
@@ -1525,7 +1525,7 @@ th {
 .install-btn:hover {
     background: rgba(99, 102, 241, 0.18);
     border-color: rgba(99, 102, 241, 0.35);
-    color: #e2e8f0;
+    color: #f1f5f9;
 }
 
 .logout-form {
@@ -1536,7 +1536,7 @@ th {
     width: 100%;
     padding: 0.75rem 1rem;
     border-radius: 14px;
-    color: rgba(148, 163, 184, 0.85);
+    color: #94a3b8;
     background: rgba(255, 255, 255, 0.06);
     border: 1px solid rgba(255, 255, 255, 0.1);
     font-size: 0.9rem;
@@ -2155,11 +2155,11 @@ input:-webkit-autofill:focus {
 
 [data-theme="light"] .sidebar-kicker,
 [data-theme="light"] .sidebar-copy {
-    color: rgba(71, 85, 105, 0.55);
+    color: #64748b;
 }
 
 [data-theme="light"] .sidebar-title {
-    color: #0b1a2e;
+    color: #0f172a;
 }
 
 [data-theme="light"] .sidebar-divider {
@@ -2167,7 +2167,7 @@ input:-webkit-autofill:focus {
 }
 
 [data-theme="light"] .nav-link {
-    color: rgba(71, 85, 105, 0.78);
+    color: #475569;
 }
 
 [data-theme="light"] .nav-link:hover {
