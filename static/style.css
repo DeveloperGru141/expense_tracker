@@ -740,18 +740,20 @@ h1, h2, h3, h4, h5, h6 {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 1.5rem;
+    padding: 1rem;
     border-radius: 28px;
-    background:
-        radial-gradient(circle at 35% 28%, rgba(255, 255, 255, 0.22), transparent 18%),
-        linear-gradient(145deg, #0ea5e9, #2563eb 58%, #111827);
+    background: var(--panel);
+    border: 1px solid var(--border);
 }
 
 .testimonial-image {
     display: block;
-    width: min(100%, 240px);
-    height: auto;
-    filter: drop-shadow(0 22px 44px rgba(17, 24, 39, 0.22));
+    width: min(100%, 260px);
+    height: 320px;
+    object-fit: cover;
+    object-position: center 20%;
+    border-radius: 20px;
+    box-shadow: 0 22px 44px rgba(2, 6, 23, 0.3);
 }
 
 .testimonial-copy blockquote {
