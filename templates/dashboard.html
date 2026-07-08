@@ -1,203 +1,160 @@
 {% extends "base.html" %}
 
-{% block title %}Dashboard | Expense Flow{% endblock %}
+{% block title %}Dashboard | ExpenseFlow{% endblock %}
 
 {% block content %}
-    <!-- Hero / summary section -->
-    <section class="hero">
+    <div class="page-header">
         <div>
-            <p class="eyebrow">Dashboard</p>
-            <h2 class="page-title">Welcome back, {{ settings.display_name }}.</h2>
-            <p class="subtext">
-                See your spending totals, recent activity, and the category driving the most expenses.
-            </p>
+            <h1>Dashboard</h1>
+            <p>Welcome back, {{ settings.display_name }}. Here's your financial overview.</p>
         </div>
-        <!-- Summary stat cards -->
-        <div class="summary-grid">
-            <article class="card stat-card">
-                <span>Total Spent</span>
-                <strong style="color: var(--danger, #ef4444);">{{ settings.currency_symbol }}{{ '%.2f'|format(summary.total) }}</strong>
-            </article>
-            <article class="card stat-card">
-                <span>Total Income</span>
-                <strong style="color: var(--success, #10b981);">{{ settings.currency_symbol }}{{ '%.2f'|format(summary.total_income) }}</strong>
-            </article>
-            <article class="card stat-card">
-                <span>Net Balance</span>
-                <strong>{{ settings.currency_symbol }}{{ '%.2f'|format(summary.balance) }}</strong>
-            </article>
-            <article class="card stat-card">
-                <span>Entries</span>
-                <strong>{{ summary.count }}</strong>
-            </article>
-        </div>
-    </section>
+    </div>
 
-    <!-- Budget alert banner -->
-    {% if budget_status and budget_status.configured and budget_status.is_alert %}
-        <div class="budget-alert-banner">
-            <div class="alert-icon">Warning</div>
-            <div class="alert-content">
-                <h3>Monthly Budget Threshold Exceeded</h3>
-                <p>You have spent <strong>{{ settings.currency_symbol }}{{ '%.2f'|format(summary.total) }}</strong>, which is <strong>{{ '%.1f'|format(budget_status.percentage) }}%</strong> of your monthly limit ({{ settings.currency_symbol }}{{ '%.2f'|format(budget_status.budget) }}).</p>
+    <div class="stats-grid">
+        <article class="stat-card" data-type="expense">
+            <div class="stat-card-top">
+                <span class="stat-card-label">Total Spent</span>
+                <div class="stat-card-icon">
+                    <svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
+                </div>
             </div>
+            <div class="stat-card-value">{{ settings.currency_symbol }}{{ '%.2f'|format(summary.total) }}</div>
+        </article>
+
+        <article class="stat-card" data-type="income">
+            <div class="stat-card-top">
+                <span class="stat-card-label">Total Income</span>
+                <div class="stat-card-icon">
+                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                </div>
+            </div>
+            <div class="stat-card-value">{{ settings.currency_symbol }}{{ '%.2f'|format(summary.total_income) }}</div>
+        </article>
+
+        <article class="stat-card" data-type="balance">
+            <div class="stat-card-top">
+                <span class="stat-card-label">Net Balance</span>
+                <div class="stat-card-icon">
+                    <svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+                </div>
+            </div>
+            <div class="stat-card-value">{{ settings.currency_symbol }}{{ '%.2f'|format(summary.balance) }}</div>
+        </article>
+
+        <article class="stat-card" data-type="recurring">
+            <div class="stat-card-top">
+                <span class="stat-card-label">Total Entries</span>
+                <div class="stat-card-icon">
+                    <svg viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9h-4v4h-2v-4H9V9h4V5h2v4h4v2z"/></svg>
+                </div>
+            </div>
+            <div class="stat-card-value">{{ summary.count }}</div>
+        </article>
+    </div>
+
+    {% if budget_status and budget_status.configured and budget_status.is_alert %}
+        <div class="budget-alert {% if budget_status.percentage >= 100 %}danger{% else %}warning{% endif %}">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            <span>You've spent <strong>{{ settings.currency_symbol }}{{ '%.2f'|format(summary.total) }}</strong> — <strong>{{ '%.1f'|format(budget_status.percentage) }}%</strong> of your {{ settings.currency_symbol }}{{ '%.2f'|format(budget_status.budget) }} monthly limit.</span>
         </div>
     {% endif %}
 
-    <!-- Charts grid -->
-    <section class="content-grid">
-        <!-- Spending trend chart -->
-        <section class="card chart-card">
-            <h3>Spending Trend (Last 30 Days)</h3>
+    <div class="dashboard-grid">
+        <div class="card">
+            <div class="chart-header">
+                <h3>Spending Trend</h3>
+                <span style="font-size:12px;color:var(--muted);">Last 30 Days</span>
+            </div>
             {% if summary.chart_data.labels %}
-                <canvas id="trendChart"></canvas>
+                <div class="chart-container">
+                    <canvas id="trendChart"></canvas>
+                </div>
             {% else %}
-                <p class="empty-state">No trend data available yet.</p>
+                <div class="empty-state">
+                    <div class="empty-state-icon">
+                        <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
+                    </div>
+                    <h3>No trend data yet</h3>
+                    <p>Start adding expenses to see your spending trend.</p>
+                </div>
             {% endif %}
-        </section>
+        </div>
 
-        <!-- Category breakdown chart -->
-        <section class="card chart-card">
-            <h3>Category Breakdown</h3>
+        <div class="card">
+            <div class="chart-header">
+                <h3>Category Breakdown</h3>
+            </div>
             {% if summary.chart_data.category_labels %}
-                <canvas id="categoryChart"></canvas>
+                <div class="chart-container">
+                    <canvas id="categoryChart"></canvas>
+                </div>
             {% else %}
-                <p class="empty-state">No category data available yet.</p>
+                <div class="empty-state">
+                    <div class="empty-state-icon">
+                        <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
+                    </div>
+                    <h3>No categories yet</h3>
+                    <p>Add expenses across different categories to see the breakdown.</p>
+                </div>
             {% endif %}
-        </section>
-    </section>
+        </div>
 
-    <!-- Budget and category grid -->
-    <section class="content-grid">
-        <!-- Budget progress card -->
-        <section class="card overview-card">
+        <div class="card">
             <h3>Budget Progress</h3>
             {% if summary.category_progress %}
-                <ul class="category-list">
+                <div style="display:flex;flex-direction:column;gap:16px;">
                     {% for item in summary.category_progress %}
                         {% if item.limit > 0 %}
-                            <li style="flex-direction: column; align-items: stretch; gap: 0.5rem;">
-                                <div style="display: flex; justify-content: space-between;">
-                                    <span>{{ item.name }}</span>
-                                    <strong {% if item.is_over %}style="color: var(--danger);"{% endif %}>
+                            <div>
+                                <div style="display:flex;justify-content:space-between;margin-bottom:6px;font-size:13px;">
+                                    <span style="color:var(--text);font-weight:500;">{{ item.name }}</span>
+                                    <strong style="color:{% if item.is_over %}var(--danger){% else %}var(--text-secondary){% endif %};font-size:12px;">
                                         {{ settings.currency_symbol }}{{ '%.0f'|format(item.spent) }} / {{ '%.0f'|format(item.limit) }}
                                     </strong>
                                 </div>
-                                <div class="progress-track" style="margin: 0; height: 8px; background: rgba(255,255,255,0.05);">
-                                    <div class="progress-fill" style="width: {{ item.percentage }}%; background: {{ item.color }};"></div>
+                                <div class="progress-bar">
+                                    <div class="progress-bar-fill{% if item.is_over %} danger{% elif item.percentage > 80 %} warning{% endif %}" style="width:{{ item.percentage }}%;"></div>
                                 </div>
-                            </li>
+                            </div>
                         {% endif %}
                     {% endfor %}
-                </ul>
+                </div>
             {% else %}
-                <p class="empty-state">Set category budgets in Settings to track progress here.</p>
+                <div class="empty-state">
+                    <div class="empty-state-icon">
+                        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                    </div>
+                    <h3>No budgets set</h3>
+                    <p>Set category budgets in Settings to track progress here.</p>
+                </div>
             {% endif %}
-        </section>
+        </div>
 
-        <!-- Category focus card -->
-        <section class="card notes-card">
+        <div class="card">
             <h3>Category Focus</h3>
-            <div class="illustrated-card">
-                <img src="{{ url_for('static', path='images/focus-card.svg') }}" alt="Focus Illustration" class="card-illustration">
-                <p>
+            <div style="display:flex;flex-direction:column;gap:12px;padding-top:4px;">
+                <div style="width:48px;height:48px;border-radius:var(--radius-sm);background:rgba(20,184,166,0.08);display:flex;align-items:center;justify-content:center;">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="var(--accent)"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                </div>
+                <p style="color:var(--text-secondary);margin:0;font-size:14px;line-height:1.6;">
                     {% if summary.top_category != "None yet" %}
-                        Your highest spending is in <strong>{{ summary.top_category }}</strong>.
+                        Your highest spending is in <strong style="color:var(--text);font-weight:600;">{{ summary.top_category }}</strong>.
                         Consider reviewing these transactions to optimize your budget.
                     {% else %}
                         Start adding expenses to see your spending focus here.
                     {% endif %}
                 </p>
             </div>
-        </section>
-    </section>
+        </div>
+    </div>
 
-    <!-- Chart initialization script -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Safe JSON parsing
-            let chartData = null;
-            try {
-                // Ensure chart_data exists and is valid
-                chartData = {{ (summary.chart_data if summary else {}) | tojson | safe }};
-            } catch (e) {
-                console.error("Failed to parse chart data", e);
-            }
-            
-            if (chartData && typeof Chart !== 'undefined') {
-                // 1. Spending Trend Chart
-                if (chartData.labels && chartData.labels.length > 0) {
-                    const trendEl = document.getElementById('trendChart');
-                    if (trendEl) {
-                        const trendCtx = trendEl.getContext('2d');
-                        new Chart(trendCtx, {
-                            type: 'line',
-                            data: {
-                                labels: chartData.labels,
-                                datasets: [{
-                                    label: 'Daily Spend',
-                                    data: chartData.values,
-                                    borderColor: '#0f766e',
-                                    backgroundColor: 'rgba(15, 118, 110, 0.1)',
-                                    fill: true,
-                                    tension: 0.4
-                                }]
-                            },
-                            options: {
-                                responsive: true,
-                                plugins: { legend: { display: false } },
-                                scales: {
-                                    y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' } },
-                                    x: { grid: { display: false } }
-                                }
-                            }
-                        });
-                    }
-                }
-
-                // 2. Category Breakdown Chart
-                if (chartData.category_labels && chartData.category_labels.length > 0) {
-                    const catEl = document.getElementById('categoryChart');
-                    if (catEl) {
-                        const catCtx = catEl.getContext('2d');
-                        new Chart(catCtx, {
-                            type: 'doughnut',
-                            data: {
-                                labels: chartData.category_labels,
-                                datasets: [{
-                                    data: chartData.category_values,
-                                    backgroundColor: chartData.category_colors || [
-                                        '#ef4444', '#3b82f6', '#f59e0b', '#ec4899', '#8b5cf6', '#10b981', '#64748b'
-                                    ],
-                                    borderWidth: 0
-                                }]
-                            },
-                            options: {
-                                responsive: true,
-                                plugins: {
-                                    legend: {
-                                        position: 'bottom',
-                                        labels: { color: '#f8fafc', padding: 20 }
-                                    }
-                                },
-                                cutout: '70%'
-                            }
-                        });
-                    }
-                }
-            }
-        });
-    </script>
-
-    <!-- Recent expenses table -->
-    <section class="card table-card">
-        <div class="section-heading">
-            <h3>Recent Expenses</h3>
-            <a href="/expenses" class="text-link">Manage all expenses</a>
+    <div class="card">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+            <h3 style="margin:0;">Recent Expenses</h3>
+            <a href="/expenses" class="btn btn-ghost btn-sm">Manage all</a>
         </div>
         {% if expenses %}
-            <!-- Expenses table -->
-            <div class="table-wrap">
+            <div class="table-container">
                 <table>
                     <thead>
                         <tr>
@@ -213,15 +170,15 @@
                         {% for expense in expenses %}
                             <tr>
                                 <td>{{ expense.title }}</td>
-                                <td>{{ expense.category }}</td>
-                                <td>{{ expense.expense_date }}</td>
-                                <td>{{ settings.currency_symbol }}{{ '%.2f'|format(expense.amount) }}</td>
-                                <td>{{ expense.notes or '-' }}</td>
+                                <td><span class="category-badge">{{ expense.category }}</span></td>
+                                <td style="color:var(--text-secondary);font-size:13px;">{{ expense.expense_date }}</td>
+                                <td class="amount negative">{{ settings.currency_symbol }}{{ '%.2f'|format(expense.amount) }}</td>
+                                <td style="color:var(--muted);font-size:13px;">{{ expense.notes or '-' }}</td>
                                 <td>
                                     <form action="/expenses/{{ expense.id }}/delete" method="post">
                                         <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
                                         <input type="hidden" name="next_url" value="/dashboard">
-                                        <button type="submit" class="delete-button">Delete</button>
+                                        <button type="submit" class="btn btn-ghost btn-sm" style="color:var(--danger);">Delete</button>
                                     </form>
                                 </td>
                             </tr>
@@ -230,7 +187,90 @@
                 </table>
             </div>
         {% else %}
-            <p class="empty-state">Your saved expenses will appear here.</p>
+            <div class="empty-state">
+                <div class="empty-state-icon">
+                    <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10H7v-2h10v2z"/></svg>
+                </div>
+                <h3>No recent expenses</h3>
+                <p>Your saved expenses will appear here.</p>
+            </div>
         {% endif %}
-    </section>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            let chartData = null;
+            try {
+                chartData = {{ (summary.chart_data if summary else {}) | tojson | safe }};
+            } catch (e) {
+                console.error("Failed to parse chart data", e);
+            }
+
+            if (chartData && typeof Chart !== 'undefined') {
+                const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+                const gridColor = isLight ? 'rgba(0,0,0,0.06)' : 'rgba(255,255,255,0.05)';
+                const textColor = isLight ? '#475569' : '#94a3b8';
+
+                if (chartData.labels && chartData.labels.length > 0) {
+                    const trendEl = document.getElementById('trendChart');
+                    if (trendEl) {
+                        new Chart(trendEl.getContext('2d'), {
+                            type: 'line',
+                            data: {
+                                labels: chartData.labels,
+                                datasets: [{
+                                    label: 'Daily Spend',
+                                    data: chartData.values,
+                                    borderColor: '#14b8a6',
+                                    backgroundColor: isLight ? 'rgba(20,184,166,0.08)' : 'rgba(20,184,166,0.1)',
+                                    fill: true,
+                                    tension: 0.4,
+                                    pointRadius: 3,
+                                    pointBackgroundColor: '#14b8a6',
+                                    borderWidth: 2
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                plugins: { legend: { display: false } },
+                                scales: {
+                                    y: { beginAtZero: true, grid: { color: gridColor }, ticks: { color: textColor, font: { size: 11 } } },
+                                    x: { grid: { display: false }, ticks: { color: textColor, font: { size: 11 } } }
+                                }
+                            }
+                        });
+                    }
+                }
+
+                if (chartData.category_labels && chartData.category_labels.length > 0) {
+                    const catEl = document.getElementById('categoryChart');
+                    if (catEl) {
+                        new Chart(catEl.getContext('2d'), {
+                            type: 'doughnut',
+                            data: {
+                                labels: chartData.category_labels,
+                                datasets: [{
+                                    data: chartData.category_values,
+                                    backgroundColor: chartData.category_colors || ['#ef4444','#3b82f6','#f59e0b','#ec4899','#8b5cf6','#10b981','#64748b'],
+                                    borderWidth: 0
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                plugins: {
+                                    legend: {
+                                        position: 'bottom',
+                                        labels: { color: textColor, padding: 16, font: { size: 12 } }
+                                    }
+                                },
+                                cutout: '72%'
+                            }
+                        });
+                    }
+                }
+            }
+        });
+    </script>
 {% endblock %}

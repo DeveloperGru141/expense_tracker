@@ -1,94 +1,86 @@
 {% extends "base.html" %}
 
-{% block title %}Income | Expense Tracker{% endblock %}
+{% block title %}Income | ExpenseFlow{% endblock %}
 
 {% block content %}
-    <!-- Page header -->
-    <section class="page-header">
-        <div class="page-header-main">
-            <div>
-                <p class="eyebrow">Income</p>
-                <h2 class="page-title">Manage your income streams.</h2>
+    <div class="page-header">
+        <div>
+            <h1>Income</h1>
+            <p>Manage your income streams.</p>
+        </div>
+        <div class="card" style="padding:12px 20px;display:flex;align-items:center;gap:12px;">
+            <span style="font-size:13px;color:var(--text-secondary);font-weight:500;">Total Income</span>
+            <strong style="font-size:18px;color:var(--success);">{{ settings.currency_symbol }}{{ '%.2f'|format(summary.total_income) }}</strong>
+        </div>
+    </div>
+
+    <div class="dashboard-grid">
+        <div class="card">
+            <h3>Add Income</h3>
+            <form action="/income" method="post" style="margin-top:4px;">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Title</label>
+                        <input type="text" name="title" class="form-input" placeholder="Salary" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Amount</label>
+                        <input type="number" name="amount" class="form-input" min="0" step="0.01" placeholder="500000.00" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Category</label>
+                        <input type="text" name="category" class="form-input" placeholder="Salary, Freelance, etc." required list="income-categories">
+                        <datalist id="income-categories">
+                            <option value="Salary"><option value="Freelance"><option value="Investment">
+                            <option value="Gift"><option value="Other">
+                        </datalist>
+                    </div>
+                    <div class="form-group">
+                        <label>Date</label>
+                        <input type="date" name="income_date" class="form-input" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Notes</label>
+                    <textarea name="notes" class="form-textarea" rows="2" placeholder="Optional details"></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Save Income</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="card">
+            <h3>Financial Summary</h3>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:8px;">
+                <div style="padding:16px;background:rgba(16,185,129,0.05);border-radius:var(--radius-sm);border:1px solid rgba(16,185,129,0.1);">
+                    <span style="font-size:12px;color:var(--text-secondary);font-weight:500;">Total Income</span>
+                    <div style="font-size:22px;font-weight:800;color:var(--success);margin-top:4px;font-family:var(--font-mono);">{{ settings.currency_symbol }}{{ '%.2f'|format(summary.total_income) }}</div>
+                </div>
+                <div style="padding:16px;background:rgba(239,68,68,0.05);border-radius:var(--radius-sm);border:1px solid rgba(239,68,68,0.1);">
+                    <span style="font-size:12px;color:var(--text-secondary);font-weight:500;">Total Expenses</span>
+                    <div style="font-size:22px;font-weight:800;color:var(--danger);margin-top:4px;font-family:var(--font-mono);">{{ settings.currency_symbol }}{{ '%.2f'|format(summary.total) }}</div>
+                </div>
+                <div style="grid-column:1/-1;padding:16px;background:rgba(20,184,166,0.05);border-radius:var(--radius-sm);border:1px solid rgba(20,184,166,0.1);">
+                    <span style="font-size:12px;color:var(--text-secondary);font-weight:500;">Net Balance</span>
+                    <div style="font-size:26px;font-weight:800;margin-top:4px;font-family:var(--font-mono);">{{ settings.currency_symbol }}{{ '%.2f'|format(summary.balance) }}</div>
+                </div>
             </div>
         </div>
-        <!-- Total income summary pill -->
-        <article class="card summary-pill">
-            <span>Total Income</span>
-            <strong>{{ settings.currency_symbol }}{{ '%.2f'|format(summary.total_income) }}</strong>
-        </article>
-    </section>
+    </div>
 
-    <!-- Content grid: form + summary -->
-    <section class="content-grid">
-        <!-- Add income form -->
-        <section class="card form-card">
-            <h3>Add Income</h3>
-            <form action="/income" method="post" class="expense-form">
-                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-                <label>
-                    <span>Title</span>
-                    <input type="text" name="title" placeholder="Salary" required>
-                </label>
-                <label>
-                    <span>Amount</span>
-                    <input type="number" name="amount" min="0" step="0.01" placeholder="500000.00" required>
-                </label>
-                <label>
-                    <span>Category</span>
-                    <input type="text" name="category" placeholder="Salary, Freelance, etc." required list="income-categories">
-                    <datalist id="income-categories">
-                        <option value="Salary">
-                        <option value="Freelance">
-                        <option value="Investment">
-                        <option value="Gift">
-                        <option value="Other">
-                    </datalist>
-                </label>
-                <label>
-                    <span>Date</span>
-                    <input type="date" name="income_date" required>
-                </label>
-                <label>
-                    <span>Notes</span>
-                    <textarea name="notes" rows="3" placeholder="Optional details"></textarea>
-                </label>
-                <button type="submit">Save Income</button>
-            </form>
-        </section>
-
-        <!-- Financial summary card -->
-        <section class="card overview-card">
-            <h3>Summary</h3>
-            <!-- Stat grid -->
-            <div class="stat-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 1rem; margin-top: 0.75rem;">
-                <div>
-                    <span style="color: var(--muted); font-size: 0.85rem;">Total Income</span>
-                    <strong style="display: block; margin-top: 0.25rem; color: var(--success, #10b981); font-size: 1.4rem;">{{ settings.currency_symbol }}{{ '%.2f'|format(summary.total_income) }}</strong>
-                </div>
-                <div>
-                    <span style="color: var(--muted); font-size: 0.85rem;">Total Expenses</span>
-                    <strong style="display: block; margin-top: 0.25rem; color: var(--danger, #ef4444); font-size: 1.4rem;">{{ settings.currency_symbol }}{{ '%.2f'|format(summary.total) }}</strong>
-                </div>
-                <div>
-                    <span style="color: var(--muted); font-size: 0.85rem;">Net Balance</span>
-                    <strong style="display: block; margin-top: 0.25rem; font-size: 1.5rem;">{{ settings.currency_symbol }}{{ '%.2f'|format(summary.balance) }}</strong>
-                </div>
-            </div>
-        </section>
-    </section>
-
-    <!-- Income history table -->
-    <section class="card table-card">
-        <div class="section-heading" style="flex-wrap: wrap; gap: 1rem;">
-            <h3>Income History</h3>
-            <!-- Search form -->
-            <form action="/income" method="get" class="search-form" style="flex: 1; min-width: 250px;">
-                <input type="text" name="q" placeholder="Search by title, category, or notes..." value="{{ search_query }}">
+    <div class="card" style="margin-top:24px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:16px;">
+            <h3 style="margin:0;">Income History</h3>
+            <form action="/income" method="get" style="flex:1;min-width:200px;max-width:320px;">
+                <input type="text" name="q" class="form-input" placeholder="Search by title, category, or notes..." value="{{ search_query }}">
             </form>
         </div>
         {% if income_list %}
-            <!-- Income table -->
-            <div class="table-wrap">
+            <div class="table-container">
                 <table>
                     <thead>
                         <tr>
@@ -104,15 +96,15 @@
                         {% for inc in income_list %}
                             <tr>
                                 <td>{{ inc.title }}</td>
-                                <td>{{ inc.category }}</td>
-                                <td>{{ inc.income_date }}</td>
-                                <td>{{ settings.currency_symbol }}{{ '%.2f'|format(inc.amount) }}</td>
-                                <td>{{ inc.notes or '-' }}</td>
+                                <td><span class="category-badge">{{ inc.category }}</span></td>
+                                <td style="color:var(--text-secondary);font-size:13px;">{{ inc.income_date }}</td>
+                                <td class="amount positive">{{ settings.currency_symbol }}{{ '%.2f'|format(inc.amount) }}</td>
+                                <td style="color:var(--muted);font-size:13px;">{{ inc.notes or '-' }}</td>
                                 <td>
                                     <form action="/income/{{ inc.id }}/delete" method="post">
                                         <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
                                         <input type="hidden" name="next_url" value="/income">
-                                        <button type="submit" class="delete-button">Delete</button>
+                                        <button type="submit" class="btn btn-ghost btn-sm" style="color:var(--danger);">Delete</button>
                                     </form>
                                 </td>
                             </tr>
@@ -121,7 +113,13 @@
                 </table>
             </div>
         {% else %}
-            <p class="empty-state">No income records found.</p>
+            <div class="empty-state">
+                <div class="empty-state-icon">
+                    <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10H7v-2h10v2z"/></svg>
+                </div>
+                <h3>No income records</h3>
+                <p>Add your first income entry above.</p>
+            </div>
         {% endif %}
-    </section>
+    </div>
 {% endblock %}

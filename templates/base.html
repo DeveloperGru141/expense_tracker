@@ -1,84 +1,91 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Meta tags -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="theme-color" content="#06101a" id="themeColorMeta">
+    <meta name="theme-color" content="#070b14" id="themeColorMeta">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="description" content="Track expenses, monitor budgets, and export financial reports with ExpenseFlow.">
     <meta name="format-detection" content="telephone=no">
     <title>{% block title %}ExpenseFlow{% endblock %}</title>
-    <!-- Favicon and app manifest -->
     <link rel="icon" href="{{ url_for('static', path='images/calculator.png') }}" type="image/png">
     <link rel="apple-touch-icon" href="{{ url_for('static', path='icon-180x180.png') }}">
     <link rel="manifest" href="{{ url_for('static', path='manifest.webmanifest') }}">
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-    <!-- Stylesheets -->
-    <link rel="stylesheet" href="{{ url_for('static', path='style.css') }}?v=2.3.0">
-    <!-- Chart.js library -->
+    <link rel="stylesheet" href="{{ url_for('static', path='css/base.css') }}?v=3.0.0">
+    <link rel="stylesheet" href="{{ url_for('static', path='style.css') }}?v=3.0.0">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js" defer></script>
-    <!-- App scripts -->
-    <script src="{{ url_for('static', path='app.js') }}?v=2.3.0" defer></script>
-    <!-- Theme restoration script -->
-    <script>if(localStorage.getItem("theme")==="light"){document.documentElement.setAttribute("data-theme","light");document.getElementById("themeColorMeta")&&(document.getElementById("themeColorMeta").content="#eef2f7")}</script>
-    <!-- Back from app goes to landing page, not login -->
-    <script>history.replaceState(null, "", "/");history.pushState(null, "", location.href);</script>
+    <script src="{{ url_for('static', path='app.js') }}?v=3.0.0" defer></script>
+    <script>if(localStorage.getItem("theme")==="light"){document.documentElement.setAttribute("data-theme","light");document.getElementById("themeColorMeta")&&(document.getElementById("themeColorMeta").content="#f0f4f8")}</script>
+    <script>history.replaceState(null,"","/");history.pushState(null,"",location.href);</script>
 </head>
 <body>
-    <!-- App shell -->
-    <div class="app-shell">
-        <!-- Sidebar toggle button -->
-        <button id="sidebarToggle" class="sidebar-toggle" aria-label="Toggle navigation menu" type="button">
-            <span class="hamburger-icon"><span></span><span></span><span></span></span>
-        </button>
+    <button id="sidebarToggle" class="sidebar-toggle" aria-label="Toggle navigation menu" type="button">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
 
-        <!-- Sidebar navigation -->
+    <div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
+
+    <div class="layout">
         <aside class="sidebar" id="sidebar" aria-label="Main navigation">
-            <!-- Brand block -->
-            <div class="brand-block">
-                <p class="sidebar-kicker">Expense flow</p>
-                <h1 class="sidebar-title">Control Center</h1>
+            <div class="sidebar-brand">
+                <div class="sidebar-logo">EF</div>
+                <div class="sidebar-brand-text">
+                    <span class="sidebar-brand-name">ExpenseFlow</span>
+                    <span class="sidebar-brand-sub">Control Center</span>
+                </div>
             </div>
 
-            <!-- Nav links -->
             <nav class="sidebar-nav" aria-label="Sidebar">
+                <div class="sidebar-section">Main</div>
                 {% for item in nav_items %}
-                    <a
-                        href="{{ item.path }}"
-                        class="nav-link{% if active_page == item.name %} active{% endif %}"
-                    >
-                        <span class="nav-icon" aria-hidden="true">{{ item.icon }}</span>
+                    <a href="{{ item.path }}" class="nav-item{% if active_page == item.name %} active{% endif %}">
+                        <span class="nav-icon">
+                            {% if item.name == "Dashboard" %}
+                                <svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+                            {% elif item.name == "Expenses" %}
+                                <svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
+                            {% elif item.name == "Income" %}
+                                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                            {% elif item.name == "Recurring" %}
+                                <svg viewBox="0 0 24 24"><path d="M12 8V4l8 8-8 8v-4H4V8z"/></svg>
+                            {% elif item.name == "Analytics" %}
+                                <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
+                            {% elif item.name == "Reports" %}
+                                <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-1 7V3.5L18.5 9H13zM6 20V4h5v7h7v9H6z"/></svg>
+                            {% elif item.name == "AI Insights" %}
+                                <svg viewBox="0 0 24 24"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7z"/></svg>
+                            {% elif item.name == "Settings" %}
+                                <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.31.06-.63.06-.94 0-.31-.02-.63-.06-.94l2.03-1.58c.18-.14.23-.38.12-.56l-1.89-3.28c-.12-.19-.36-.26-.56-.18l-2.4.96c-.5-.38-1.02-.68-1.59-.88l-.36-2.54c-.04-.2-.2-.34-.4-.34h-3.78c-.2 0-.36.14-.4.34l-.36 2.54c-.57.2-1.09.5-1.59.88l-2.4-.96c-.2-.08-.44-.01-.56.18l-1.89 3.28c-.12.19-.07.42.12.56l2.03 1.58c-.04.31-.06.63-.06.94 0 .31.02.63.06.94l-2.03 1.58c-.18.14-.23.38-.12.56l1.89 3.28c.12.19.36.26.56.18l2.4-.96c.5.38 1.02.68 1.59.88l.36 2.54c.04.2.2.34.4.34h3.78c.2 0 .36-.14.4-.34l.36-2.54c.57-.2 1.09-.5 1.59-.88l2.4.96c.2.08.44.01.56-.18l1.89-3.28c.12-.19.07-.42-.12-.56l-2.03-1.58zM12 15c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3z"/></svg>
+                            {% endif %}
+                        </span>
                         <span>{{ item.name }}</span>
                     </a>
                 {% endfor %}
             </nav>
 
-            <!-- Install app button -->
-            <button id="installApp" class="install-btn" hidden>Install App</button>
+            <div class="sidebar-footer">
+                <button id="themeToggle" class="nav-item" type="button" data-theme-toggle style="width:100%;background:none;border:none;cursor:pointer;text-align:left;padding:10px 14px;">
+                    <span class="nav-icon" id="themeIcon">
+                        <svg viewBox="0 0 24 24"><path d="M20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69zM12 18V6c3.31 0 6 2.69 6 6s-2.69 6-6 6z"/></svg>
+                    </span>
+                    <span id="themeLabel">Light</span>
+                </button>
 
-            <!-- Sidebar divider -->
-            <div class="sidebar-divider"></div>
-
-            <!-- Theme toggle -->
-            <button id="themeToggle" class="theme-toggle-btn" type="button" data-theme-toggle>
-                <span id="themeIcon">☀</span>
-                <span id="themeLabel">Light</span>
-            </button>
-
-            <!-- Logout form -->
-            <form action="/logout" method="post" class="logout-form" data-exit="true">
-                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-                <button type="submit" class="logout-button" data-exit="true">Sign Out</button>
-            </form>
+                <form action="/logout" method="post" class="logout-form" data-exit="true">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                    <button type="submit" class="nav-item" data-exit="true" style="width:100%;background:none;border:none;cursor:pointer;text-align:left;padding:10px 14px;color:var(--text-secondary);">
+                        <span class="nav-icon">
+                            <svg viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>
+                        </span>
+                        <span>Sign Out</span>
+                    </button>
+                </form>
+            </div>
         </aside>
 
-        <!-- Sidebar overlay -->
-        <div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
-
-        <!-- Main content block -->
-        <main class="page" id="page" role="main">
+        <main class="main" id="page" role="main">
             {% block content %}{% endblock %}
         </main>
     </div>

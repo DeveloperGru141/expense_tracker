@@ -1,77 +1,88 @@
 {% extends "base.html" %}
 
-{% block title %}Reports | Expense Tracker{% endblock %}
+{% block title %}Reports | ExpenseFlow{% endblock %}
 
 {% block content %}
-    <!-- Page header -->
-    <section class="page-header">
-        <div class="page-header-main">
-            <div>
-                <p class="eyebrow">Reports</p>
-                <h2 class="page-title">Detailed Financial Summary</h2>
-            </div>
+    <div class="page-header">
+        <div>
+            <h1>Reports</h1>
+            <p>Detailed financial summary with export options.</p>
         </div>
-        <!-- Export actions -->
-        <div class="export-actions">
-            <a href="/reports/export?format=csv&date_from={{ filters.date_from | urlencode }}&date_to={{ filters.date_to | urlencode }}&category={{ filters.category | urlencode }}" class="button secondary">CSV</a>
-            <a href="/reports/export?format=excel&date_from={{ filters.date_from | urlencode }}&date_to={{ filters.date_to | urlencode }}&category={{ filters.category | urlencode }}" class="button secondary">Excel</a>
-            <a href="/reports/export?format=pdf&date_from={{ filters.date_from | urlencode }}&date_to={{ filters.date_to | urlencode }}&category={{ filters.category | urlencode }}" class="button secondary">PDF</a>
+        <div style="display:flex;gap:8px;">
+            <a href="/reports/export?format=csv&date_from={{ filters.date_from | urlencode }}&date_to={{ filters.date_to | urlencode }}&category={{ filters.category | urlencode }}" class="btn btn-secondary btn-sm">CSV</a>
+            <a href="/reports/export?format=excel&date_from={{ filters.date_from | urlencode }}&date_to={{ filters.date_to | urlencode }}&category={{ filters.category | urlencode }}" class="btn btn-secondary btn-sm">Excel</a>
+            <a href="/reports/export?format=pdf&date_from={{ filters.date_from | urlencode }}&date_to={{ filters.date_to | urlencode }}&category={{ filters.category | urlencode }}" class="btn btn-secondary btn-sm">PDF</a>
         </div>
-    </section>
+    </div>
 
-    <!-- Filter card -->
-    <section class="card filter-card">
-        <!-- Filter form -->
-        <form action="/reports" method="get" class="filter-form">
-            <label>
-                <span>From</span>
-                <input type="date" name="date_from" value="{{ filters.date_from }}">
-            </label>
-            <label>
-                <span>To</span>
-                <input type="date" name="date_to" value="{{ filters.date_to }}">
-            </label>
-            <label>
-                <span>Category</span>
-                <select name="category">
+    <div class="filter-bar">
+        <form action="/reports" method="get" style="display:flex;align-items:end;gap:12px;flex-wrap:wrap;width:100%;">
+            <div style="display:flex;flex-direction:column;gap:4px;">
+                <label style="font-size:12px;font-weight:600;color:var(--text-secondary);">From</label>
+                <input type="date" name="date_from" class="form-input" value="{{ filters.date_from }}" style="width:auto;min-width:140px;">
+            </div>
+            <div style="display:flex;flex-direction:column;gap:4px;">
+                <label style="font-size:12px;font-weight:600;color:var(--text-secondary);">To</label>
+                <input type="date" name="date_to" class="form-input" value="{{ filters.date_to }}" style="width:auto;min-width:140px;">
+            </div>
+            <div style="display:flex;flex-direction:column;gap:4px;">
+                <label style="font-size:12px;font-weight:600;color:var(--text-secondary);">Category</label>
+                <select name="category" class="form-select" style="width:auto;min-width:150px;">
                     <option value="">All Categories</option>
                     {% for cat in categories %}
                         <option value="{{ cat.name }}" {% if filters.category == cat.name %}selected{% endif %}>{{ cat.name }}</option>
                     {% endfor %}
                 </select>
-            </label>
-            <button type="submit">Filter</button>
+            </div>
+            <button type="submit" class="btn btn-primary">Filter</button>
         </form>
-    </section>
+    </div>
 
     {% if summary %}
-    <!-- Filtered summary stats -->
-    <section class="summary-grid" style="margin-bottom: 1rem;">
-        <article class="card stat-card">
-            <span>Total (Filtered)</span>
-            <strong style="color: var(--danger);">{{ settings.currency_symbol }}{{ '%.2f'|format(summary.total) }}</strong>
-        </article>
-        <article class="card stat-card">
-            <span>Income (Filtered)</span>
-            <strong style="color: var(--success);">{{ settings.currency_symbol }}{{ '%.2f'|format(summary.total_income) }}</strong>
-        </article>
-        <article class="card stat-card">
-            <span>Net Balance</span>
-            <strong>{{ settings.currency_symbol }}{{ '%.2f'|format(summary.balance) }}</strong>
-        </article>
-        <article class="card stat-card">
-            <span>Entries</span>
-            <strong>{{ summary.count }}</strong>
-        </article>
-    </section>
+        <div class="stats-grid" style="margin-bottom:24px;">
+            <article class="stat-card" data-type="expense">
+                <div class="stat-card-top">
+                    <span class="stat-card-label">Total (Filtered)</span>
+                    <div class="stat-card-icon">
+                        <svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
+                    </div>
+                </div>
+                <div class="stat-card-value">{{ settings.currency_symbol }}{{ '%.2f'|format(summary.total) }}</div>
+            </article>
+            <article class="stat-card" data-type="income">
+                <div class="stat-card-top">
+                    <span class="stat-card-label">Income (Filtered)</span>
+                    <div class="stat-card-icon">
+                        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                    </div>
+                </div>
+                <div class="stat-card-value">{{ settings.currency_symbol }}{{ '%.2f'|format(summary.total_income) }}</div>
+            </article>
+            <article class="stat-card" data-type="balance">
+                <div class="stat-card-top">
+                    <span class="stat-card-label">Net Balance</span>
+                    <div class="stat-card-icon">
+                        <svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+                    </div>
+                </div>
+                <div class="stat-card-value">{{ settings.currency_symbol }}{{ '%.2f'|format(summary.balance) }}</div>
+            </article>
+            <article class="stat-card" data-type="recurring">
+                <div class="stat-card-top">
+                    <span class="stat-card-label">Entries</span>
+                    <div class="stat-card-icon">
+                        <svg viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9h-4v4h-2v-4H9V9h4V5h2v4h4v2z"/></svg>
+                    </div>
+                </div>
+                <div class="stat-card-value">{{ summary.count }}</div>
+            </article>
+        </div>
     {% endif %}
 
-    <!-- Monthly performance table -->
-    <section class="card table-card">
+    <div class="card">
         <h3>Monthly Performance</h3>
         {% if reports %}
-            <!-- Reports table -->
-            <div class="table-wrap">
+            <div class="table-container" style="margin-top:12px;">
                 <table>
                     <thead>
                         <tr>
@@ -84,17 +95,23 @@
                     <tbody>
                         {% for row in reports %}
                             <tr>
-                                <td>{{ row.month }}</td>
-                                <td style="color: var(--danger, #ef4444);">{{ settings.currency_symbol }}{{ '%.2f'|format(row.spent) }}</td>
-                                <td style="color: var(--success, #10b981);">{{ settings.currency_symbol }}{{ '%.2f'|format(row.income) }}</td>
-                                <td style="font-weight: 600;">{{ settings.currency_symbol }}{{ '%.2f'|format(row.balance) }}</td>
+                                <td style="font-weight:600;">{{ row.month }}</td>
+                                <td class="amount negative">{{ settings.currency_symbol }}{{ '%.2f'|format(row.spent) }}</td>
+                                <td class="amount positive">{{ settings.currency_symbol }}{{ '%.2f'|format(row.income) }}</td>
+                                <td class="amount">{{ settings.currency_symbol }}{{ '%.2f'|format(row.balance) }}</td>
                             </tr>
                         {% endfor %}
                     </tbody>
                 </table>
             </div>
         {% else %}
-            <p class="empty-state">No data matches your filters.</p>
+            <div class="empty-state">
+                <div class="empty-state-icon">
+                    <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10H7v-2h10v2z"/></svg>
+                </div>
+                <h3>No data found</h3>
+                <p>No data matches your filters. Try adjusting the date range.</p>
+            </div>
         {% endif %}
-    </section>
+    </div>
 {% endblock %}

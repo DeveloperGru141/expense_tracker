@@ -1,30 +1,39 @@
 {% extends "base.html" %}
 
-{% block title %}Analytics | Expense Tracker{% endblock %}
+{% block title %}Analytics | ExpenseFlow{% endblock %}
 
 {% block content %}
-    <!-- Page header -->
-    <section class="page-header">
-        <div class="page-header-main">
-            <div>
-                <p class="eyebrow">Analytics</p>
-                <h2 class="page-title">Understand where your money is going.</h2>
-            </div>
+    <div class="page-header">
+        <div>
+            <h1>Analytics</h1>
+            <p>Understand where your money is going.</p>
         </div>
-        <!-- Tracked categories pill -->
-        <article class="card summary-pill">
-            <span>Tracked categories</span>
-            <strong>{{ analytics|length }}</strong>
-        </article>
-    </section>
+        <div class="card" style="padding:12px 20px;display:flex;align-items:center;gap:12px;">
+            <span style="font-size:13px;color:var(--text-secondary);font-weight:500;">Tracked categories</span>
+            <strong style="font-size:18px;">{{ analytics|length }}</strong>
+        </div>
+    </div>
 
-    <!-- Category comparison bar chart -->
-    <section class="card chart-card" style="margin-bottom: 2rem;">
-        <h3>Category Comparison</h3>
-        <canvas id="analyticsBarChart" height="100"></canvas>
-    </section>
+    <div class="card" style="margin-bottom:24px;">
+        <div class="chart-header">
+            <h3>Category Comparison</h3>
+        </div>
+        {% if analytics %}
+            <div class="chart-container" style="min-height:200px;">
+                <canvas id="analyticsBarChart" height="120"></canvas>
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <div class="empty-state-icon">
+                    <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
+                    </div>
+                    <h3>No analytics yet</h3>
+                    <p>Add expenses first to see your spending breakdown.</p>
+                </div>
+            </div>
+        {% endif %}
+    </div>
 
-    <!-- Bar chart initialization script -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             let chartData = {};
@@ -34,30 +43,33 @@
                 console.error("Failed to parse chart data", e);
                 return;
             }
-            
+
             if (chartData.category_labels && chartData.category_labels.length > 0) {
+                const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+                const gridColor = isLight ? 'rgba(0,0,0,0.06)' : 'rgba(255,255,255,0.05)';
+                const textColor = isLight ? '#475569' : '#94a3b8';
+
                 const el = document.getElementById('analyticsBarChart');
                 if (el) {
-                    const ctx = el.getContext('2d');
-                    new Chart(ctx, {
+                    new Chart(el.getContext('2d'), {
                         type: 'bar',
                         data: {
                             labels: chartData.category_labels,
                             datasets: [{
                                 label: 'Total Spent',
                                 data: chartData.category_values,
-                                backgroundColor: [
-                                    '#ef4444', '#3b82f6', '#f59e0b', '#ec4899', '#8b5cf6', '#10b981', '#64748b'
-                                ],
-                                borderRadius: 8
+                                backgroundColor: ['#ef4444','#3b82f6','#f59e0b','#ec4899','#8b5cf6','#10b981','#64748b'],
+                                borderRadius: 6,
+                                borderSkipped: false
                             }]
                         },
                         options: {
                             responsive: true,
+                            maintainAspectRatio: false,
                             plugins: { legend: { display: false } },
                             scales: {
-                                y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' } },
-                                x: { grid: { display: false } }
+                                y: { beginAtZero: true, grid: { color: gridColor }, ticks: { color: textColor, font: { size: 11 } } },
+                                x: { grid: { display: false }, ticks: { color: textColor, font: { size: 11 } } }
                             }
                         }
                     });
@@ -66,40 +78,20 @@
         });
     </script>
 
-    <!-- Analytics cards grid -->
-    <section class="analytics-grid">
-        {% if analytics %}
+    {% if analytics %}
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;">
             {% for item in analytics %}
-                <article class="card analytics-card">
-                    <img
-                        src="{{ url_for('static', path='images/analytics-card.svg') }}"
-                        alt="Analytics illustration"
-                        class="card-illustration"
-                    >
-                    <div class="analytics-top">
-                        <h3>{{ item.category }}</h3>
-                        <strong>{{ settings.currency_symbol }}{{ '%.2f'|format(item.amount) }}</strong>
+                <article class="card">
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+                        <h3 style="margin:0;font-size:16px;">{{ item.category }}</h3>
+                        <strong style="font-size:20px;font-family:var(--font-mono);">{{ settings.currency_symbol }}{{ '%.2f'|format(item.amount) }}</strong>
                     </div>
-                    <p class="muted-text">{{ '%.1f'|format(item.percentage) }}% of your total recorded expenses.</p>
-                    <div class="progress-track">
-                        <div
-                            class="progress-fill"
-                            data-fill-width="{{ '%.1f'|format(item.percentage) }}"
-                            aria-hidden="true"
-                        ></div>
+                    <p style="margin:0 0 10px;font-size:13px;color:var(--text-secondary);">{{ '%.1f'|format(item.percentage) }}% of total expenses</p>
+                    <div class="progress-bar">
+                        <div class="progress-bar-fill" style="width:{{ '%.1f'|format(item.percentage) }}%;"></div>
                     </div>
                 </article>
             {% endfor %}
-        {% else %}
-            <section class="card placeholder-card illustrated-card">
-                <img
-                    src="{{ url_for('static', path='images/empty-analytics.svg') }}"
-                    alt="No analytics data illustration"
-                    class="card-illustration"
-                >
-                <h3>No analytics yet</h3>
-                <p class="empty-state">Add expenses first and this page will break down your spending by category.</p>
-            </section>
-        {% endif %}
-    </section>
+        </div>
+    {% endif %}
 {% endblock %}
