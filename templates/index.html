@@ -42,17 +42,17 @@
             <!-- Hero section -->
             <section class="landing-hero">
                 <div class="hero-copy">
-                    <p class="landing-kicker">Professional expense intelligence</p>
-                    <h1 class="landing-title">Turn company spending into something beautifully organized.</h1>
-                    <p class="landing-subtext">
+                    <p class="landing-kicker hero-entrance hero-entrance-d1">Professional expense intelligence</p>
+                    <h1 class="landing-title hero-entrance hero-entrance-d2">Turn company spending into something beautifully organized.</h1>
+                    <p class="landing-subtext hero-entrance hero-entrance-d3">
                         Track expenses, review trends, export reports, and keep every payment story clear with a cleaner finance workspace built for modern teams.
                     </p>
-                    <div class="hero-actions">
+                    <div class="hero-actions hero-entrance hero-entrance-d4">
                         <a href="/login" class="button button-dark">Get Started</a>
                         <a href="/login?next=/expenses" class="button button-light">View Expenses</a>
                     </div>
                     <!-- Hero metrics stats -->
-                    <div class="hero-metrics">
+                    <div class="hero-metrics hero-entrance hero-entrance-d4">
                         <article>
                             <strong>&#8358;12.4M</strong>
                             <span>Tracked spend</span>
@@ -257,6 +257,15 @@
             var gridColor = isLight ? 'rgba(100,116,139,0.12)' : 'rgba(148,163,184,0.08)';
             var textColor = isLight ? '#475569' : '#f1f5f9';
 
+            var teal = '#14b8a6';
+            var tealDim = 'rgba(20,184,166,0.15)';
+            var tealGradient = function(ctx) {
+                var gradient = ctx.createLinearGradient(0, 0, 0, ctx.chart.height);
+                gradient.addColorStop(0, 'rgba(20,184,166,0.2)');
+                gradient.addColorStop(1, 'rgba(20,184,166,0.01)');
+                return gradient;
+            };
+
             // 1. Trend Line Chart (main panel)
             var trendCtx = document.getElementById('heroTrendChart');
             if (trendCtx) {
@@ -267,13 +276,15 @@
                         datasets: [{
                             label: 'Spend',
                             data: [18400, 22100, 19300, 25600, 23800, 27400],
-                            borderColor: '#0f766e',
-                            backgroundColor: 'rgba(15,118,110,0.1)',
+                            borderColor: teal,
+                            backgroundColor: tealGradient,
                             fill: true,
-                            tension: 0.4,
-                            pointBackgroundColor: '#ef4444',
-                            pointRadius: 3,
+                            tension: 0.35,
+                            pointBackgroundColor: teal,
+                            pointBorderColor: 'transparent',
+                            pointRadius: 2,
                             pointHoverRadius: 5,
+                            pointHoverBackgroundColor: teal,
                         }]
                     },
                     options: {
@@ -317,14 +328,14 @@
                         labels: ['Food', 'Transport', 'Utilities', 'Others'],
                         datasets: [{
                             data: [35, 25, 20, 20],
-                            backgroundColor: ['#ef4444', '#3b82f6', '#f59e0b', '#64748b'],
+                            backgroundColor: ['#14b8a6', '#0ea5e9', '#f59e0b', 'rgba(148,163,184,0.3)'],
                             borderWidth: 0,
                         }]
                     },
                     options: {
                         responsive: true,
                         maintainAspectRatio: true,
-                        cutout: '65%',
+                        cutout: '68%',
                         plugins: {
                             legend: {
                                 position: 'bottom',
@@ -351,9 +362,9 @@
                         labels: ['Used', 'Left'],
                         datasets: [{
                             data: [68, 32],
-                            backgroundColor: ['#0f766e', 'rgba(15,118,110,0.2)'],
-                            borderRadius: 4,
-                            barPercentage: 0.5,
+                            backgroundColor: [teal, 'rgba(148,163,184,0.12)'],
+                            borderRadius: 6,
+                            barPercentage: 0.45,
                         }]
                     },
                     options: {
