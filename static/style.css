@@ -1232,6 +1232,166 @@ tbody tr:last-child td {
     }
 }
 
+/* ===== SVG Animations ===== */
+.nav-icon svg {
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.nav-item:hover .nav-icon svg {
+    transform: scale(1.2) rotate(-5deg);
+}
+
+.nav-item.active .nav-icon svg {
+    animation: navIconPulse 2s ease-in-out infinite;
+}
+
+.stat-card-icon svg {
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.stat-card:hover .stat-card-icon svg {
+    transform: scale(1.25) rotate(8deg);
+}
+
+.btn .nav-icon svg,
+.btn svg {
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.btn:hover .nav-icon svg,
+.btn:hover svg {
+    transform: scale(1.2);
+}
+
+.empty-state-icon svg {
+    animation: emptyFloat 3s ease-in-out infinite;
+}
+
+.insight-icon svg {
+    transition: transform 0.3s ease;
+}
+
+.insight-card:hover .insight-icon svg {
+    transform: scale(1.15) rotate(-5deg);
+}
+
+.budget-alert svg {
+    animation: alertPulse 2s ease-in-out infinite;
+    flex-shrink: 0;
+}
+
+.file-upload-label:hover svg {
+    animation: uploadBounce 0.6s ease infinite;
+}
+
+.sidebar-logo {
+    animation: logoSway 4s ease-in-out infinite;
+}
+
+@keyframes navIconPulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.8; transform: scale(1.1); }
+}
+
+@keyframes emptyFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+}
+
+@keyframes alertPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+}
+
+@keyframes uploadBounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
+}
+
+@keyframes logoSway {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(3deg); }
+    75% { transform: rotate(-3deg); }
+}
+
+/* ===== Text Click & Hover Animation ===== */
+.nav-item:active span:last-child {
+    animation: textPop 0.3s ease;
+}
+
+.btn:active {
+    transform: scale(0.96);
+}
+
+.btn:active span,
+.btn:active {
+    animation: textPop 0.25s ease;
+}
+
+.category-badge:active {
+    animation: badgeWiggle 0.3s ease;
+}
+
+a:active {
+    animation: linkPop 0.2s ease;
+}
+
+.card:active {
+    animation: cardTap 0.15s ease;
+}
+
+tbody tr:active {
+    transform: scale(0.995);
+}
+
+.pagination a:active {
+    transform: scale(0.92);
+}
+
+@keyframes textPop {
+    0% { transform: scale(1); }
+    40% { transform: scale(1.06); }
+    100% { transform: scale(1); }
+}
+
+@keyframes badgeWiggle {
+    0%, 100% { transform: rotate(0); }
+    25% { transform: rotate(-4deg); }
+    75% { transform: rotate(4deg); }
+}
+
+@keyframes linkPop {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.03); }
+    100% { transform: scale(1); }
+}
+
+@keyframes cardTap {
+    0% { transform: scale(1); }
+    50% { transform: scale(0.99); }
+    100% { transform: scale(1); }
+}
+
+.nav-item span:last-child {
+    transition: color 0.2s ease;
+}
+
+.nav-item:hover span:last-child {
+    color: var(--text);
+}
+
+a {
+    transition: color 0.2s ease;
+}
+
+.stat-card:hover .stat-card-label {
+    color: var(--text);
+}
+
+.form-group:focus-within label {
+    color: var(--accent);
+}
+
 /* ===== Scrollbar ===== */
 ::-webkit-scrollbar {
     width: 6px;
