@@ -14,8 +14,15 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 18px 0;
-    border-bottom: 1px solid var(--border);
+    padding: 16px 24px;
+    margin: 0 -24px;
+    background: rgba(5, 8, 14, 0.6);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(148, 163, 184, 0.08);
+    position: sticky;
+    top: 0;
+    z-index: 100;
 }
 
 .landing-brand {
@@ -643,6 +650,11 @@
         display: none;
     }
 
+    .landing-topbar {
+        padding: 12px 16px;
+        margin: 0 -16px;
+    }
+
     .closing-banner {
         flex-direction: column;
         text-align: center;
@@ -925,7 +937,8 @@
     }
 
     .landing-topbar {
-        padding: 10px 0;
+        padding: 10px 12px;
+        margin: 0 -12px;
     }
 
     .landing-brand {
