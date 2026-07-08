@@ -218,12 +218,12 @@
 }
 
 .hero-panel {
-    background: rgba(5, 8, 14, 0.55);
-    border: 1px solid rgba(148, 163, 184, 0.06);
+    background: rgba(5, 8, 14, 0.25);
+    border: 1px solid rgba(148, 163, 184, 0.08);
     border-radius: var(--radius);
-    padding: 16px;
-    backdrop-filter: blur(16px);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+    overflow: hidden;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
@@ -254,14 +254,15 @@
     overflow: hidden;
 }
 
-.hero-svg {
+.hero-photo {
     width: 100%;
     height: 100%;
+    object-fit: cover;
     display: block;
     transition: transform 0.4s ease;
 }
 
-.hero-panel:hover .hero-svg {
+.hero-panel:hover .hero-photo {
     transform: scale(1.03);
 }
 
@@ -379,9 +380,8 @@
 .feature-section-image {
     width: 100%;
     height: 320px;
-    object-fit: contain;
+    object-fit: cover;
     display: block;
-    background: var(--panel);
 }
 
 .feature-copy {
@@ -447,9 +447,8 @@
 .landing-card-image {
     width: 100%;
     height: 160px;
-    object-fit: contain;
+    object-fit: cover;
     display: block;
-    background: var(--panel);
 }
 
 .benefit-card h3 {
@@ -483,9 +482,8 @@
 .testimonial-image {
     width: 100%;
     height: 360px;
-    object-fit: contain;
+    object-fit: cover;
     display: block;
-    background: var(--panel);
 }
 
 .testimonial-copy blockquote {
