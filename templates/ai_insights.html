@@ -61,14 +61,17 @@
         </div>
     </div>
 
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-top:24px;">
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px;margin-top:24px;">
         {% for item in analytics %}
-            <article class="card">
-                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
-                    <h3 style="margin:0;font-size:15px;">{{ item.category }}</h3>
-                    <strong style="font-size:18px;font-family:var(--font-mono);">{{ settings.currency_symbol }}{{ '%.2f'|format(item.amount) }}</strong>
+            <article class="card" style="padding:0;overflow:hidden;">
+                <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&h=200&fit=crop&auto=format" alt="Insight visualization" style="width:100%;height:140px;object-fit:cover;display:block;">
+                <div style="padding:20px;">
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+                        <h3 style="margin:0;font-size:15px;">{{ item.category }}</h3>
+                        <strong style="font-size:18px;font-family:var(--font-mono);">{{ settings.currency_symbol }}{{ '%.2f'|format(item.amount) }}</strong>
+                    </div>
+                    <p style="margin:0;font-size:13px;color:var(--text-secondary);">Analyzed distribution for {{ item.category }}.</p>
                 </div>
-                <p style="margin:0;font-size:13px;color:var(--text-secondary);">Analyzed distribution for {{ item.category }}.</p>
             </article>
         {% endfor %}
     </div>
