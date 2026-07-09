@@ -1,8 +1,10 @@
 import secrets
+import io
 import logging
 from datetime import date
 from fastapi import APIRouter, Request, Form, UploadFile, File, HTTPException
 from fastapi.responses import RedirectResponse
+from PIL import Image
 from app.api.deps import require_user
 from app.core.security import require_csrf
 from app.core.config import templates
@@ -89,9 +91,6 @@ async def add_expense(
 
         receipt_image = ""
         if receipt and receipt.filename:
-            from PIL import Image
-            import io
-
             content = await receipt.read()
             if len(content) > 10 * 1024 * 1024:
                 raise HTTPException(status_code=400, detail="Receipt image too large (max 10MB)")

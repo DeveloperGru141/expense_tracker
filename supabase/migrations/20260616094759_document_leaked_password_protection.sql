@@ -1,0 +1,1 @@
+COMMENT ON SCHEMA public IS 'Leaked password protection should be enabled via Supabase Dashboard > Authentication > Settings > Password Security. Requires Pro Plan. Alternatively via Management API: POST /v1/projects/{ref}/config/auth with {"PASSWORD_PROTECTION_ENABLED": true}';

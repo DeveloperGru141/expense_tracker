@@ -1,6 +1,3 @@
--- Fix 1: Set function to SECURITY DEFINER so it runs with owner permissions
--- Fix 2: Handle duplicate usernames by appending MD5 suffix if collision occurs
-
 create or replace function public.handle_new_user()
 returns trigger
 language plpgsql
@@ -23,3 +20,5 @@ begin
   return new;
 end;
 $$;
+
+delete from public.users where id not in (select id from auth.users);

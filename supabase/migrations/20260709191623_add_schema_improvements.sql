@@ -13,8 +13,7 @@ exception
   when duplicate_object then null;
 end $$;
 
--- Add check constraint on recurring_expenses frequency instead of enum
--- (keeps backward compatibility while enforcing valid values)
+-- Add check constraint on recurring_expenses frequency
 alter table if exists recurring_expenses
   drop constraint if exists recurring_expenses_frequency_check;
 
