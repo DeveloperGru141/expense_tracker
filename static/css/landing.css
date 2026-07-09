@@ -106,22 +106,12 @@
 
 .landing-hero {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 64px;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 48px;
     padding: 80px 0 100px;
     align-items: center;
     position: relative;
     overflow: hidden;
-}
-
-.hero-bg-overlay {
-    position: absolute;
-    inset: 0;
-    background:
-        radial-gradient(ellipse 800px 500px at 75% 40%, rgba(13,148,136,0.06), transparent),
-        radial-gradient(ellipse 600px 400px at 30% 60%, rgba(99,102,241,0.04), transparent);
-    pointer-events: none;
-    z-index: 0;
 }
 
 .landing-hero > .hero-copy,
@@ -156,12 +146,12 @@
 }
 
 .landing-title {
-    font-size: 48px;
+    font-size: 54px;
     font-weight: 800;
     letter-spacing: -0.04em;
-    line-height: 1.05;
+    line-height: 1.02;
     margin: 0;
-    background: linear-gradient(135deg, #fff 55%, rgba(13,148,136,0.5));
+    background: linear-gradient(135deg, #fff 50%, rgba(13,148,136,0.4));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -227,7 +217,7 @@
 
 .hero-stage {
     position: relative;
-    min-height: 480px;
+    min-height: 560px;
 }
 
 .glow-orb {
@@ -288,12 +278,12 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 220px;
+    min-height: 320px;
 }
 
 .hero-panel-left,
 .hero-panel-right {
-    min-height: 110px;
+    min-height: 150px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -674,13 +664,8 @@
 
     .hero-stage {
         order: 1;
-        min-height: 240px;
-        max-height: 300px;
-    }
-
-    .hero-bg-overlay {
-        background:
-            radial-gradient(ellipse 400px 250px at 50% 50%, rgba(13,148,136,0.05), transparent);
+        min-height: 320px;
+        max-height: none;
     }
 
     .features-grid {
@@ -720,7 +705,7 @@
     }
 
     .landing-title {
-        font-size: 28px;
+        font-size: 32px;
     }
 
     .landing-subtext {
@@ -769,23 +754,18 @@
         padding: 20px 0 28px;
     }
 
-    .hero-bg-overlay {
-        background:
-            radial-gradient(ellipse 300px 200px at 50% 50%, rgba(13,148,136,0.04), transparent);
-    }
-
     .hero-stage {
-        min-height: 220px;
-        max-height: 260px;
+        min-height: 280px;
+        max-height: none;
     }
 
     .hero-panel-main {
-        min-height: 18vw;
+        min-height: 24vw;
     }
 
     .hero-panel-left,
     .hero-panel-right {
-        min-height: 12vw;
+        min-height: 16vw;
     }
 
     .orb-one,
@@ -1045,12 +1025,12 @@
     }
 
     .hero-panel-main {
-        min-height: 22vw;
+        min-height: 30vw;
     }
 
     .hero-panel-left,
     .hero-panel-right {
-        min-height: 14vw;
+        min-height: 18vw;
     }
 
     .hero-float-card {
