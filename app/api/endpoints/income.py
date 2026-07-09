@@ -5,7 +5,7 @@ from app.api.deps import require_user
 from app.core.security import require_csrf
 from app.crud.income import fetch_income, create_income, delete_income
 from app.crud.recurring import process_recurring_expenses
-from app.api.utils import render_page
+from app.api.utils import render_page, validate_redirect_url
 from app.exceptions import AuthError, DatabaseError
 from app.core.limiter import limiter
 import logging
@@ -100,6 +100,7 @@ def remove_income(
     request: Request,
     income_id: str,
     csrf_token: str = Form(...),
+    next_url: str = Form("/income"),
 ):
     try:
         user_id = require_user(request)
@@ -110,7 +111,8 @@ def remove_income(
         except DatabaseError as de:
             logger.error(f"Database error: {de}")
             raise HTTPException(status_code=500, detail=str(de))
-        return RedirectResponse(url="/income", status_code=303)
+        next_url = validate_redirect_url(next_url[:500])
+        return RedirectResponse(url=next_url, status_code=303)
     except (AuthError, HTTPException):
         raise
     except Exception as e:

@@ -19,9 +19,6 @@
     {% if saved %}
         <div class="alert alert-success">Settings saved successfully.</div>
     {% endif %}
-    {% if cleared %}
-        <div class="alert alert-error">Your account data has been successfully deleted.</div>
-    {% endif %}
 
     <div class="content-grid content-grid-narrow-wide">
         <div class="card">
@@ -40,6 +37,8 @@
                         <select name="currency_code" class="form-select">
                             <option value="NGN"{% if settings.currency_code == "NGN" %} selected{% endif %}>NGN</option>
                             <option value="USD"{% if settings.currency_code == "USD" %} selected{% endif %}>USD</option>
+                            <option value="EUR"{% if settings.currency_code == "EUR" %} selected{% endif %}>EUR</option>
+                            <option value="GBP"{% if settings.currency_code == "GBP" %} selected{% endif %}>GBP</option>
                         </select>
                     </div>
                     <div class="form-group">

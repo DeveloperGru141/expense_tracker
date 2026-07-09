@@ -31,7 +31,7 @@ def get_settings(user_id: str) -> dict[str, str]:
 # Add the currency symbol to the settings dict.
 def enrich_settings(settings: dict[str, str]) -> dict[str, str]:
     currency_code = settings.get("currency_code", "NGN")
-    symbol_map = {"USD": "$", "NGN": "\u20a6"}
+    symbol_map = {"USD": "$", "NGN": "\u20a6", "EUR": "\u20ac", "GBP": "\u00a3"}
     settings["currency_symbol"] = symbol_map.get(currency_code, currency_code)
     return settings
 

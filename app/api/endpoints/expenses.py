@@ -97,9 +97,11 @@ async def add_expense(
                 raise HTTPException(status_code=400, detail="Receipt image too large (max 10MB)")
 
             try:
-                img = Image.open(io.BytesIO(content))
+                buf = io.BytesIO(content)
+                img = Image.open(buf)
                 img.verify()
-                img = Image.open(io.BytesIO(content))
+                buf.seek(0)
+                img = Image.open(buf)
             except Exception:
                 raise HTTPException(status_code=400, detail="Invalid image file")
 

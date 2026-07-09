@@ -7,7 +7,6 @@ from fastapi.templating import Jinja2Templates
 load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
-DB_PATH = BASE_DIR / "expenses.db"
 
 templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
 
