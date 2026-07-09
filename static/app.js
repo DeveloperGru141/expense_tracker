@@ -129,6 +129,23 @@ document.addEventListener("DOMContentLoaded", () => {
         document.body.classList.add("touch-device");
     }
 
+    // Intersection Observer for scroll reveal
+    const revealEls = document.querySelectorAll(".reveal");
+    if (revealEls.length > 0 && "IntersectionObserver" in window) {
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add("visible");
+                        observer.unobserve(entry.target);
+                    }
+                });
+            },
+            { threshold: 0.1, rootMargin: "0px 0px -40px 0px" }
+        );
+        revealEls.forEach((el) => observer.observe(el));
+    }
+
     const themeToggle = document.getElementById("themeToggle");
     const themeIcon = document.getElementById("themeIcon");
     const themeLabel = document.getElementById("themeLabel");

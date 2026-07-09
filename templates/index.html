@@ -7,16 +7,16 @@
     <meta name="theme-color" content="#02060e" id="themeColorMeta">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Expense flow | Smart Spending, Clearer Decisions</title>
+    <title>ExpenseFlow | Smart Spending, Clearer Decisions</title>
     <!-- Favicon and manifest -->
     <link rel="icon" href="{{ url_for('static', path='images/calculator.png') }}" type="image/png">
     <link rel="manifest" href="{{ url_for('static', path='manifest.webmanifest') }}">
     <!-- Stylesheet -->
-    <link rel="stylesheet" href="{{ url_for('static', path='css/base.css') }}?v=3.0.0">
-    <link rel="stylesheet" href="{{ url_for('static', path='style.css') }}?v=3.0.0">
-    <link rel="stylesheet" href="{{ url_for('static', path='css/landing.css') }}?v=3.0.0">
+    <link rel="stylesheet" href="{{ url_for('static', path='css/base.css') }}?v=4.0.0">
+    <link rel="stylesheet" href="{{ url_for('static', path='style.css') }}?v=4.0.0">
+    <link rel="stylesheet" href="{{ url_for('static', path='css/landing.css') }}?v=4.0.0">
     <!-- App scripts -->
-    <script src="{{ url_for('static', path='app.js') }}?v=3.0.0" defer></script>
+    <script src="{{ url_for('static', path='app.js') }}?v=4.0.0" defer></script>
     <!-- Theme restoration script -->
     <script>if(localStorage.getItem("theme")==="light"){document.documentElement.setAttribute("data-theme","light");document.getElementById("themeColorMeta")&&(document.getElementById("themeColorMeta").content="#eef2f7")}</script>
 </head>
@@ -38,8 +38,12 @@
 
         <main>
             <!-- Hero section -->
-            <section class="landing-hero">
+            <section class="landing-hero" id="hero">
+                <div class="hero-bg-overlay"></div>
                 <div class="hero-copy">
+                    <div class="page-section-badge">
+                        <span class="page-section-number">01</span>
+                    </div>
                     <p class="landing-kicker hero-entrance hero-entrance-d1">Professional expense intelligence</p>
                     <h1 class="landing-title hero-entrance hero-entrance-d2">Turn company spending into something beautifully organized.</h1>
                     <p class="landing-subtext hero-entrance hero-entrance-d3">
@@ -124,7 +128,14 @@
             </section>
 
             <!-- Features grid -->
-            <section class="features-grid" id="features">
+            <section class="landing-section" id="features">
+                <div class="section-badge-wrapper">
+                    <div class="page-section-badge">
+                        <span class="page-section-number">02</span>
+                        <span style="font-size:13px;font-weight:500;color:var(--text-secondary);">Core Features</span>
+                    </div>
+                </div>
+                <div class="features-grid">
                 <article class="feature-card">
                     <div class="feature-card-image">
                         <img src="https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=400&h=240&fit=crop&crop=center&auto=format"
@@ -170,10 +181,17 @@
                         <a href="/login?next=/settings" class="button button-dark">Adjust Settings</a>
                     </div>
                 </article>
+                </div>
             </section>
 
             <!-- Benefits section -->
             <section class="benefits-section" id="benefits">
+                <div class="section-badge-wrapper">
+                    <div class="page-section-badge">
+                        <span class="page-section-number">03</span>
+                        <span style="font-size:13px;font-weight:500;color:var(--text-secondary);">Key Benefits</span>
+                    </div>
+                </div>
                 <div class="section-intro">
                     <p class="landing-kicker">Built for modern finance teams</p>
                     <h2>Everything you need to make the tracker feel dependable and executive-ready.</h2>
@@ -208,6 +226,13 @@
 
             <!-- Testimonials section -->
             <section class="testimonial-section" id="testimonials">
+                <div class="section-badge-wrapper">
+                    <div class="page-section-badge">
+                        <span class="page-section-number">04</span>
+                        <span style="font-size:13px;font-weight:500;color:var(--text-secondary);">Testimonials</span>
+                    </div>
+                </div>
+                <div class="testimonial-grid">
                 <div class="testimonial-portrait">
                     <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=360&h=440&fit=crop&crop=face&auto=format"
                          alt="Professional portrait of a finance operations lead"
@@ -221,10 +246,16 @@
                     </blockquote>
                     <p class="testimonial-meta">Lebo M., Finance Operations Lead</p>
                 </div>
+                </div>
             </section>
 
             <!-- Closing CTA banner -->
             <section class="closing-banner">
+                <div class="section-badge-wrapper">
+                    <div class="page-section-badge">
+                        <span class="page-section-number">05</span>
+                    </div>
+                </div>
                 <div>
                     <p class="landing-kicker">Ready to bring order to spending?</p>
                     <h2>Launch the dashboard and start tracking with a cleaner, more confident workflow.</h2>

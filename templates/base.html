@@ -13,10 +13,9 @@
     <link rel="apple-touch-icon" href="{{ url_for('static', path='icon-180x180.png') }}">
     <link rel="manifest" href="{{ url_for('static', path='manifest.webmanifest') }}">
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-    <link rel="stylesheet" href="{{ url_for('static', path='css/base.css') }}?v=3.0.0">
-    <link rel="stylesheet" href="{{ url_for('static', path='style.css') }}?v=3.0.0">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js" defer></script>
-    <script src="{{ url_for('static', path='app.js') }}?v=3.0.0" defer></script>
+    <link rel="stylesheet" href="{{ url_for('static', path='css/base.css') }}?v=4.0.0">
+    <link rel="stylesheet" href="{{ url_for('static', path='style.css') }}?v=4.0.0">
+    <script src="{{ url_for('static', path='app.js') }}?v=4.0.0" defer></script>
     <script>if(localStorage.getItem("theme")==="light"){document.documentElement.setAttribute("data-theme","light");document.getElementById("themeColorMeta")&&(document.getElementById("themeColorMeta").content="#f0f4f8")}</script>
     <script>history.replaceState(null,"","/");history.pushState(null,"",location.href);</script>
 </head>
@@ -85,7 +84,7 @@
             </div>
         </aside>
 
-        <main class="main" id="page" role="main">
+        <main class="main" id="page" role="main" data-page="{{ active_page|lower|replace(' ', '-') if active_page else '' }}">
             {% block content %}{% endblock %}
         </main>
     </div>

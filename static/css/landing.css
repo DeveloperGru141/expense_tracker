@@ -2,6 +2,23 @@
     background: var(--bg-gradient);
     background-attachment: fixed;
     overflow-x: hidden;
+    position: relative;
+}
+
+/* ===== Section Badge Wrapper (Landing) ===== */
+.section-badge-wrapper {
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+}
+
+.section-badge-wrapper .page-section-badge {
+    gap: 8px;
+}
+
+.section-badge-wrapper .page-section-number {
+    font-size: 11px;
+    letter-spacing: 0.15em;
 }
 
 .landing-shell {
@@ -92,6 +109,24 @@
     padding: 80px 0 100px;
     align-items: center;
     position: relative;
+    overflow: hidden;
+}
+
+.hero-bg-overlay {
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(ellipse 800px 500px at 75% 40%, rgba(13,148,136,0.07), transparent),
+        radial-gradient(ellipse 600px 400px at 30% 60%, rgba(99,102,241,0.04), transparent),
+        linear-gradient(135deg, rgba(2,6,12,0.75) 0%, rgba(2,6,12,0.3) 50%, rgba(2,6,12,0.75) 100%),
+        url('../images/hero-bg.jpg') center 30%/cover no-repeat;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.landing-hero > * {
+    position: relative;
+    z-index: 1;
 }
 
 .landing-hero::before {
@@ -232,12 +267,13 @@
 }
 
 .hero-panel {
-    background: rgba(5, 8, 14, 0.25);
-    border: 1px solid rgba(148, 163, 184, 0.08);
+    background: rgba(5, 8, 14, 0.2);
+    border: 1px solid rgba(148, 163, 184, 0.06);
     border-radius: var(--radius);
     overflow: hidden;
-    backdrop-filter: blur(8px);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    box-shadow: var(--glass-edge), 0 8px 32px rgba(0, 0, 0, 0.3);
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
@@ -420,18 +456,24 @@
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 24px;
+}
+
+.landing-section {
     padding: 80px 0;
     border-top: 1px solid var(--border);
 }
 
 .feature-card {
     background: var(--panel);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
     border: 1px solid var(--border);
     border-radius: var(--radius);
     overflow: hidden;
     display: flex;
     flex-direction: column;
     transition: all var(--transition);
+    box-shadow: var(--glass-edge);
 }
 
 .feature-card:hover {
@@ -508,10 +550,13 @@
 
 .benefit-card {
     background: var(--panel);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
     border: 1px solid var(--border);
     border-radius: var(--radius);
     overflow: hidden;
     transition: all var(--transition);
+    box-shadow: var(--glass-edge);
 }
 
 .benefit-card:hover {
@@ -545,12 +590,18 @@
 }
 
 .testimonial-section {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    padding: 80px 0;
+    border-top: 1px solid var(--border);
+}
+
+.testimonial-grid {
     display: grid;
     grid-template-columns: 300px 1fr;
     gap: 48px;
-    padding: 80px 0;
     align-items: center;
-    border-top: 1px solid var(--border);
 }
 
 .testimonial-portrait {
@@ -583,17 +634,23 @@
 
 .closing-banner {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 32px;
+    flex-direction: column;
+    gap: 20px;
     padding: 60px 0;
     border-top: 1px solid var(--border);
+}
+
+.closing-banner > div:last-child {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
 }
 
 .closing-banner h2 {
     font-size: 24px;
     color: #fff;
-    margin: 12px 0 0;
+    margin: 0;
     max-width: 500px;
 }
 
@@ -607,59 +664,54 @@
     .landing-hero {
         gap: 40px;
         padding: 48px 0 60px;
+        grid-template-columns: 1fr;
+    }
+
+    .hero-copy {
+        order: 2;
+    }
+
+    .hero-stage {
+        order: 1;
+        min-height: 280px;
+        max-height: 320px;
     }
 
     .features-grid {
         grid-template-columns: 1fr;
     }
 
+    .landing-section {
+        padding: 48px 0;
+    }
+
+    .testimonial-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+
     .testimonial-section {
-        grid-template-columns: 1fr;
+        padding: 48px 0;
+        gap: 24px;
     }
 
-    .landing-title {
-        font-size: 30px;
+    .testimonial-portrait {
+        max-width: 160px;
+        margin: 0 auto;
     }
 
-    .landing-subtext {
-        max-width: none;
+    .testimonial-image {
+        height: 200px;
     }
 
-    .hero-stage {
-        min-height: 320px;
-    }
-
-    .hero-metrics article {
-        padding: 0 16px;
-    }
-
-    .hero-metrics strong {
-        font-size: 20px;
-    }
-
-    .hero-float-card {
-        bottom: 0;
-        right: 0;
-    }
-
-    .benefit-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .landing-nav {
-        display: none;
-    }
-
-    .landing-topbar {
-        padding: 12px 16px;
-        margin: 0 -16px;
-    }
-
-    .closing-banner {
-        flex-direction: column;
+    .testimonial-copy blockquote {
+        font-size: 16px;
         text-align: center;
     }
-}
+
+    .benefits-section {
+        padding: 48px 0;
+    }
 
 @media (max-width: 600px) {
     .landing-shell {
@@ -669,6 +721,39 @@
     .landing-hero {
         gap: 24px;
         padding: 24px 0 32px;
+    }
+
+    .hero-stage {
+        min-height: 220px;
+        max-height: 260px;
+    }
+
+    .hero-panel-main {
+        min-height: 18vw;
+    }
+
+    .hero-panel-left,
+    .hero-panel-right {
+        min-height: 12vw;
+    }
+
+    .orb-one,
+    .orb-two {
+        display: none;
+    }
+
+    .hero-float-card {
+        bottom: -4px;
+        right: -4px;
+        padding: 8px 14px;
+    }
+
+    .hero-float-card p {
+        font-size: 8px;
+    }
+
+    .hero-float-card strong {
+        font-size: 12px;
     }
 
     .landing-title {
@@ -725,37 +810,13 @@
         gap: 6px;
     }
 
-    .hero-panel-main {
-        min-height: 18vw;
-    }
-
-    .hero-panel-left,
-    .hero-panel-right {
-        min-height: 12vw;
-    }
-
-    .orb-one,
-    .orb-two {
-        display: none;
-    }
-
-    .hero-float-card {
-        bottom: -4px;
-        right: -4px;
-        padding: 8px 14px;
-    }
-
-    .hero-float-card p {
-        font-size: 8px;
-    }
-
-    .hero-float-card strong {
-        font-size: 12px;
+    .landing-section {
+        padding: 32px 0;
     }
 
     .features-grid {
         gap: 16px;
-        padding: 40px 0;
+        padding: 0;
     }
 
     .feature-card-image img {
@@ -782,11 +843,11 @@
     }
 
     .benefits-section {
-        padding: 40px 0;
+        padding: 32px 0;
     }
 
     .section-intro {
-        margin-bottom: 32px;
+        margin-bottom: 24px;
     }
 
     .section-intro h2 {
@@ -812,28 +873,28 @@
     }
 
     .testimonial-section {
-        gap: 24px;
-        padding: 40px 0;
-        text-align: center;
+        padding: 32px 0;
+        gap: 16px;
+    }
+
+    .testimonial-grid {
+        gap: 16px;
     }
 
     .testimonial-portrait {
-        max-width: 160px;
-        margin: 0 auto;
+        max-width: 120px;
     }
 
     .testimonial-image {
-        height: 200px;
+        height: 160px;
     }
 
     .testimonial-copy blockquote {
-        font-size: 16px;
-        text-align: center;
+        font-size: 15px;
     }
 
     .closing-banner {
-        padding: 40px 0;
-        text-align: center;
+        padding: 32px 0;
     }
 
     .closing-banner h2 {
@@ -849,6 +910,11 @@
     .closing-actions .button {
         width: 100%;
         justify-content: center;
+    }
+
+    .closing-banner > div:last-child {
+        flex-direction: column;
+        text-align: center;
     }
 
     .logo-grid {
@@ -950,9 +1016,13 @@
         font-size: 12px;
     }
 
+    .landing-section {
+        padding: 24px 0;
+    }
+
     .features-grid {
         gap: 12px;
-        padding: 24px 0;
+        padding: 0;
     }
 
     .feature-card-image img {
@@ -969,7 +1039,7 @@
     }
 
     .benefits-section {
-        padding: 32px 0;
+        padding: 24px 0;
     }
 
     .benefit-grid {
@@ -990,23 +1060,23 @@
     }
 
     .testimonial-section {
-        padding: 32px 0;
+        padding: 24px 0;
     }
 
     .testimonial-portrait {
-        max-width: 120px;
+        max-width: 100px;
     }
 
     .testimonial-image {
-        height: 160px;
+        height: 130px;
     }
 
     .testimonial-copy blockquote {
-        font-size: 15px;
+        font-size: 14px;
     }
 
     .closing-banner {
-        padding: 32px 0;
+        padding: 24px 0;
     }
 
     .closing-banner h2 {

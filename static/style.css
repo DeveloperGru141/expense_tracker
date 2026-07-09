@@ -4,6 +4,114 @@
     min-height: 100vh;
 }
 
+/* ===== Glass Utility ===== */
+.glass {
+    background: var(--panel);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid var(--border);
+    box-shadow: var(--glass-edge);
+}
+
+.glass-strong {
+    background: var(--panel-strong);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid var(--border-light);
+    box-shadow: var(--glass-edge), var(--shadow);
+}
+
+/* ===== Page Section Badge ===== */
+.page-section-badge {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 2px;
+}
+
+.page-section-number {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--page-accent, var(--accent));
+    letter-spacing: 0.12em;
+    font-family: var(--font-mono);
+    opacity: 0.75;
+    padding-top: 2px;
+}
+
+.page-section-label {
+    font-size: 26px;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: -0.04em;
+    margin: 0;
+    line-height: 1.1;
+}
+
+/* ===== Per-Page Background Overlay ===== */
+.main[data-page] {
+    position: relative;
+}
+
+.main[data-page]::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: var(--sidebar-width);
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.main[data-page="dashboard"]::before {
+    background: radial-gradient(ellipse 1000px 700px at 10% 15%, rgba(13, 148, 136, 0.08), transparent);
+}
+
+.main[data-page="expenses"]::before {
+    background: radial-gradient(ellipse 1000px 700px at 10% 15%, rgba(190, 18, 60, 0.06), transparent);
+}
+
+.main[data-page="income"]::before {
+    background: radial-gradient(ellipse 1000px 700px at 10% 15%, rgba(5, 150, 105, 0.06), transparent);
+}
+
+.main[data-page="recurring"]::before {
+    background: radial-gradient(ellipse 1000px 700px at 10% 15%, rgba(217, 119, 6, 0.06), transparent);
+}
+
+.main[data-page="analytics"]::before {
+    background: radial-gradient(ellipse 1000px 700px at 10% 15%, rgba(124, 58, 237, 0.06), transparent);
+}
+
+.main[data-page="reports"]::before {
+    background: radial-gradient(ellipse 1000px 700px at 10% 15%, rgba(8, 145, 178, 0.06), transparent);
+}
+
+.main[data-page="ai-insights"]::before {
+    background: radial-gradient(ellipse 1000px 700px at 10% 15%, rgba(124, 58, 237, 0.06), transparent);
+}
+
+.main[data-page="settings"]::before {
+    background: radial-gradient(ellipse 1000px 700px at 10% 15%, rgba(148, 163, 184, 0.04), transparent);
+}
+
+/* ===== Scroll Reveal ===== */
+.reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+
 /* ===== Content Grid System ===== */
 .content-grid {
     display: grid;
@@ -141,8 +249,9 @@
     height: 100vh;
     display: flex;
     flex-direction: column;
-    background: linear-gradient(180deg, rgba(2, 4, 10, 0.98), rgba(0, 0, 4, 0.99));
-    backdrop-filter: blur(20px);
+    background: linear-gradient(180deg, rgba(2, 4, 10, 0.92), rgba(0, 0, 4, 0.95));
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
     border-right: 1px solid var(--border);
     z-index: 100;
     overflow-y: auto;
@@ -396,16 +505,18 @@
 /* ===== Cards ===== */
 .card {
     background: var(--panel);
-    backdrop-filter: blur(12px);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
     border: 1px solid var(--border);
     border-radius: var(--radius);
     padding: 24px;
     transition: all var(--transition);
+    box-shadow: var(--glass-edge);
 }
 
 .card:hover {
     border-color: var(--border-light);
-    box-shadow: var(--shadow);
+    box-shadow: var(--glass-edge), var(--shadow);
 }
 
 .card-header {
@@ -742,6 +853,10 @@
     overflow: hidden;
     transition: all var(--transition);
     border: 1px solid var(--border);
+    background: var(--panel);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    box-shadow: var(--glass-edge);
 }
 
 .stat-card::before {
@@ -831,10 +946,11 @@
 }
 
 .stat-card-value {
-    font-size: 30px;
+    font-size: 34px;
     font-weight: 800;
     letter-spacing: -0.04em;
     color: #fff;
+    font-family: var(--font-mono);
 }
 
 .stat-card-change {
@@ -1189,6 +1305,22 @@ tbody tr:last-child td {
     justify-content: center;
     padding: 24px;
     background: var(--bg-gradient);
+    position: relative;
+}
+
+.auth-page::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(ellipse 1000px 700px at 70% 30%, rgba(13, 148, 136, 0.05), transparent),
+                radial-gradient(ellipse 600px 400px at 20% 80%, rgba(99, 102, 241, 0.04), transparent);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.auth-page > * {
+    position: relative;
+    z-index: 1;
 }
 
 .auth-split {
@@ -1210,6 +1342,13 @@ tbody tr:last-child td {
 .auth-form-inner {
     width: 100%;
     max-width: 400px;
+    background: var(--panel);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 36px;
+    box-shadow: var(--glass-edge), var(--shadow-lg);
 }
 
 .auth-logo {
@@ -1303,16 +1442,17 @@ tbody tr:last-child td {
 .auth-visual-panel {
     padding-left: 0;
     position: relative;
+    background: var(--panel);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 36px 40px;
+    box-shadow: var(--glass-edge), var(--shadow);
 }
 
 .auth-visual-panel::before {
-    content: '';
-    position: absolute;
-    left: -40px;
-    top: 10%;
-    bottom: 10%;
-    width: 1px;
-    background: linear-gradient(to bottom, transparent, var(--border), transparent);
+    display: none;
 }
 
 .auth-visual-content {
