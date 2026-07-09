@@ -106,12 +106,12 @@
 
 .landing-hero {
     display: grid;
-    grid-template-columns: 1.1fr 0.9fr;
+    grid-template-columns: 1fr 1.2fr;
     gap: 48px;
     padding: 80px 0 100px;
-    align-items: center;
     position: relative;
     overflow: hidden;
+    min-height: 620px;
 }
 
 .landing-hero > .hero-copy,
@@ -134,6 +134,7 @@
     gap: 20px;
     position: relative;
     z-index: 1;
+    align-self: center;
 }
 
 .landing-kicker {
@@ -217,7 +218,8 @@
 
 .hero-stage {
     position: relative;
-    min-height: 560px;
+    height: 100%;
+    min-height: 0;
 }
 
 .glow-orb {
@@ -252,7 +254,7 @@
     z-index: 1;
     display: grid;
     grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto auto auto;
+    grid-template-rows: 1fr 1fr auto;
     gap: 12px;
     height: 100%;
 }
@@ -266,6 +268,7 @@
     -webkit-backdrop-filter: blur(16px);
     box-shadow: var(--glass-edge), 0 8px 32px rgba(0, 0, 0, 0.3);
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    min-height: 0;
 }
 
 .hero-panel:hover {
@@ -278,12 +281,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 320px;
 }
 
 .hero-panel-left,
 .hero-panel-right {
-    min-height: 150px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -664,8 +665,8 @@
 
     .hero-stage {
         order: 1;
+        height: auto;
         min-height: 320px;
-        max-height: none;
     }
 
     .features-grid {
@@ -755,17 +756,8 @@
     }
 
     .hero-stage {
+        height: auto;
         min-height: 280px;
-        max-height: none;
-    }
-
-    .hero-panel-main {
-        min-height: 24vw;
-    }
-
-    .hero-panel-left,
-    .hero-panel-right {
-        min-height: 16vw;
     }
 
     .orb-one,
@@ -1022,15 +1014,6 @@
 
     .hero-collage {
         gap: 4px;
-    }
-
-    .hero-panel-main {
-        min-height: 30vw;
-    }
-
-    .hero-panel-left,
-    .hero-panel-right {
-        min-height: 18vw;
     }
 
     .hero-float-card {
