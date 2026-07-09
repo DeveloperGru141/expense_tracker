@@ -662,8 +662,8 @@
 
 @media (max-width: 900px) {
     .landing-hero {
-        gap: 40px;
-        padding: 48px 0 60px;
+        gap: 32px;
+        padding: 40px 0 48px;
         grid-template-columns: 1fr;
     }
 
@@ -673,8 +673,15 @@
 
     .hero-stage {
         order: 1;
-        min-height: 280px;
-        max-height: 320px;
+        min-height: 240px;
+        max-height: 300px;
+    }
+
+    .hero-bg-overlay {
+        background:
+            radial-gradient(ellipse 500px 300px at 50% 30%, rgba(13,148,136,0.06), transparent),
+            linear-gradient(135deg, rgba(2,6,12,0.8) 0%, rgba(2,6,12,0.4) 50%, rgba(2,6,12,0.8) 100%),
+            url('../images/hero-bg.jpg') center 30%/cover no-repeat;
     }
 
     .features-grid {
@@ -682,7 +689,7 @@
     }
 
     .landing-section {
-        padding: 48px 0;
+        padding: 40px 0;
     }
 
     .testimonial-grid {
@@ -691,7 +698,7 @@
     }
 
     .testimonial-section {
-        padding: 48px 0;
+        padding: 40px 0;
         gap: 24px;
     }
 
@@ -710,8 +717,39 @@
     }
 
     .benefits-section {
-        padding: 48px 0;
+        padding: 40px 0;
     }
+
+    .landing-title {
+        font-size: 28px;
+    }
+
+    .landing-subtext {
+        font-size: 14px;
+        max-width: none;
+    }
+
+    .hero-metrics strong {
+        font-size: 18px;
+    }
+
+    .section-intro h2 {
+        font-size: 22px;
+    }
+
+@media (max-width: 768px) {
+    .landing-shell {
+        padding: 0 20px;
+    }
+
+    .landing-title {
+        font-size: 26px;
+    }
+
+    .hero-metrics strong {
+        font-size: 16px;
+    }
+}
 
 @media (max-width: 600px) {
     .landing-shell {
@@ -719,8 +757,15 @@
     }
 
     .landing-hero {
-        gap: 24px;
-        padding: 24px 0 32px;
+        gap: 20px;
+        padding: 20px 0 28px;
+    }
+
+    .hero-bg-overlay {
+        background:
+            radial-gradient(ellipse 400px 250px at 50% 30%, rgba(13,148,136,0.05), transparent),
+            linear-gradient(135deg, rgba(2,6,12,0.85) 0%, rgba(2,6,12,0.5) 50%, rgba(2,6,12,0.85) 100%),
+            url('../images/hero-bg.jpg') center 30%/cover no-repeat;
     }
 
     .hero-stage {
@@ -812,6 +857,14 @@
 
     .landing-section {
         padding: 32px 0;
+    }
+
+    .section-badge-wrapper {
+        margin-bottom: 12px;
+    }
+
+    .section-badge-wrapper .page-section-number {
+        font-size: 10px;
     }
 
     .features-grid {
@@ -1018,6 +1071,10 @@
 
     .landing-section {
         padding: 24px 0;
+    }
+
+    .section-badge-wrapper .page-section-number {
+        font-size: 9px;
     }
 
     .features-grid {

@@ -1942,7 +1942,8 @@ tbody tr:last-child td {
         border-radius: var(--radius-sm);
         background: var(--panel-strong);
         border: 1px solid var(--border-light);
-        backdrop-filter: blur(12px);
+        backdrop-filter: blur(var(--glass-blur));
+        -webkit-backdrop-filter: blur(var(--glass-blur));
         cursor: pointer;
         color: var(--text);
         align-items: center;
@@ -1960,6 +1961,10 @@ tbody tr:last-child td {
         padding: 56px 14px 40px;
     }
 
+    .main[data-page]::before {
+        left: 0;
+    }
+
     .page-header {
         flex-direction: column;
         padding-top: 0;
@@ -1971,8 +1976,26 @@ tbody tr:last-child td {
         font-size: 20px;
     }
 
+    .page-section-label {
+        font-size: 20px;
+    }
+
+    .page-section-number {
+        font-size: 11px;
+    }
+
     .page-header p {
         font-size: 13px;
+    }
+
+    /* Reduce glass blur on mobile for performance */
+    .card,
+    .stat-card,
+    .auth-form-inner,
+    .auth-visual-panel,
+    .glass {
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
     }
 
     .page-header-actions {
@@ -2276,6 +2299,11 @@ tbody tr:last-child td {
         border-radius: var(--radius-sm);
     }
 
+    .card-header,
+    .dashboard-grid .card .content-section-header {
+        margin-bottom: 12px;
+    }
+
     .card h3 {
         font-size: 14px;
     }
@@ -2286,6 +2314,14 @@ tbody tr:last-child td {
 
     .page-header h1 {
         font-size: 18px;
+    }
+
+    .page-section-label {
+        font-size: 18px;
+    }
+
+    .page-section-number {
+        font-size: 10px;
     }
 
     .btn {
@@ -2305,8 +2341,12 @@ tbody tr:last-child td {
         font-size: 13px;
     }
 
+    .auth-page {
+        padding: 16px;
+    }
+
     .auth-form-inner {
-        padding: 0 4px;
+        padding: 20px 16px;
     }
 
     .auth-form-inner h1 {
