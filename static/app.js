@@ -6,12 +6,14 @@ document.addEventListener("DOMContentLoaded", () => {
     function openSidebar() {
         sidebar.classList.add("open");
         overlay.classList.add("open");
+        toggleBtn.classList.add("open");
         document.body.style.overflow = "hidden";
     }
 
     function closeSidebar() {
         sidebar.classList.remove("open");
         overlay.classList.remove("open");
+        toggleBtn.classList.remove("open");
         document.body.style.overflow = "";
     }
 
