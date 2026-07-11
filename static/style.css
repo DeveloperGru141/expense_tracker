@@ -354,6 +354,15 @@
     transition: transform 0.3s ease;
 }
 
+.sidebar-toggle:not(.open) .hamburger-icon {
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 16'%3E%3Crect x='0' y='0' width='20' height='16' fill='white'/%3E%3Ccircle cx='20' cy='1' r='2.5' fill='black'/%3E%3Ccircle cx='19.5' cy='8' r='2' fill='black'/%3E%3Ccircle cx='20' cy='15' r='2.5' fill='black'/%3E%3C/svg%3E");
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 16'%3E%3Crect x='0' y='0' width='20' height='16' fill='white'/%3E%3Ccircle cx='20' cy='1' r='2.5' fill='black'/%3E%3Ccircle cx='19.5' cy='8' r='2' fill='black'/%3E%3Ccircle cx='20' cy='15' r='2.5' fill='black'/%3E%3C/svg%3E");
+    -webkit-mask-size: 100% 100%;
+    mask-size: 100% 100%;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+}
+
 .hamburger-icon .bar {
     display: block;
     width: 100%;
