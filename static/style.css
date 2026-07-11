@@ -1892,7 +1892,21 @@ tbody tr:last-child td {
     }
 
     .auth-visual-panel {
-        display: none;
+        display: block;
+        margin-top: 24px;
+    }
+
+    .auth-visual-content {
+        max-width: none;
+    }
+
+    .auth-visual-stats {
+        gap: 16px;
+        margin-bottom: 20px;
+    }
+
+    .auth-stat strong {
+        font-size: 22px;
     }
 
     .auth-form-panel {
