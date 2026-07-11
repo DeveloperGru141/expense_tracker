@@ -41,15 +41,4 @@ jobs:
         run: |
           python -m pytest tests/ -v --ignore=tests/test_integration.py || echo "Some tests skipped (no secrets)"
 
-  frontend-build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Set up Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-      - name: Install and build landing page
-        run: |
-          npm ci
-          npm run build:landing
+  # frontend-build job removed — landing page uses vanilla CSS/JS, no build step required

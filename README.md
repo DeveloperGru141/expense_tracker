@@ -1,6 +1,6 @@
 # Expense Tracker
 
-A modern and professional FastAPI expense tracker utilizing Supabase (PostgreSQL) storage, dynamic currency preferences, customizable budgets, interactive animations, and a React-based interactive landing page background.
+A modern and professional FastAPI expense tracker utilizing Supabase (PostgreSQL) storage, dynamic currency preferences, customizable budgets, interactive animations, and a WebGL-powered landing page background.
 
 ## Key Features
 
@@ -32,10 +32,9 @@ A modern and professional FastAPI expense tracker utilizing Supabase (PostgreSQL
 - **Pandas & Openpyxl**: Data manipulation and Excel export functionality.
 - **python-dateutil**: Advanced date calculations for recurring transactions.
 
-### Frontend (JavaScript / CSS / React)
-- **React**: Declarative component-based UI library.
-- **OGL**: Minimal WebGL library used to render the interactive particle galaxy canvas.
-- **Vite**: High-performance frontend toolchain/bundler.
+### Frontend (JavaScript / CSS)
+- **Vanilla JavaScript**: Client-side interactivity, form handling, dynamic charts.
+- **Chart.js**: Interactive financial charts and data visualization.
 - **Vanilla CSS**: Custom styling with CSS variables, transitions, and responsive grid layouts.
 
 ## Database Schematic
@@ -124,13 +123,4 @@ The application utilizes a PostgreSQL database managed via Supabase.
    ```
 4. Open your browser and navigate to `http://127.0.0.1:8000`
 
-### 2. Frontend Assets Compilation (Vite)
-If you make changes to the interactive WebGL landing page assets under `frontend/`:
-1. Install node dependencies:
-   ```bash
-   npm install
-   ```
-2. Compile/rebuild production bundles:
-   ```bash
-   npm run build:landing
-   ```
+
