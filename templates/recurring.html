@@ -99,7 +99,7 @@
                                             <td>{{ rec.title }}</td>
                                             <td><span class="category-badge">{{ rec.category }}</span></td>
                                             <td><span class="frequency-badge">{{ rec.frequency }}</span></td>
-                                            <td class="text-muted" style="font-size:13px;">{{ rec.next_occurrence }}</td>
+                                            <td class="text-muted">{{ rec.next_occurrence }}</td>
                                             <td class="amount negative">{{ settings.currency_symbol }}{{ '%.2f'|format(rec.amount) }}</td>
                                             <td>
                                                 <form action="/recurring/{{ rec.id }}/delete" method="post">
@@ -139,7 +139,7 @@
                                             <td>{{ rec.title }}</td>
                                             <td><span class="category-badge">{{ rec.category }}</span></td>
                                             <td><span class="frequency-badge frequency-badge-income">{{ rec.frequency }}</span></td>
-                                            <td class="text-muted" style="font-size:13px;">{{ rec.next_occurrence }}</td>
+                                            <td class="text-muted">{{ rec.next_occurrence }}</td>
                                             <td class="amount positive">{{ settings.currency_symbol }}{{ '%.2f'|format(rec.amount) }}</td>
                                             <td>
                                                 <form action="/recurring/{{ rec.id }}/delete" method="post">

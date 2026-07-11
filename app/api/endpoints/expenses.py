@@ -7,11 +7,9 @@ from fastapi.responses import RedirectResponse
 from PIL import Image
 from app.api.deps import require_user
 from app.core.security import require_csrf
-from app.core.config import templates
 from app.crud.expenses import fetch_expenses, create_expense, delete_expense
 from app.crud.recurring import process_recurring_expenses
 from app.crud.analytics import build_summary
-from app.crud.income import fetch_income
 from app.api.utils import render_page, validate_redirect_url
 from app.exceptions import AuthError, DatabaseError
 from app.core.limiter import limiter

@@ -30,6 +30,22 @@ self.addEventListener("fetch", event => {
   const { request } = event;
   const url = new URL(request.url);
 
+  // Images & uploads: cache-first (no background refresh to avoid stale blobs)
+  if (url.pathname.startsWith("/static/images/") || url.pathname.startsWith("/static/uploads/")) {
+    event.respondWith(
+      caches.match(request).then(cached => {
+        return cached || fetch(request).then(response => {
+          if (response.ok) {
+            const clone = response.clone();
+            caches.open(STATIC_CACHE).then(cache => cache.put(request, clone));
+          }
+          return response;
+        });
+      })
+    );
+    return;
+  }
+
   // Static assets: cache-first with background refresh
   if (url.pathname.startsWith("/static/")) {
     event.respondWith(
@@ -42,20 +58,6 @@ self.addEventListener("fetch", event => {
           return response;
         }).catch(() => cached);
         return cached || fetchPromise;
-      })
-    );
-    return;
-  }
-
-  // Images: cache-first, long-lived
-  if (url.pathname.startsWith("/static/images/") || url.pathname.startsWith("/static/uploads/")) {
-    event.respondWith(
-      caches.match(request).then(cached => {
-        return cached || fetch(request).then(response => {
-          const clone = response.clone();
-          caches.open(STATIC_CACHE).then(cache => cache.put(request, clone));
-          return response;
-        });
       })
     );
     return;

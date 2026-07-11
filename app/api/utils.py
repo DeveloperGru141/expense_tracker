@@ -86,7 +86,6 @@ def render_page(
             "csrf_token": csrf_token,
         }
         shared_context.update(context)
-        shared_context["settings"] = resolved_settings
 
         if context.get("include_budget", True) and "summary" not in context:
             try:
@@ -109,8 +108,6 @@ def render_page(
         is_secure = request.url.scheme == "https"
         set_csrf_cookie(response, csrf_token, is_secure=is_secure)
         return response
-    except DatabaseError:
-        raise
     except Exception as e:
         logger.exception(f"Error rendering page {template_name}: {e}")
         raise

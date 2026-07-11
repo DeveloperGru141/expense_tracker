@@ -86,7 +86,7 @@ def favicon():
 
 # Serve the service worker JavaScript file.
 @app.get("/sw.js")
-def service_worker(request: Request):
+def service_worker():
     return FileResponse(BASE_DIR / "static" / "sw.js", media_type="application/javascript")
 
 # Render the landing page with CSRF protection.

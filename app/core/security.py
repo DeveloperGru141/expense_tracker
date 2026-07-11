@@ -2,7 +2,7 @@ import hashlib
 import hmac
 import secrets
 from fastapi import Request, HTTPException
-from app.core.config import SESSION_SECRET, AUTH_COOKIE, CSRF_COOKIE
+from app.core.config import SESSION_SECRET, CSRF_COOKIE
 
 
 def sign_value(value: str) -> str:

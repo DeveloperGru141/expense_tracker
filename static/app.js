@@ -52,7 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const flashBanner = document.querySelector(".alert");
     if (flashBanner) {
         setTimeout(() => {
-            flashBanner.style.transition = "opacity 600ms ease, transform 600ms ease, margin 600ms ease";
+            flashBanner.style.transition = "opacity 600ms ease, transform 600ms ease";
             flashBanner.style.opacity = "0";
             flashBanner.style.transform = "translateY(-10px)";
             setTimeout(() => { flashBanner.remove(); }, 600);
@@ -79,74 +79,16 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    document.querySelectorAll("form:not([onsubmit])").forEach(form => {
-        const deleteBtn = form.querySelector(".btn-danger, button[class*='danger']");
-        if (deleteBtn) {
-            form.addEventListener("submit", (e) => {
-                if (!confirm("Are you sure you want to delete this item? This cannot be undone.")) {
-                    e.preventDefault();
-                }
-            });
-        }
-    });
-
-    const currentPath = window.location.pathname;
-    document.querySelectorAll(".nav-item").forEach(link => {
-        const href = link.getAttribute("href");
-        if (href && href !== "#" && currentPath.startsWith(href)) {
-            link.classList.add("active");
-        }
-    });
-
     if ("serviceWorker" in navigator) {
         window.addEventListener("load", () => {
             navigator.serviceWorker.register("/sw.js").catch(() => {});
         });
     }
 
-    let deferredPrompt = null;
-    const installBtns = [document.getElementById("installApp"), document.getElementById("installAppMobile")].filter(Boolean);
-    window.addEventListener("beforeinstallprompt", (e) => {
-        e.preventDefault();
-        deferredPrompt = e;
-        installBtns.forEach(btn => btn.hidden = false);
-    });
-    installBtns.forEach(btn => {
-        btn.addEventListener("click", async () => {
-            if (!deferredPrompt) return;
-            deferredPrompt.prompt();
-            const result = await deferredPrompt.userChoice;
-            deferredPrompt = null;
-            installBtns.forEach(b => b.hidden = true);
-        });
-    });
-    window.addEventListener("appinstalled", () => {
-        deferredPrompt = null;
-        installBtns.forEach(btn => btn.hidden = true);
-    });
-
     if ("ontouchstart" in window) {
         document.body.classList.add("touch-device");
     }
 
-    // Intersection Observer for scroll reveal
-    const revealEls = document.querySelectorAll(".reveal");
-    if (revealEls.length > 0 && "IntersectionObserver" in window) {
-        const observer = new IntersectionObserver(
-            (entries) => {
-                entries.forEach((entry) => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add("visible");
-                        observer.unobserve(entry.target);
-                    }
-                });
-            },
-            { threshold: 0.1, rootMargin: "0px 0px -40px 0px" }
-        );
-        revealEls.forEach((el) => observer.observe(el));
-    }
-
-    const themeToggle = document.getElementById("themeToggle");
     const themeIcon = document.getElementById("themeIcon");
     const themeLabel = document.getElementById("themeLabel");
 
@@ -191,8 +133,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (location.pathname !== "/dashboard") {
                     location.href = "/dashboard";
                 } else {
-                    exitBtn.querySelector("span:last-child").textContent = "Confirm Sign Out?";
-                    setTimeout(() => { exitBtn.querySelector("span:last-child").textContent = "Sign Out"; }, 3000);
+                    const labelSpan = exitBtn.querySelector("span:last-child");
+                    labelSpan.textContent = "Confirm Sign Out?";
+                    setTimeout(() => { labelSpan.textContent = "Sign Out"; }, 3000);
                 }
             });
         }
