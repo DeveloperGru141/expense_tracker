@@ -9,8 +9,8 @@
     <meta name="description" content="Track expenses, monitor budgets, and export financial reports with ExpenseFlow.">
     <meta name="format-detection" content="telephone=no">
     <title>{% block title %}ExpenseFlow{% endblock %}</title>
-    <link rel="icon" href="{{ url_for('static', path='images/calculator.png') }}" type="image/png">
-    <link rel="apple-touch-icon" href="{{ url_for('static', path='icon-180x180.png') }}">
+    <link rel="icon" href="{{ url_for('static', path='images/logo.svg') }}" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="{{ url_for('static', path='images/logo.svg') }}">
     <link rel="manifest" href="{{ url_for('static', path='manifest.webmanifest') }}">
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js" defer></script>
@@ -34,7 +34,7 @@
     <div class="layout">
         <aside class="sidebar" id="sidebar" aria-label="Main navigation">
             <div class="sidebar-brand">
-                <div class="sidebar-logo">EF</div>
+                <div class="sidebar-logo"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 48 48" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m24 5.768l18.5 11.166v19.994a5.29 5.29 0 0 1-5.28 5.304H10.804a5.29 5.29 0 0 1-5.304-5.28V16.934zm-6.197 18.35h12.394m-8.652-6.315h8.652"/><path d="M17.803 17.803h3.742a6.29 6.29 0 0 1 6.314 6.262v.053a6.29 6.29 0 0 1-6.262 6.314h-.052l6.314 6.08"/></svg></div>
                 <div class="sidebar-brand-text">
                     <span class="sidebar-brand-name">ExpenseFlow</span>
                     <span class="sidebar-brand-sub">Control Center</span>
