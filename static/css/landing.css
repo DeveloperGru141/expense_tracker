@@ -1172,3 +1172,86 @@
     color: var(--text);
     background: rgba(100, 116, 139, 0.06);
 }
+
+/* Social post / social proof */
+.social-feed {
+    max-width: 560px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.social-post {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.social-post-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.social-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.social-author {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.social-author strong {
+    font-size: 15px;
+    color: #fff;
+}
+
+.social-handle {
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.social-body {
+    font-size: 15px;
+    color: var(--text);
+    line-height: 1.6;
+}
+
+.social-actions {
+    display: flex;
+    gap: 4px;
+    padding-top: 4px;
+    border-top: 1px solid var(--border);
+}
+
+.social-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 13px;
+    padding: 6px 12px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.social-btn:hover {
+    background: rgba(148, 163, 184, 0.08);
+    color: var(--text);
+}
+
+[data-theme="light"] .social-author strong {
+    color: var(--text);
+}
