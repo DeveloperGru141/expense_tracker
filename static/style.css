@@ -26,7 +26,7 @@
 .page-section-label {
     font-size: 26px;
     font-weight: 800;
-    color: #fff;
+    color: var(--text);
     letter-spacing: -0.04em;
     margin: 0;
     line-height: 1.1;
@@ -118,14 +118,14 @@
     font-size: 18px;
     font-weight: 700;
     margin: 0;
-    color: #fff;
+    color: var(--text);
 }
 
 .content-section-header h3 {
     font-size: 16px;
     font-weight: 700;
     margin: 0;
-    color: #fff;
+    color: var(--text);
 }
 
 .summary-chip {
@@ -145,7 +145,7 @@
 .summary-chip strong {
     font-size: 17px;
     font-weight: 700;
-    color: #fff;
+    color: var(--text);
     font-family: var(--font-mono);
     letter-spacing: -0.02em;
 }
@@ -238,7 +238,7 @@
 .sidebar-brand-name {
     font-size: 18px;
     font-weight: 800;
-    color: #fff;
+    color: var(--text);
     letter-spacing: -0.03em;
     line-height: 1.2;
 }
@@ -375,7 +375,7 @@
     font-size: 26px;
     font-weight: 800;
     margin: 0 0 2px;
-    color: #fff;
+    color: var(--text);
     letter-spacing: -0.04em;
 }
 
@@ -675,7 +675,7 @@
     font-size: 16px;
     font-weight: 700;
     margin: 0;
-    color: #fff;
+    color: var(--text);
 }
 
 .insight-category-card {
@@ -705,7 +705,7 @@
     font-size: 15px;
     font-weight: 700;
     margin: 0;
-    color: #fff;
+    color: var(--text);
 }
 
 /* ===== Filter Field ===== */
@@ -870,7 +870,7 @@
     font-size: 34px;
     font-weight: 800;
     letter-spacing: -0.04em;
-    color: #fff;
+    color: var(--text);
     font-family: var(--font-mono);
 }
 
@@ -1250,7 +1250,7 @@ tbody tr:last-child td {
 .auth-form-inner h1 {
     font-size: 28px;
     margin: 0 0 8px;
-    color: #fff;
+    color: var(--text);
 }
 
 .auth-subtitle {
@@ -1360,7 +1360,7 @@ tbody tr:last-child td {
 .auth-stat strong {
     font-size: 28px;
     font-weight: 800;
-    color: #fff;
+    color: var(--text);
     letter-spacing: -0.02em;
     line-height: 1;
 }
@@ -2338,6 +2338,48 @@ a,
 
 ::-webkit-scrollbar-thumb:hover {
     background: rgba(148, 163, 184, 0.25);
+}
+
+/* ===== Light Mode Overrides ===== */
+[data-theme="light"] .sidebar {
+    background: linear-gradient(180deg, rgba(255,255,255,0.92), rgba(248,250,252,0.95));
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+}
+
+[data-theme="light"] .form-input,
+[data-theme="light"] .form-select,
+[data-theme="light"] .form-textarea {
+    background: rgba(255, 255, 255, 0.8);
+}
+
+[data-theme="light"] .form-input:focus,
+[data-theme="light"] .form-select:focus,
+[data-theme="light"] .form-textarea:focus {
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1);
+}
+
+[data-theme="light"] thead th {
+    background: rgba(241, 245, 249, 0.8);
+}
+
+[data-theme="light"] tbody tr:hover {
+    background: rgba(100, 116, 139, 0.04);
+}
+
+[data-theme="light"] .alert-info {
+    background: rgba(59, 130, 246, 0.08);
+    color: #2563eb;
+    border-color: rgba(59, 130, 246, 0.15);
+}
+
+[data-theme="light"] .auth-form-inner .form-input {
+    background: rgba(255, 255, 255, 0.8);
+}
+
+[data-theme="light"] .auth-form-inner .form-input:focus {
+    background: #fff;
 }
 
 /* ===== Print ===== */

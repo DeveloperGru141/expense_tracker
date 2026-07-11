@@ -1141,3 +1141,34 @@
     -webkit-text-fill-color: transparent;
     background-clip: text;
 }
+
+[data-theme="light"] .landing-topbar {
+    background: rgba(255, 255, 255, 0.85);
+    border-bottom: 1px solid var(--border);
+}
+
+[data-theme="light"] .hero-panel {
+    background: rgba(255, 255, 255, 0.4);
+    border-color: var(--border);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="light"] .hero-panel:hover {
+    border-color: var(--border-light);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .hero-float-card {
+    background: rgba(255, 255, 255, 0.9);
+    border-color: var(--border-light);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .hero-float-card strong {
+    color: var(--text);
+}
+
+[data-theme="light"] .logo-item:hover {
+    color: var(--text);
+    background: rgba(100, 116, 139, 0.06);
+}
