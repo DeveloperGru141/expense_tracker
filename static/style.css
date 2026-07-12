@@ -5,6 +5,14 @@
 }
 
 /* ===== Glass Utility ===== */
+.glass {
+    background: var(--panel);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid var(--border);
+    box-shadow: var(--glass-edge);
+}
+
 /* ===== Page Section Badge ===== */
 .page-section-badge {
     display: flex;
@@ -134,8 +142,11 @@
     gap: 10px;
     padding: 10px 20px;
     background: var(--panel);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
     border: 1px solid var(--border);
     border-radius: 999px;
+    box-shadow: var(--glass-edge);
     font-size: 13px;
     font-weight: 500;
     color: var(--text-secondary);
@@ -588,25 +599,28 @@
     padding: 18px;
     border-radius: var(--radius-sm);
     border: 1px solid var(--border);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    box-shadow: var(--glass-edge);
     display: flex;
     flex-direction: column;
     gap: 6px;
 }
 
 .summary-card-income {
-    background: rgba(16, 185, 129, 0.05);
-    border-color: rgba(16, 185, 129, 0.1);
+    background: rgba(16, 185, 129, 0.08);
+    border-color: rgba(16, 185, 129, 0.12);
 }
 
 .summary-card-expense {
-    background: rgba(239, 68, 68, 0.05);
-    border-color: rgba(239, 68, 68, 0.1);
+    background: rgba(239, 68, 68, 0.08);
+    border-color: rgba(239, 68, 68, 0.12);
 }
 
 .summary-card-balance {
     grid-column: 1 / -1;
-    background: rgba(20, 184, 166, 0.05);
-    border-color: rgba(20, 184, 166, 0.1);
+    background: rgba(20, 184, 166, 0.08);
+    border-color: rgba(20, 184, 166, 0.12);
 }
 
 .summary-card-value {
@@ -1438,8 +1452,11 @@ tbody tr:last-child td {
     margin-bottom: 24px;
     padding: 16px 20px;
     background: var(--panel);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
     border: 1px solid var(--border);
     border-radius: var(--radius-sm);
+    box-shadow: var(--glass-edge);
 }
 
 .filter-bar .form-select,
@@ -1503,8 +1520,11 @@ tbody tr:last-child td {
     gap: 14px;
     padding: 18px;
     background: var(--panel);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
     border: 1px solid var(--border);
     border-radius: var(--radius-sm);
+    box-shadow: var(--glass-edge);
     transition: all var(--transition);
 }
 
