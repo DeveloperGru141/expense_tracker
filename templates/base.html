@@ -18,7 +18,6 @@
     <link rel="stylesheet" href="{{ url_for('static', path='style.css') }}?v=4.0.0">
     <script src="{{ url_for('static', path='app.js') }}?v=4.0.0" defer></script>
     <script>if(localStorage.getItem("theme")==="light"){document.documentElement.setAttribute("data-theme","light");document.getElementById("themeColorMeta")&&(document.getElementById("themeColorMeta").content="#f0f4f8")}</script>
-    <script>history.replaceState(null,"","/");history.pushState(null,"",location.href);</script>
 </head>
 <body>
     <button id="sidebarToggle" class="sidebar-toggle" aria-label="Toggle navigation menu" type="button">

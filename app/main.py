@@ -51,10 +51,13 @@ async def database_error_handler(request: Request, exc: DatabaseError):
     logger.error(f"Database error: {exc}")
     return JSONResponse(status_code=500, content={"detail": "A database error occurred."})
 
-# Redirect unauthenticated users to login.
+# Redirect unauthenticated users to login, preserving their intended page.
 @app.exception_handler(AuthError)
 async def auth_error_handler(request: Request, exc: AuthError):
-    return RedirectResponse(url="/login", status_code=303)
+    next_url = request.url.path
+    if request.url.query:
+        next_url += "?" + request.url.query
+    return RedirectResponse(url=f"/login?next={next_url}", status_code=303)
 
 # Handle generic application errors with a 500 response.
 @app.exception_handler(AppError)
